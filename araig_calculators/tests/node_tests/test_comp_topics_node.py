@@ -26,25 +26,68 @@ class TestCompParam(unittest.TestCase):
         
         self.tolerance = rospy.get_param("/calculators/comp_topics_node/tolerance")
         self.result = None
+        self.msg_seq = 0
 
     def test_expected(self):
-        pub_msg = BoolStamped()
-        pub_msg.header.stamp = rospy.Time.now()
-        pub_msg.data = True
-        self.pub_1.publish(pub_msg)
+        pub_msg_1 = BoolStamped()
+        pub_msg_1.header.stamp = rospy.Time.now()
+        pub_msg_1.data = False
+        self.pub_1.publish(pub_msg_1)
 
-        pub_msg = BoolStamped()
-        pub_msg.header.stamp = rospy.Time.now()
-        pub_msg.data = True
-        self.pub_2.publish(pub_msg)
+        pub_msg_2 = BoolStamped()
+        pub_msg_2.header.stamp = rospy.Time.now()
+        pub_msg_2.data = False
+        self.pub_2.publish(pub_msg_2)
 
         while self.result is None:
             time.sleep(0.1)
 
+        self.assertFalse(self.result, msg='Compare with Tolerance Failed')
+        self.assertEqual(self.msg_seq, 1, 'msg published {} times'.format(self.msg_seq))
+
+        pub_msg_1.data = True
+        pub_msg_2.data = True
+        self.result = None
+        self.pub_1.publish(pub_msg_1)
+        self.pub_2.publish(pub_msg_2)
+        while self.result is None:
+            time.sleep(0.1)
         self.assertTrue(self.result, msg='Compare with Tolerance Failed')
+        self.assertEqual(self.msg_seq, 2, 'msg published {} times'.format(self.msg_seq))
+
+        pub_msg_1.data = False
+        pub_msg_2.data = True
+        self.result = None
+        self.pub_1.publish(pub_msg_1)
+        self.pub_2.publish(pub_msg_2)
+        while self.result is None:
+            time.sleep(0.1)
+        self.assertFalse(self.result, msg='Compare with Tolerance Failed')
+        self.assertEqual(self.msg_seq, 3, 'msg published {} times'.format(self.msg_seq))
+
+        pub_msg_1.data = True
+        pub_msg_2.data = True
+        self.result = None
+        self.pub_1.publish(pub_msg_1)
+        self.pub_2.publish(pub_msg_2)
+        while self.result is None:
+            time.sleep(0.1)
+        self.assertTrue(self.result, msg='Compare with Tolerance Failed')
+        self.assertEqual(self.msg_seq, 4, 'msg published {} times'.format(self.msg_seq))
+
+        pub_msg_1.data = True
+        pub_msg_2.data = False
+        self.result = None
+        self.pub_1.publish(pub_msg_1)
+        self.pub_2.publish(pub_msg_2)
+        while self.result is None:
+            time.sleep(0.1)
+        self.assertFalse(self.result, msg='Compare with Tolerance Failed')
+        self.assertEqual(self.msg_seq, 5, 'msg published {} times'.format(self.msg_seq))
 
     def callback_1(self, msg):
         self.result = msg.data
+        self.msg_seq = msg.header.seq
 
 if __name__ == '__main__':
     pkg = 'araig_calculators'
