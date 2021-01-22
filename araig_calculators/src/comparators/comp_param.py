@@ -27,7 +27,9 @@ class compParam(BaseCalculator):
         else:
             self.compare_param = rosparam
 
-        self.tolerance = tolerance        
+        self.tolerance = tolerance
+        # checking previous state  
+        self.pre_state = None   
 
         super(compParam, self).__init__(
             sub_dict = sub_dict,
@@ -40,6 +42,7 @@ class compParam(BaseCalculator):
             current_vel = BaseCalculator.MSG[self._sub_topic]
 
         flag_test_ready = True
+        # if topic "/in_float" not publish yet, test is not ready
         if current_vel == None:
             flag_test_ready = False
 
@@ -48,9 +51,13 @@ class compParam(BaseCalculator):
             msg.header.stamp = rospy.Time.now()
 
             if abs(self.compare_param - current_vel.data) <= self.tolerance:
-                msg.data = True
-                
+                msg.data = True                
             else:
                 msg.data = False
 
-            self.PubDiag[self._pub_topic].publish(msg)
+            if self.pub_only_state_change(pre_state = self.pre_state, \
+                current_state = msg.data, \
+                pub_topic = self._pub_topic, \
+                pub_msg = msg, \
+                log = "{}: {}".format(rospy.get_name(), msg.data)):
+                self.pre_state = msg.data

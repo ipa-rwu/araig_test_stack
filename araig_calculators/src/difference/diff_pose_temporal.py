@@ -57,38 +57,36 @@ class diffPoseTemporal(BaseCalculator):
         with BaseCalculator.LOCK[self._sub_topic_start] and BaseCalculator.LOCK[self._sub_topic_pose]:  
             temp[self._sub_topic_start] = BaseCalculator.MSG[self._sub_topic_start]
             temp[self._sub_topic_pose] = BaseCalculator.MSG[self._sub_topic_pose]
-   
-            if temp[self._sub_topic_start] != None:
-                if self._prestate_start == False and \
-                    temp[self._sub_topic_start].data == True:
-                    self._posestamp_start = temp[self._sub_topic_pose]
-                    rospy.loginfo(rospy.get_name() + ": Started")
 
-                self._prestate_start = temp[self._sub_topic_start].data
+        if temp[self._sub_topic_start] != None:
+            if self._prestate_start == False and \
+                temp[self._sub_topic_start].data == True:
+                self._posestamp_start = temp[self._sub_topic_pose]
+                rospy.loginfo(rospy.get_name() + ": Started")
+
+            self._prestate_start = temp[self._sub_topic_start].data
         
         with BaseCalculator.LOCK[self._sub_topic_stop] and BaseCalculator.LOCK[self._sub_topic_pose]:  
             temp[self._sub_topic_stop] = BaseCalculator.MSG[self._sub_topic_stop]
             temp[self._sub_topic_pose] = BaseCalculator.MSG[self._sub_topic_pose]
    
-            if temp[self._sub_topic_stop] != None and temp[self._sub_topic_start] != None:
-                if self._prestate_stop == False and \
-                    temp[self._sub_topic_start].data == True and \
-                    temp[self._sub_topic_stop].data == True:
-                    self._posestamp_stop = temp[self._sub_topic_pose]
-                    rospy.loginfo(rospy.get_name() + ": Stopped")
+        if temp[self._sub_topic_stop] != None and \
+            temp[self._sub_topic_start] != None and \
+            temp[self._sub_topic_start].data == True:
+            if self._prestate_stop == False and \
+                temp[self._sub_topic_stop].data == True:
+                self._posestamp_stop = temp[self._sub_topic_pose]
+                rospy.loginfo(rospy.get_name() + ": Stopped")
 
-                self._prestate_stop = temp[self._sub_topic_stop].data
-            
-        if self._posestamp_start != None and self._posestamp_stop != None and self._flag_get_result == False:
-            delta_x = abs(self._posestamp_start.pose.position.x - self._posestamp_stop.pose.position.x)
-            delta_y = abs(self._posestamp_start.pose.position.y - self._posestamp_stop.pose.position.y)
+                delta_x = abs(self._posestamp_start.pose.position.x - self._posestamp_stop.pose.position.x)
+                delta_y = abs(self._posestamp_start.pose.position.y - self._posestamp_stop.pose.position.y)
 
-            self._pub_msg_angular = abs(self.get_yaw_from_quaternion(self._posestamp_start.pose.orientation) - \
-                                self.get_yaw_from_quaternion(self._posestamp_stop.pose.orientation) )
-            self._pub_msg_position = math.sqrt((delta_x*delta_x) + (delta_y*delta_y))
+                self._pub_msg_angular = abs(self.get_yaw_from_quaternion(self._posestamp_start.pose.orientation) - \
+                                    self.get_yaw_from_quaternion(self._posestamp_stop.pose.orientation) )
+                self._pub_msg_position = math.sqrt((delta_x*delta_x) + (delta_y*delta_y))
 
-            self.PubDiag[self._pub_topic_angular].publish(self._pub_msg_angular)
-            self.PubDiag[self._pub_topic_position].publish(self._pub_msg_position)
-            rospy.loginfo("{}: Delta angle is {}".format(rospy.get_name(), self._pub_msg_angular))
-            rospy.loginfo("{}: Delta position is {}".format(rospy.get_name(), self._pub_msg_position))
-            self._flag_get_result = True
+                self.PubDiag[self._pub_topic_angular].publish(self._pub_msg_angular)
+                self.PubDiag[self._pub_topic_position].publish(self._pub_msg_position)
+                rospy.loginfo("{}: Delta angle is {}".format(rospy.get_name(), self._pub_msg_angular))
+                rospy.loginfo("{}: Delta position is {}".format(rospy.get_name(), self._pub_msg_position))
+            self._prestate_stop = temp[self._sub_topic_stop].data

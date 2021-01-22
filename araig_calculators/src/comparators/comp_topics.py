@@ -23,6 +23,7 @@ class compTopics(BaseCalculator):
             if sub_dict == None or len(sub_dict) < 2:
                 rospy.logerr("{}:  Please provide two topics to subscribe".format(rospy.get_name()))
             self.tolerance = tolerance
+            self.pre_state = None
 
             super(compTopics, self).__init__(
                 sub_dict = sub_dict,
@@ -49,4 +50,9 @@ class compTopics(BaseCalculator):
             else:
                 msg.data = False
 
-            self.PubDiag[self._pub_topic].publish(msg)
+            if self.pub_only_state_change(pre_state = self.pre_state, \
+                current_state = msg.data, \
+                pub_topic = self._pub_topic, \
+                pub_msg = msg,
+                log = "{}: {}".format(rospy.get_name(), msg.data)):
+                self.pre_state = msg.data

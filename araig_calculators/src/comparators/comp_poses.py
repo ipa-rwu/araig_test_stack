@@ -26,7 +26,9 @@ class compPoses(BaseCalculator):
         
             self._delta_pos_thresh_meters = delta_pos_thresh_meters 
             self._delta_theta_thresh_degrees = delta_theta_thresh_degrees
-
+            # checking previous state  
+            self.pre_state = None 
+            
             super(compPoses, self).__init__(
                 sub_dict = sub_dict,
                 pub_dict = pub_dict,
@@ -52,6 +54,7 @@ class compPoses(BaseCalculator):
                 temp[topic] = BaseCalculator.MSG[topic]
         
         flag_test_ready = True
+        # if subscribered topic not publish yet, test is not ready
         for value in temp.values():
             if value == None:
                 flag_test_ready = False
@@ -80,4 +83,9 @@ class compPoses(BaseCalculator):
             else:
                 pub_msg.data = False
 
-            self.PubDiag[self._pub_topic].publish(pub_msg)
+            if self.pub_only_state_change(pre_state = self.pre_state, \
+                current_state = pub_msg.data, \
+                pub_topic = self._pub_topic, \
+                pub_msg = pub_msg, \
+                log = "{}: {}".format(rospy.get_name(), pub_msg.data)):
+                self.pre_state = pub_msg.data

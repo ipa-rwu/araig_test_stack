@@ -39,36 +39,31 @@ class diffTime(BaseCalculator):
 
         with BaseCalculator.LOCK[self._sub_topic_start]:
             temp[self._sub_topic_start] = BaseCalculator.MSG[self._sub_topic_start]
-            if temp[self._sub_topic_start] != None and \
-                self._prestate_start == False:
-                
-                if self._prestate_start == False and \
-                    temp[self._sub_topic_start].data == True:
-                    self._timestamp_start = temp[self._sub_topic_start].header.stamp
-                    rospy.loginfo("{}: Started".format(rospy.get_name()))
-                
-                self._prestate_start = temp[self._sub_topic_start].data
+        
+        if temp[self._sub_topic_start] != None:    
+            if self._prestate_start == False and \
+                temp[self._sub_topic_start].data == True:
+                self._timestamp_start = temp[self._sub_topic_start].header.stamp
+                rospy.loginfo("{}: Started".format(rospy.get_name()))
+            
+            self._prestate_start = temp[self._sub_topic_start].data
 
         with BaseCalculator.LOCK[self._sub_topic_stop]:    
             temp[self._sub_topic_stop] = BaseCalculator.MSG[self._sub_topic_stop]
-            if temp[self._sub_topic_stop] != None and \
-                self._prestate_stop == False:     
 
-                if temp[self._sub_topic_start] != None and \
-                    temp[self._sub_topic_start].data == True and \
-                    temp[self._sub_topic_stop].data == True:
-                    
-                    self._timestamp_stop = temp[self._sub_topic_stop].header.stamp
-                    rospy.loginfo("{}: Stopped".format(rospy.get_name()))
+        if temp[self._sub_topic_stop] != None and temp[self._sub_topic_start].data == True:
+            if self._prestate_stop == False and \
+                temp[self._sub_topic_stop].data == True:
                 
-                self._prestate_stop = temp[self._sub_topic_stop].data
+                self._timestamp_stop = temp[self._sub_topic_stop].header.stamp
+                rospy.loginfo("{}: Stopped".format(rospy.get_name()))
             
-        if self._timestamp_start != None and self._timestamp_stop != None and self._flag_get_result == False:
-            stopwatch = self._timestamp_stop - self._timestamp_start
+                stopwatch = self._timestamp_stop - self._timestamp_start
+                pub_msg = self.PubDict[self._pub_topic]()
+                duration = float(stopwatch.secs + float(stopwatch.nsecs*(1e-9)))
+                pub_msg.data = duration
 
-            pub_msg = self.PubDict[self._pub_topic]()
-            duration = float(stopwatch.secs + float(stopwatch.nsecs*(1e-9)))
-            pub_msg.data = duration
-            self.PubDiag[self._pub_topic].publish(pub_msg)
-            rospy.loginfo("{}: Duration: {}".format(rospy.get_name(), duration))
-            self._flag_get_result = True
+                self.PubDiag[self._pub_topic].publish(pub_msg)
+                rospy.loginfo("{}: Duration: {}".format(rospy.get_name(), duration))
+
+            self._prestate_stop = temp[self._sub_topic_stop].data
