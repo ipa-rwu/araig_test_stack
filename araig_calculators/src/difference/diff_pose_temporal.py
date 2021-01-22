@@ -3,10 +3,9 @@ from multipledispatch import dispatch as Override
 import rospy
 import math
 from scipy.spatial.transform import Rotation
-from std_msgs.msg import Float64
 from geometry_msgs.msg import PoseStamped
 
-from araig_msgs.msg import BoolStamped
+from araig_msgs.msg import BoolStamped, Float64Stamped
 from base_classes.base_calculator import BaseCalculator
 
 """Compare data from one topics, wait for one signal, output 2 topics, data_type: Float64
@@ -24,8 +23,8 @@ class diffPoseTemporal(BaseCalculator):
                 sub_dict = {_sub_topic_start: BoolStamped,
                             _sub_topic_stop: BoolStamped,
                             _sub_topic_pose: PoseStamped},
-                pub_dict = {_pub_topic_angular: Float64,
-                    _pub_topic_position: Float64},
+                pub_dict = {_pub_topic_angular: Float64Stamped,
+                    _pub_topic_position: Float64Stamped},
                 rate = None):
 
             self._prestate_start = False
@@ -53,6 +52,8 @@ class diffPoseTemporal(BaseCalculator):
     @Override()
     def calculate(self):
         temp = {}
+        pub_msg_position = self.PubDict[self._pub_topic_position]()
+        pub_msg_angular = self.PubDict[self._pub_topic_angular]()
 
         with BaseCalculator.LOCK[self._sub_topic_start] and BaseCalculator.LOCK[self._sub_topic_pose]:  
             temp[self._sub_topic_start] = BaseCalculator.MSG[self._sub_topic_start]
@@ -61,8 +62,12 @@ class diffPoseTemporal(BaseCalculator):
         if temp[self._sub_topic_start] != None:
             if self._prestate_start == False and \
                 temp[self._sub_topic_start].data == True:
-                self._posestamp_start = temp[self._sub_topic_pose]
-                rospy.loginfo(rospy.get_name() + ": Started")
+                if temp[self._sub_topic_pose] == None:
+                    rospy.logwarn(rospy.get_name() + ": Got Start Signal but didn't get object pose, please resent start signal")
+                    temp[self._sub_topic_start].data = False
+                else:
+                    self._posestamp_start = temp[self._sub_topic_pose]
+                    rospy.loginfo(rospy.get_name() + ": Started")
 
             self._prestate_start = temp[self._sub_topic_start].data
         
@@ -81,12 +86,15 @@ class diffPoseTemporal(BaseCalculator):
                 delta_x = abs(self._posestamp_start.pose.position.x - self._posestamp_stop.pose.position.x)
                 delta_y = abs(self._posestamp_start.pose.position.y - self._posestamp_stop.pose.position.y)
 
-                self._pub_msg_angular = abs(self.get_yaw_from_quaternion(self._posestamp_start.pose.orientation) - \
+                pub_msg_angular.data = abs(self.get_yaw_from_quaternion(self._posestamp_start.pose.orientation) - \
                                     self.get_yaw_from_quaternion(self._posestamp_stop.pose.orientation) )
-                self._pub_msg_position = math.sqrt((delta_x*delta_x) + (delta_y*delta_y))
+                pub_msg_angular.header.stamp = rospy.Time.now()
 
-                self.PubDiag[self._pub_topic_angular].publish(self._pub_msg_angular)
-                self.PubDiag[self._pub_topic_position].publish(self._pub_msg_position)
-                rospy.loginfo("{}: Delta angle is {}".format(rospy.get_name(), self._pub_msg_angular))
-                rospy.loginfo("{}: Delta position is {}".format(rospy.get_name(), self._pub_msg_position))
+                pub_msg_position.data = math.sqrt((delta_x*delta_x) + (delta_y*delta_y))
+                pub_msg_position.header.stamp = rospy.Time.now()
+
+                self.PubDiag[self._pub_topic_angular].publish(pub_msg_angular)
+                self.PubDiag[self._pub_topic_position].publish(pub_msg_position)
+                rospy.loginfo("{}: Delta angle is {}".format(rospy.get_name(), pub_msg_angular.data))
+                rospy.loginfo("{}: Delta position is {}".format(rospy.get_name(), pub_msg_position.data))
             self._prestate_stop = temp[self._sub_topic_stop].data

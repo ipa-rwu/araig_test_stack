@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 from multipledispatch import dispatch as Override
 import rospy
-from std_msgs.msg import Float64
 
-from araig_msgs.msg import BoolStamped
+from araig_msgs.msg import BoolStamped, Float64Stamped
 from base_classes.base_calculator import BaseCalculator
 
 '''Compare data from two topics, output data_type: Float64Stamped
@@ -17,7 +16,7 @@ class diffTime(BaseCalculator):
     def __init__(self,
         sub_dict = {_sub_topic_start: BoolStamped,
                     _sub_topic_stop: BoolStamped}, 
-        pub_dict = {_pub_topic: Float64},
+        pub_dict = {_pub_topic: Float64Stamped},
         rate = None):
 
             self._prestate_start = False
@@ -62,6 +61,7 @@ class diffTime(BaseCalculator):
                 pub_msg = self.PubDict[self._pub_topic]()
                 duration = float(stopwatch.secs + float(stopwatch.nsecs*(1e-9)))
                 pub_msg.data = duration
+                pub_msg.header.stamp = rospy.Time.now()
 
                 self.PubDiag[self._pub_topic].publish(pub_msg)
                 rospy.loginfo("{}: Duration: {}".format(rospy.get_name(), duration))
