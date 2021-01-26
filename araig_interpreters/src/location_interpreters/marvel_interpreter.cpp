@@ -11,7 +11,7 @@ void MarvelInterpreter::hedgeCallback(const marvelmind_nav::hedge_pos_aConstPtr&
   {
     // If not, then create a publisher for it and add to map
     ROS_INFO_STREAM(ros::this_node::getName() << " Got new address, adding to map : " <<addr);
-    ros::Publisher pub = nh.advertise<geometry_msgs::PoseStamped>(topic_base + std::to_string(addr), 1000);
+    ros::Publisher pub = nh.advertise<geometry_msgs::PoseStamped>(topic_base + std::to_string(addr), 1000, true);
     address_publisher_.insert(std::pair<int, ros::Publisher>(addr, pub));
     checkMap();
   }
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
   interpreter.sub_beacon_pos_ = nh.subscribe<marvelmind_nav::hedge_pos_a>("/hedge_pos_a", 10,
                                              boost::bind( &MarvelInterpreter::hedgeCallback, &interpreter, _1, nh));
 
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(100);
   while (ros::ok())
   {
     ros::spinOnce();
