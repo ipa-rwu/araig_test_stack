@@ -1,0 +1,14 @@
+<launch>
+
+    <rosparam command="load" file="$(find araig_interpreters)/tests/config/test_velocity_interpreter.yaml"/>
+
+    <node pkg="araig_interpreters" type="velocity_interpreter" name="velocity_interpreter" output="screen">
+        <remap from="/start" to="/test/start"/>
+        <remap from="/stop" to="/test/stop"/>
+        <remap from="/velocity" to="/test/cmd_vel"/>    
+    </node>
+
+    <test test-name="test_velocity_interpreter" pkg="araig_interpreters" type="test_velocity_interpreter.py">
+    </test>
+
+</launch>
