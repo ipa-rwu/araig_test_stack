@@ -6,7 +6,6 @@
 
 import rospy
 from  command_interpreters.velocity_interpreter_class import VelocityInterpreterClass
-from geometry_msgs.msg import Twist
 
 # "/data/interpreter/velocity" remap to /cmd_vel
 if __name__ == "__main__":
@@ -14,15 +13,9 @@ if __name__ == "__main__":
     module_name = "/interpreters"
     ns = module_name + rospy.get_name()
 
-    # define pub_msg
-    pub_msg = {}
-    msg = Twist()
-    pub_msg["/stop"] = Twist()
-
-    msg.linear.x = rospy.get_param(ns + '/max_vel')    
-    pub_msg["/start"] = msg
+    max_linear_x = rospy.get_param(ns + '/max_vel')    
 
     config_rate = ns + "/rate"
     rate = rospy.get_param(config_rate)
     
-    interpreter = VelocityInterpreterClass(pub_msg = pub_msg, loop_rate_hz = rate)
+    interpreter = VelocityInterpreterClass(max_linear_x = max_linear_x, loop_rate_hz = rate)
