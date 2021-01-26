@@ -3,7 +3,7 @@
 	
     <rosparam command="load" file="$(find araig_interpreters)/config/test_interpreters.yaml"/>
 
-    <node pkg="araig_interpreters" type="goal_pose_tf_publisher.py" name="goal_pose_tf_publisher" output="screen" />
+    <node pkg="araig_interpreters" type="goal_pose_tf_broadcaster" name="goal_tf2_broadcaster" output="screen" />
 
     <node pkg="araig_interpreters" type="goal_interpreter" name="goal_interpreter" output="screen">
         <remap from="/goal" to="/data/interpreter/goal"/>
