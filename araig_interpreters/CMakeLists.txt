@@ -40,7 +40,7 @@ add_dependencies(marvel_location_interpreter ${catkin_EXPORTED_TARGETS})
 install(TARGETS marvel_location_interpreter DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 catkin_install_python(PROGRAMS
-   scripts/pose_tf_broadcaster
+   scripts/goal_pose_tf_broadcaster
    scripts/goal_interpreter
    scripts/velocity_interpreter
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
