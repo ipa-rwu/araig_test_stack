@@ -33,8 +33,14 @@ class GoalInterpreterClass():
 
         if self.action_name != "None":
             rospy.loginfo(rospy.get_name() +": will try to action server: {}...".format(self.action_name))
-            self.wait_for_action = wait_for_action
-            self.action_init()
+            try_times = 0
+            while self.action_init(wait_for_action) == False and try_times < 5:
+                rospy.logwarn(rospy.get_name() +": cannot connected to action server: {}, will try again".format(self.action_name))
+                try_times += 1
+                rospy.sleep(1)
+            if try_times == 5:
+                rospy.logerr(rospy.get_name() +": cannot connected to action server: {}, shutdown this node".format(self.action_name))
+                rospy.signal_shutdown()
         else:
             rospy.logwarn(rospy.get_name() +": will not connect to action server")
         self.pub_init()
@@ -49,13 +55,13 @@ class GoalInterpreterClass():
         
         self.main()
                       
-    def action_init(self):
+    def action_init(self, wait_time):
         self.action_client = actionlib.SimpleActionClient(self.action_name,MoveBaseAction)
-        if self.action_client.wait_for_server(rospy.Duration(self.wait_for_action)) == True:
+        if self.action_client.wait_for_server(rospy.Duration(wait_time)) == True:
             rospy.loginfo(rospy.get_name() +": connected to action server: {}...".format(self.action_name))
+            return True
         else:
-            rospy.logerr(rospy.get_name() +": can not connected to action server: {}...".format(self.action_name))
-            rospy.signal_shutdown(rospy.get_name() +": Action server not available!")
+            return False
 
     def callback_start(self, msg, args):
         with GoalInterpreterClass.LOCK[args]:
