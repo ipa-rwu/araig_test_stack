@@ -45,3 +45,16 @@ catkin_install_python(PROGRAMS
    scripts/velocity_interpreter
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
+
+if (CATKIN_ENABLE_TESTING)
+  find_package(roslint REQUIRED)
+  roslint_python()
+  roslint_add_test()
+
+  find_package(rostest REQUIRED)
+  include_directories(include ${catkin_INCLUDE_DIRS})
+
+  add_rostest(tests/test_velocity_interpreter.test)
+  add_rostest(tests/test_goal_interpreter.test)
+  add_rostest(tests/test_goal_interpreter_action.test)
+endif()
