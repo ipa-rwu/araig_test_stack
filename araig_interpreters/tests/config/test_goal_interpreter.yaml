@@ -1,0 +1,12 @@
+interpreters:
+  goal_interpreter: # node name 
+    goal:
+      frame_id: map
+      position:
+        x: 2.4
+        y: -0.04
+        z: 0
+      yaw: 1.57 # degree
+    goal_action: None # if "None", won't use action
+    wait_action: 5
+    rate: 100

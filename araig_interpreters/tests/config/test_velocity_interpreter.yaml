@@ -1,0 +1,4 @@
+interpreters:
+  velocity_interpreter: # node name 
+    max_vel: 5
+    rate: 100
