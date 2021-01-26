@@ -65,7 +65,8 @@ class GoalInterpreterClass():
         self.pub_diag = rospy.Publisher(
                 self.pub_topic, 
                 PoseStamped, 
-                queue_size=10 
+                queue_size=10,
+                latch = True 
             )
         self.goal_msg = PoseStamped()
         self.goal_msg = self.action_goal.target_pose
@@ -94,37 +95,38 @@ class GoalInterpreterClass():
         )
 
     def pub_goal(self):
-        while not rospy.is_shutdown():
-            self.pub_diag.publish(self.goal_msg)
-            self.rate.sleep()
+        self.pub_diag.publish(self.goal_msg)
+        rospy.loginfo(rospy.get_name() + ": pub ")
+        return True
             
     def call_action(self):
         # only call action once
-        if self.flag_send_goal == False:
-            self.action_client.send_goal(self.action_goal)
+        self.action_client.send_goal(self.action_goal)
+        rospy.loginfo(rospy.get_name() + ": send goal to {}".format(self.action_name))
 
-            wait = self.action_client.wait_for_result()
-            
-            if not wait:
-                rospy.logerr(rospy.get_name() + ": didn't get response from {}".format(self.action_name))
-                return False
-            else:
-                result = self.action_client.get_result()
-                if result:
-                    self.flag_send_goal = True
-                    return True
+        wait = self.action_client.wait_for_result()
+        
+        if not wait:
+            rospy.logerr(rospy.get_name() + ": didn't get response from {}".format(self.action_name))
+            return False
+        else:
+            result = self.action_client.get_result()
+            if result:
+                rospy.loginfo(rospy.get_name() + ": get response from {}".format(self.action_name))
+                return True
         
     def main(self):
+        pre_signal = False
         try:
             loop = asyncio.get_event_loop()
             while not rospy.is_shutdown():
-                if self.temp_sub[self.sub_topic] != True:
-                    with GoalInterpreterClass.LOCK[self.sub_topic]:
-                        self.temp_sub[self.sub_topic]= GoalInterpreterClass.DATA[self.sub_topic]
+                with GoalInterpreterClass.LOCK[self.sub_topic]:
+                    self.temp_sub[self.sub_topic]= GoalInterpreterClass.DATA[self.sub_topic]
                 
-                else:
+                if pre_signal == False and self.temp_sub[self.sub_topic] == True:
                     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
                         loop.run_until_complete(self.main_pub_and_wait_action(loop, pool))
+                pre_signal = self.temp_sub[self.sub_topic]
                 self.rate.sleep()
         except rospy.ROSException:
             loop.close()
