@@ -16,7 +16,7 @@ if __name__ == '__main__':
         static_transformStamped = geometry_msgs.msg.TransformStamped()
         static_transformStamped.header.stamp = rospy.Time.now()
         static_transformStamped.header.frame_id = rospy.get_param(config_goal + '/frame_id')
-        static_transformStamped.child_frame_id = "goal"
+        static_transformStamped.child_frame_id = rospy.get_param(config_goal + '/child_frame_id')
 
         static_transformStamped.transform.translation.x = rospy.get_param(config_goal + '/position/x')
         static_transformStamped.transform.translation.y = rospy.get_param(config_goal + '/position/y')
