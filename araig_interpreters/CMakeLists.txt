@@ -57,4 +57,5 @@ if (CATKIN_ENABLE_TESTING)
   add_rostest(tests/test_velocity_interpreter.test)
   add_rostest(tests/test_goal_interpreter.test)
   add_rostest(tests/test_goal_interpreter_action.test)
+
 endif()

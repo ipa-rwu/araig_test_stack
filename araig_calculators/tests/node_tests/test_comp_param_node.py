@@ -25,27 +25,35 @@ class TestCompParam(unittest.TestCase):
         self.param = rospy.get_param("/calculators/test_comp_param_node/param")
         self.tolerance = rospy.get_param("/calculators/test_comp_param_node/tolerance")
         self.result = None
+        self.msg_seq = 0
 
     def test_expected(self):
         pub_msg = Float64()
         pub_msg.data = self.param
-        self.pub_1.publish(pub_msg)
-
         while self.result is None:
-            time.sleep(0.1)
+            self.pub_1.publish(pub_msg)
         self.assertTrue(self.result, msg='Compare without Tolerance Failed')
+        self.assertEqual(self.msg_seq, 1, 'msg published {} times'.format(self.msg_seq))
+
+        pub_msg = Float64()
+        pub_msg.data = self.param + self.tolerance - 1
+        self.result = None
+        while self.result is None:
+            self.pub_1.publish(pub_msg)
+        self.assertFalse(self.result, msg='Compare with Tolerance Failed')
+        self.assertEqual(self.msg_seq, 2, 'msg published {} times'.format(self.msg_seq))
 
         pub_msg = Float64()
         pub_msg.data = self.param + self.tolerance - 0.001
-        self.pub_1.publish(pub_msg)
-
         self.result = None
         while self.result is None:
-            time.sleep(0.1)
+            self.pub_1.publish(pub_msg)
         self.assertTrue(self.result, msg='Compare with Tolerance Failed')
+        self.assertEqual(self.msg_seq, 3, 'msg published {} times'.format(self.msg_seq))
 
     def callback_1(self, msg):
         self.result = msg.data
+        self.msg_seq = msg.header.seq
 
 if __name__ == '__main__':
     pkg = 'araig_calculators'

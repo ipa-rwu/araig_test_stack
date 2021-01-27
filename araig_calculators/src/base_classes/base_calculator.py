@@ -52,7 +52,7 @@ class BaseCalculator(object):
 
         self.pub_init()
         self.sub_init()
-
+        
         # init FLAG and LOCK
         for topic in self.SubDict.keys():
             BaseCalculator.MSG[topic] = None
@@ -86,6 +86,22 @@ class BaseCalculator(object):
     #  should be inherit
     def calculate(self):
         pass
+    
+    def pub_only_state_change(self, pre_state, current_state, pub_topic, pub_msg, log = None):
+        # first time get msg
+        if pre_state == None:
+            self.PubDiag[pub_topic].publish(pub_msg)
+            pre_state = current_state
+            if log != None:
+                rospy.loginfo(log)
+            return True
+        elif pre_state != current_state:
+            self.PubDiag[pub_topic].publish(pub_msg)
+            pre_state = current_state
+            if log != None:
+                rospy.loginfo(log)
+            return True
+        return True
 
     def main(self):
         try:
