@@ -23,7 +23,6 @@ class Test1(TestBase):
         
         extend_subscribers_dict = {
             "robot_has_max_vel"  : "/signal/calc/robot_has_max_vel",
-            "emergency"         : "/signal/robot/emergency"
         }
         extend_publishers_dict = {
             "stop_robot"     : "/signal/runner/stop_robot"
@@ -44,7 +43,7 @@ class Test1(TestBase):
                 self._publishers["start_robot"].publish(self.buildNewBoolStamped(True))
                 break
                 
-        # wait until robot reaches max velocity or robot emits emergency
+        # wait until robot reaches max velocity
         while not rospy.is_shutdown():
             self._rate.sleep()
 
@@ -54,12 +53,6 @@ class Test1(TestBase):
                 # Stop robot
                 self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
                 self._publishers["stop_robot"].publish(self.buildNewBoolStamped(True))
-                break
-
-            # If robot emits emergency
-            if self.getSafeFlag("emergency"):
-                rospy.loginfo(rospy.get_name() + ": Robot has emitted emergency, assuming it stops now")
-                self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
                 break
 
             # If interrupted
@@ -75,7 +68,7 @@ class Test1(TestBase):
             self._rate.sleep()
 
             if self.getSafeFlag("robot_has_stopped"):
-                rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test completed!")
+                rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test succeeded and completed!")
                 # Set test succeeded & test completed true
                 self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
                 self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
