@@ -9,6 +9,8 @@ class RosbaggerClass(object):
     def __init__(self,  start_topic = "/start",
                         stop_topic = "/stop",
                         stop_offset = 2,
+                        blacklist_topics = None,
+                        whitelist_topics = None,
                         filename ="test"):
         self.filename_ = filename 
         self._stop_offset = stop_offset
@@ -21,23 +23,9 @@ class RosbaggerClass(object):
         rospy.Subscriber(start_topic, BoolStamped, self.start_callback)
         rospy.Subscriber(stop_topic, BoolStamped, self.stop_callback)
 
-        list_of_topics = rospy.get_published_topics()
-        list_of_topics.sort()
+        self.blacklist_topics = blacklist_topics
+        self.whitelist_topics = whitelist_topics
 
-        self._topics_string = ""
-        for topic, msg in list_of_topics:
-            if "/image_raw" in topic:
-                if (not "/image_raw/compressed" in topic) or ("compressedDepth" in topic) :
-                    rospy.loginfo(rospy.get_name() + ": Ignoring topic - {}".format(topic))
-                    continue
-                else:
-                    self._topics_string = self._topics_string + topic + " "
-            else:
-                self._topics_string = self._topics_string + topic + " "
-
-        # Prepare command
-        self._command = "rosbag record -o " + self.filename_ + " " + self._topics_string
-        # rospy.loginfo(rospy.get_name() + ": Ready to execute: " + self._command)
         self.main_loop()
         rospy.spin()
 
@@ -61,6 +49,25 @@ class RosbaggerClass(object):
             self._rate.sleep()
             with self.stop_mutex_:
                 start = self._start_recording
+    
+        # get published topic
+        list_of_topics = rospy.get_published_topics()
+        list_of_topics.sort()
+        _topics_string = ""
+        for topic, msg in list_of_topics:
+            for black_topic in self.blacklist_topics:
+                if topic == black_topic:
+                    topic = ""
+            for white_topic in self.whitelist_topics:
+                if topic == white_topic:
+                    topic = ""
+            _topics_string = _topics_string + topic + " "
+        
+        for white_topic in self.whitelist_topics:
+            _topics_string = _topics_string + white_topic + " "
+            
+        # Prepare command
+        self._command = "rosbag record -o " + self.filename_ + " " + _topics_string
         
         rospy.loginfo(rospy.get_name() + ": Starting recording now!")
             
