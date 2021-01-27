@@ -1,0 +1,11 @@
+ calculators:
+  file_prefix: "test" # All calculators will prefix this to filenames that they write to.
+ 
+  test_bagger:
+    dest_dir: "/home/rachel/ARAIG/bags" # Full path required. Saves bags here.
+    stop_offset: 2 # Wait these many seconds before killing
+    blacklist:
+      - /rosout
+    whitelist:
+      - /signal/runner/start_robot # topic already published before
+      - /signal/runner/test_completed # topic not published yet

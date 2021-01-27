@@ -11,6 +11,8 @@ if __name__ == "__main__":
     STOP_OFFSET_PARAM_NAME = "/stop_offset"
     FILENAME_PARAM_NAME = "/file_prefix"
     DEST_DIR_PARAM_NAME = "/dest_dir"
+    TOPIC_BLACKLIST_PARAM_NAME = "/blacklist"
+    TOPIC_WHITELIST_PARAM_NAME = "/whitelist"
     STOP_TOPIC= "/stop"
     START_TOPIC= "/start"
 
@@ -35,6 +37,18 @@ if __name__ == "__main__":
         rospy.logerr("{} param not set!!".format(ns + DEST_DIR_PARAM_NAME))
         sys.exit()
 
+    if rospy.has_param(ns + TOPIC_BLACKLIST_PARAM_NAME):
+        blacklist_topics = rospy.get_param(ns + TOPIC_BLACKLIST_PARAM_NAME)
+    else:
+        rospy.logerr("{} param not set!!".format(ns + TOPIC_BLACKLIST_PARAM_NAME))
+        sys.exit()
+
+    if rospy.has_param(ns + TOPIC_BLACKLIST_PARAM_NAME):
+        whitelist_topicss = rospy.get_param(ns + TOPIC_WHITELIST_PARAM_NAME)
+    else:
+        rospy.logerr("{} param not set!!".format(ns + TOPIC_WHITELIST_PARAM_NAME))
+        sys.exit()
+
     if not os.path.exists(dest_dir):
         rospy.logwarn(rospy.get_name() + ": " + dest_dir + " did not exist, trying to create it. Verify it exists before continuing.")
         os.makedirs(dest_dir)
@@ -42,4 +56,6 @@ if __name__ == "__main__":
     bagger = RosbaggerClass(start_topic = START_TOPIC,
                             stop_topic = STOP_TOPIC,
                             stop_offset = stop_offset,
+                            blacklist_topics = blacklist_topics,
+                            whitelist_topics = whitelist_topicss,
                             filename= dest_dir + "/" + filename)
