@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from base.base_runner import TestBase
+import enum
 
 """"
 BASE INTERFACES
@@ -22,6 +23,12 @@ self._output_interface = {
 }
 """
 
+class State(enum.Enum):
+    wait = 1
+    start_test = 2
+    robot_has_max_vel = 3
+    complete_test = 4
+
 class Test1(TestBase):
     def __init__(self, rate):
         
@@ -32,78 +39,67 @@ class Test1(TestBase):
             "stop_robot"           : "/signal/runner/stop_robot",
         }
 
+        self.pre_state = None
+        self.current_state = State.wait
+
         super(Test1, self).__init__(extend_subscribers_dict, extend_publishers_dict, rate = rate)
-        
-        while not rospy.is_shutdown():
-            self.main()
 
     def main(self):
-        rospy.loginfo(rospy.get_name() + ": Waiting to start...")
-
-        # Wait until start signal received
-        while not rospy.is_shutdown():
-            self._rate.sleep()
-            if self.getSafeFlag("start_test"):
-                self.startRecordingAndWait(3)
-                rospy.loginfo(rospy.get_name() + ": Starting robot.")
-                self._publishers["start_robot"].publish(self.buildNewBoolStamped(True))
-                break
-                
-        # wait until robot reaches max velocity
-        while not rospy.is_shutdown():
-            self._rate.sleep()
-
-            # If robot has reached max velocity
-            if self.getSafeFlag("robot_has_max_vel"):
-                rospy.loginfo(rospy.get_name() + ": Robot has reached max veloctiy, stopping it now.")
-                # Stop robot
-                self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-                self._publishers["stop_robot"].publish(self.buildNewBoolStamped(True))
-                break
-
-            # If interrupted
-            if self.getSafeFlag("interrupt_test"):
-                rospy.logwarn(rospy.get_name() + ": Interrupted!! Exiting")
-                self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-                self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
-                self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-                return
-
-        # Wait until robot actually stops or user hits interrupt
-        while not rospy.is_shutdown():
-            self._rate.sleep()
-
-            if self.getSafeFlag("robot_has_stopped"):
-                rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test succeeded and completed!")
-                # Set test succeeded & test completed true
-                self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
-                self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-                # !!! ui should publish once get test_completed, but for now runner will pub
-                self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-                break
-
-            # If interrupted
-            if self.getSafeFlag("interrupt_test"):
-                rospy.logwarn(rospy.get_name() + ": Interrupted!! Exiting")
-                self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-                self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
-                self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-                # !!! ui should publish once get test_completed, but for now runner will pub
-                self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-                return
+        if self.pre_state == None and self.current_state == State.wait:
+            rospy.loginfo(rospy.get_name() + ": Waiting to start...")
+            self.pre_state = State.wait
         
-        while not rospy.is_shutdown():
-            self._rate.sleep()    
-            if self.getSafeFlag("reset_test"):
-                rospy.logwarn(rospy.get_name() + ": reset test")
-                self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-                self._publishers["stop_robot"].publish(self.buildNewBoolStamped(False))
-                self._publishers["test_failed"].publish(self.buildNewBoolStamped(False))
-                self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(False))
-                self._publishers["test_completed"].publish(self.buildNewBoolStamped(False))
-                 # !!! ui should publish reset_test to False after pub True, reset signal is event
-                self._publishers["reset_test"].publish(self.buildNewBoolStamped(False))
-                return
+        # Wait until /signal/ui/start_test received
+        if self.current_state == State.wait and self.getSafeFlag("start_test"):
+            self.startRecordingAndWait(3)
+            rospy.loginfo(rospy.get_name() + ": Starting robot.")
+            self._publishers["start_robot"].publish(self.buildNewBoolStamped(True))
+            self.current_state = State.start_test
+            self.pre_state = State.start_test
+        
+        # If robot has reached max velocity
+        if self.current_state == State.start_test and self.getSafeFlag("robot_has_max_vel"):
+            rospy.loginfo(rospy.get_name() + ": Robot has reached max velocity, stopping it now.")
+            # Stop robot
+            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
+            self._publishers["stop_robot"].publish(self.buildNewBoolStamped(True))
+            self.current_state = State.robot_has_max_vel
+
+        #  Wait until robot actually stops
+        if self.current_state == State.robot_has_max_vel and self.getSafeFlag("robot_has_stopped"):
+            rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test succeeded and completed!")
+            # Set test succeeded & test completed true
+            self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
+            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
+            self.current_state = State.complete_test
+
+        # If interrupted
+        if self.getSafeFlag("interrupt_test") and self.pre_state == State.start_test:
+            rospy.logwarn(rospy.get_name() + ": Interrupted!!")
+            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
+            self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
+            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
+            self.current_state = State.complete_test
+
+        # if test complete, wait for 3s, then enable reset 
+        if self.current_state == State.complete_test and self.pre_state == State.start_test:
+            # !!! ui should set start_test to False once get test_completed, but for now runner will pub
+            self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
+            rospy.sleep(3)
+            rospy.logwarn(rospy.get_name() + ": waiting for user to give reset signal")
+            self.current_state = State.wait
+            self.pre_state = State.complete_test
+
+        if self.current_state == State.wait and self.pre_state == State.complete_test and self.getSafeFlag("reset_test"):
+            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
+            self._publishers["stop_robot"].publish(self.buildNewBoolStamped(False))
+            self._publishers["test_failed"].publish(self.buildNewBoolStamped(False))
+            self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(False))
+            self._publishers["test_completed"].publish(self.buildNewBoolStamped(False))
+            # !!! ui should set reset_test to False after set to True, reset signal is an event
+            self._publishers["reset_test"].publish(self.buildNewBoolStamped(False))
+            rospy.logwarn(rospy.get_name() + ": user has reset test")
+            self.pre_state = None
 
 if __name__ == "__main__":
     try:
