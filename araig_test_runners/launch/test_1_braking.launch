@@ -1,5 +1,4 @@
-<launch>         
-
-    <node pkg="araig_test_runners" type="test_1_braking" name="test_1_braking" output="screen"/>
-
+<launch>
+  <!-- runner -->
+  <node pkg="araig_test_runners" type="test_1_braking" name="test_1_braking" output="screen"/>
 </launch>
