@@ -40,7 +40,14 @@ class TestBase(object):
         # pub_init
         for key in self._output_interface:
             self._publishers[key] = rospy.Publisher(self._output_interface[key], BoolStamped,queue_size=10, latch=True)
-   
+
+        try:
+            while not rospy.is_shutdown():
+                self.main() 
+                self._rate.sleep()
+        except rospy.ROSException:
+            pass
+
     def setSafeFlag(self, key, value):
         if not key in self._input_interface.keys():
             rospy.logerr(rospy.get_name() + ": Retrieving a key that does not exist!: {}".format(key))
@@ -67,3 +74,6 @@ class TestBase(object):
     def startRecordingAndWait(self, duration=3):
         rospy.loginfo(rospy.get_name() + ": waiting for {}s, then start recoding ...".format(duration))
         rospy.sleep(duration)
+    
+    def main(self):
+        pass
