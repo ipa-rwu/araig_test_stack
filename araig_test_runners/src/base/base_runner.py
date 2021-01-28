@@ -13,15 +13,17 @@ class TestBase(object):
         self._input_interface = {
             "robot_has_stopped"    : "/signal/calc/robot_has_stopped",
             "start_test"           : "/signal/ui/start_test",
-            "interrupt_test"       : "/signal/ui/interrupt_test"
+            "interrupt_test"       : "/signal/ui/interrupt_test",
+            "reset_test"           : "/signal/ui/reset_test"
         }
         self._input_interface.update(sub_dict)
         self._output_interface = {
-            "start_robot"     : "/signal/runner/start_robot",
-            "test_completed"  : "/signal/runner/test_completed",
-            "test_failed"     : "/signal/runner/test_failed",
-            "start_recording" : "/signal/runner/start_recording",
-            "test_succeeded"  : "/signal/runner/test_succeeded"
+            "start_robot"           : "/signal/runner/start_robot",
+            "test_completed"        : "/signal/runner/test_completed",
+            "test_failed"           : "/signal/runner/test_failed",
+            "test_succeeded"        : "/signal/runner/test_succeeded",
+            "start_test"            : "/signal/ui/start_test",
+            "reset_test"            : "/signal/ui/reset_test"
         }
         self._output_interface.update(pub_dict)
 
@@ -63,6 +65,5 @@ class TestBase(object):
         self.setSafeFlag(key,msg.data)
 
     def startRecordingAndWait(self, duration=3):
-        self._publishers["start_recording"].publish(self.buildNewBoolStamped(True))
-        rospy.loginfo(rospy.get_name() + ": Sent record start signal, waiting for {}s...".format(duration))
+        rospy.loginfo(rospy.get_name() + ": waiting for {}s, then start recoding ...".format(duration))
         rospy.sleep(duration)
