@@ -1,0 +1,4 @@
+<launch>         
+  <!-- runner -->
+  <node pkg="araig_test_runners" type="test_1_emergency" name="test_1_emergency" output="screen"/>
+</launch>
