@@ -26,8 +26,11 @@ class RosbaggerClass(object):
         self.blacklist_topics = blacklist_topics
         self.whitelist_topics = whitelist_topics
 
-        self.main_loop()
-        rospy.spin()
+        try:
+            while not rospy.is_shutdown():
+                self.main_loop()
+        except rospy.ROSException:
+            pass  
 
     def __del__(self):
         rospy.loginfo(rospy.get_name() + ": Destructor killing process {}".format(self._rosbag_proc))
@@ -42,37 +45,38 @@ class RosbaggerClass(object):
                 self._start_recording = msg.data
 
     def main_loop(self):
-        rospy.loginfo(rospy.get_name() + ": Waiting for start signal...")
+        rospy.logwarn(rospy.get_name() + ": Waiting for start signal...")
         # Wait for start signal
         start = False
+        stop = False
         while not start and not rospy.is_shutdown():
             self._rate.sleep()
             with self.stop_mutex_:
                 start = self._start_recording
     
-        # get published topic
-        list_of_topics = rospy.get_published_topics()
-        list_of_topics.sort()
-        _topics_string = ""
-        for topic, msg in list_of_topics:
-            for black_topic in self.blacklist_topics:
-                if topic == black_topic:
-                    topic = ""
+         # get published topic
+        if start == True and stop == False:
+            list_of_topics = rospy.get_published_topics()
+            list_of_topics.sort()
+            _topics_string = ""
+            for topic, msg in list_of_topics:
+                for black_topic in self.blacklist_topics:
+                    if topic == black_topic:
+                        topic = ""
+                for white_topic in self.whitelist_topics:
+                    if topic == white_topic:
+                        topic = ""
+                _topics_string = _topics_string + topic + " "
+            
             for white_topic in self.whitelist_topics:
-                if topic == white_topic:
-                    topic = ""
-            _topics_string = _topics_string + topic + " "
-        
-        for white_topic in self.whitelist_topics:
-            _topics_string = _topics_string + white_topic + " "
-            
-        # Prepare command
-        self._command = "rosbag record -o " + self.filename_ + " " + _topics_string
-        
-        rospy.loginfo(rospy.get_name() + ": Starting recording now!")
-            
-        command = shlex.split(self._command)
-        self._rosbag_proc = subprocess.Popen(command)
+                _topics_string = _topics_string + white_topic + " "
+                
+            # Prepare command
+            self._command = "rosbag record -o " + self.filename_ + " " + _topics_string
+
+            command = shlex.split(self._command)
+            self._rosbag_proc = subprocess.Popen(command)
+            rospy.logwarn(rospy.get_name() + ": Starting recording now, process{}!".format(self._rosbag_proc))
 
         # Wait for stop signal
         with self.stop_mutex_:
@@ -86,8 +90,8 @@ class RosbaggerClass(object):
                 self._rosbag_proc.send_signal(subprocess.signal.SIGINT)
                 rospy.loginfo(rospy.get_name() + ": Process killed")
                 return
-        rospy.loginfo(rospy.get_name() + ": Got kill signal, ending process {} after {}s"
+        rospy.logwarn(rospy.get_name() + ": Got kill signal, ending process {} after {}s"
                                         .format(self._rosbag_proc, self._stop_offset))
         rospy.sleep(rospy.Duration(self._stop_offset))
         self._rosbag_proc.send_signal(subprocess.signal.SIGINT)
-        rospy.loginfo(rospy.get_name() + ": Process killed")
+        rospy.logwarn(rospy.get_name() + ": Process killed")
