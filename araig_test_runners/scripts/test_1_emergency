@@ -39,6 +39,7 @@ class Test1(TestBase):
         extend_publishers_dict = {
         }
         extend_param_list = {
+            "timeout_after_complete",
         }
 
         self.pre_state = None
@@ -84,12 +85,13 @@ class Test1(TestBase):
             self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
             self.current_state = State.complete_test
 
-        # if test complete, wait for 3s, then enable reset 
+        # If test complete, wait for "timeout_after_complete" s, then enable reset 
         if self.current_state == State.complete_test and self.pre_state == State.start_test:
             # !!! ui should set start_test to False once get test_completed, but for now runner will pub
             self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-            rospy.sleep(3)
+            rospy.sleep(self.config_param['timeout_after_complete'])
             rospy.logwarn(rospy.get_name() + ": waiting for user to give reset signal")
+            rospy.loginfo("---------------------------------")
             self.current_state = State.wait
             self.pre_state = State.complete_test
 
