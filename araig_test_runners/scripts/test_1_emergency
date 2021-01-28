@@ -47,11 +47,7 @@ class Test1(TestBase):
 
         super(Test1, self).__init__(sub_dict = extend_subscribers_dict, \
         pub_dict = extend_publishers_dict, \
-        param_list = extend_param_list, \
         rate = rate)
-
-    def main(self):
-        if self.pre_state == None and self.current_state == State.wait:
             rospy.loginfo(rospy.get_name() + ": Waiting to start...")
             self.pre_state = State.wait
         
