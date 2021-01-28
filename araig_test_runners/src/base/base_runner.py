@@ -35,12 +35,19 @@ class TestBase(object):
         for key in self._input_interface:
             rospy.Subscriber(self._input_interface[key], BoolStamped, self.callback_for_all_bool_topics, key)
             self._locks[key] = threading.Lock()
-            self._flag[key] = False
-
+            self._flag[key] = BoolStamped()
+            self._flag[key].data = False
         # pub_init
         for key in self._output_interface:
             self._publishers[key] = rospy.Publisher(self._output_interface[key], BoolStamped,queue_size=10, latch=True)
-   
+
+        try:
+            while not rospy.is_shutdown():
+                self.main() 
+                self._rate.sleep()
+        except rospy.ROSException:
+            pass
+
     def setSafeFlag(self, key, value):
         if not key in self._input_interface.keys():
             rospy.logerr(rospy.get_name() + ": Retrieving a key that does not exist!: {}".format(key))
@@ -48,12 +55,16 @@ class TestBase(object):
         with self._locks[key]:
             self._flag[key] = value
 
-    def getSafeFlag(self, key):
+    def getSafeFlag(self, key, seq = False):
         if not key in self._input_interface.keys():
             rospy.logerr(rospy.get_name() + ": Retrieving a key that does not exist!: {}".format(key))
             return
-        with self._locks[key]:
-            return self._flag[key]
+        else:
+            with self._locks[key]:
+                if not seq:
+                    return self._flag[key].data
+                else:
+                    return self._flag[key].header.seq
     
     def buildNewBoolStamped(self, data = True):
         msg = BoolStamped()
@@ -62,8 +73,11 @@ class TestBase(object):
         return msg
 
     def callback_for_all_bool_topics(self, msg, key):
-        self.setSafeFlag(key,msg.data)
+        self.setSafeFlag(key,msg)
 
     def startRecordingAndWait(self, duration=3):
         rospy.loginfo(rospy.get_name() + ": waiting for {}s, then start recoding ...".format(duration))
         rospy.sleep(duration)
+    
+    def main(self):
+        pass
