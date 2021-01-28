@@ -4,17 +4,21 @@ from base.base_runner import TestBase
 
 """"
 BASE INTERFACES
+# sub
 self._input_interface = {
     "robot_has_stopped"    : "/signal/calc/robot_has_stopped",
     "start_test"           : "/signal/ui/start_test",
-    "interrupt_test"       : "/signal/ui/interrupt_test"
+    "interrupt_test"       : "/signal/ui/interrupt_test",
+    "reset_test"           : "/signal/ui/reset_test"
 }
-
+# pub
 self._output_interface = {
-    "start_robot"     : "/signal/runner/start_robot",
-    "test_completed"  : "/signal/runner/test_completed",
-    "test_failed"     : "/signal/runner/test_failed",
-    "test_succeeded"  : "/signal/runner/test_succeeded"
+    "start_robot"          : "/signal/runner/start_robot",
+    "test_completed"       : "/signal/runner/test_completed",
+    "test_failed"          : "/signal/runner/test_failed",
+    "test_succeeded"       : "/signal/runner/test_succeeded",
+    "start_test"           : "/signal/ui/start_test",
+    "reset_test"           : "/signal/ui/reset_test"
 }
 """
 
@@ -23,14 +27,15 @@ class Test1(TestBase):
         
         extend_subscribers_dict = {
             "robot_has_max_vel"  : "/signal/calc/robot_has_max_vel",
-            "emergency"         : "/signal/robot/emergency"
         }
         extend_publishers_dict = {
-            "stop_robot"     : "/signal/runner/stop_robot"
+            "stop_robot"           : "/signal/runner/stop_robot",
         }
 
         super(Test1, self).__init__(extend_subscribers_dict, extend_publishers_dict, rate = rate)
-        self.main()
+        
+        while not rospy.is_shutdown():
+            self.main()
 
     def main(self):
         rospy.loginfo(rospy.get_name() + ": Waiting to start...")
@@ -44,7 +49,7 @@ class Test1(TestBase):
                 self._publishers["start_robot"].publish(self.buildNewBoolStamped(True))
                 break
                 
-        # wait until robot reaches max velocity or robot emits emergency
+        # wait until robot reaches max velocity
         while not rospy.is_shutdown():
             self._rate.sleep()
 
@@ -54,12 +59,6 @@ class Test1(TestBase):
                 # Stop robot
                 self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
                 self._publishers["stop_robot"].publish(self.buildNewBoolStamped(True))
-                break
-
-            # If robot emits emergency
-            if self.getSafeFlag("emergency"):
-                rospy.loginfo(rospy.get_name() + ": Robot has emitted emergency, assuming it stops now")
-                self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
                 break
 
             # If interrupted
@@ -75,10 +74,12 @@ class Test1(TestBase):
             self._rate.sleep()
 
             if self.getSafeFlag("robot_has_stopped"):
-                rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test completed!")
+                rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test succeeded and completed!")
                 # Set test succeeded & test completed true
                 self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
                 self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
+                # !!! ui should publish once get test_completed, but for now runner will pub
+                self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
                 break
 
             # If interrupted
@@ -87,12 +88,26 @@ class Test1(TestBase):
                 self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
                 self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
                 self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
+                # !!! ui should publish once get test_completed, but for now runner will pub
+                self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
+                return
+        
+        while not rospy.is_shutdown():
+            self._rate.sleep()    
+            if self.getSafeFlag("reset_test"):
+                rospy.logwarn(rospy.get_name() + ": reset test")
+                self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
+                self._publishers["stop_robot"].publish(self.buildNewBoolStamped(False))
+                self._publishers["test_failed"].publish(self.buildNewBoolStamped(False))
+                self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(False))
+                self._publishers["test_completed"].publish(self.buildNewBoolStamped(False))
+                 # !!! ui should publish reset_test to False after pub True, reset signal is event
+                self._publishers["reset_test"].publish(self.buildNewBoolStamped(False))
                 return
 
 if __name__ == "__main__":
     try:
         rospy.init_node("test1_runner", disable_signals=True)
         test = Test1(100)
-        rospy.spin()
     except rospy.ROSException:
         pass
