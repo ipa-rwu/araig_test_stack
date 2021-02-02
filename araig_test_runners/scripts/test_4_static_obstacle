@@ -19,7 +19,8 @@ self._output_interface = {
     "test_failed"          : "/signal/runner/test_failed",
     "test_succeeded"       : "/signal/runner/test_succeeded",
     "start_test"           : "/signal/ui/start_test",
-    "reset_test"           : "/signal/ui/reset_test"
+    "reset_test"           : "/signal/ui/reset_test",
+    "interrupt_test"       : "/signal/ui/interrupt_test",
 }
 """
 
@@ -28,7 +29,8 @@ class State(enum.Enum):
     start_test = 2
     interrupt_test = 3
     complete_test = 4
-    wait_result = 5
+    check_condition = 5
+    reached_goal = 6
 
 class Test4(TestBase):
     def __init__(self, rate):
@@ -39,11 +41,17 @@ class Test4(TestBase):
         }
         extend_publishers_dict = {
         }
+        extend_param_list = {
+            "time_check_goal_again"
+        }
 
         self.pre_state = None
         self.current_state = State.wait
 
-        super(Test4, self).__init__(extend_subscribers_dict, extend_publishers_dict, rate = rate)
+        super(Test4, self).__init__(sub_dict = extend_subscribers_dict, \
+        pub_dict = extend_publishers_dict, \
+        param_list = extend_param_list, \
+        rate = rate)
 
     def main(self):
         if self.pre_state == None and self.current_state == State.wait:
@@ -70,31 +78,29 @@ class Test4(TestBase):
             rospy.logwarn(rospy.get_name() + ": Interrupted!!")
             self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
             self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
+            # !!! ui should publish interrupt_test to False after pub True, interrupt_test signal is event 
+            self._publishers["interrupt_test"].publish(self.buildNewBoolStamped(False))
             self.current_state = State.complete_test
 
         # If robot has stopped (because it found an obstacle), but maybe robot will still move
         if self.current_state == State.start_test and self.getSafeFlag("goal"):
-            self.seq_goal_1st = self.getSafeFlag("goal", True) 
-            self.counter_goal = 0
-            rospy.loginfo(rospy.get_name() + ": Robot has reached goal for 1st time, will check again in 2s, waiting time {}s left".format((3-self.counter_goal)*2))
-            self.counter_goal = 1
-            self.time_goal = rospy.Time.now()
-            self.current_state = State.wait_result
-
-        # after every 2s will check if robot is still moving
-        if self.current_state == State.wait_result and self.counter_goal < 3 and (rospy.Time.now().secs - self.time_goal.secs) > 2:
-            diff = self.getSafeFlag("goal", True) - self.seq_goal_1st
-            if(diff == 0):
-                self.counter_goal += 1
-                rospy.loginfo(rospy.get_name() + ": will check result again in 2s, waiting time {}s left".format((3-self.counter_goal)*2))
+            rospy.loginfo(rospy.get_name() + ": Robot has reached goal and stop, will check if robot move again in {}s".format(self.config_param['time_check_goal_again']))
+            self.current_state = State.check_condition
+        
+        # Check if robot stop and reach goal again in 2s
+        if self.pre_state == State.start_test and  \
+            self.current_state == State.check_condition:
+            if self.getSafeFlag("goal"):
+                if self.checkCondition(self.getSafeFlag("goal", header = True).stamp, \
+                    self.config_param['time_check_goal_again']):
+                    rospy.loginfo(rospy.get_name() + ": Robot has reached goal and stop.")
+                    self.current_state = State.reached_goal
             else:
-                self.counter_goal = 0
-                self.seq_goal_1st = self.getSafeFlag("goal", True)
-                rospy.loginfo(rospy.get_name() + ": Robot is still moving, will check again in 2s, waiting time {}s left".format((3-self.counter_goal)*2))
-            self.time_goal = rospy.Time.now()
+                rospy.loginfo(rospy.get_name() + ": Robot is still moving, waiting for robot reaching goal and stop")
+                self.current_state = State.start_test
         
         # Test complete if robot doesn't move any more and reached the goal
-        if self.current_state == State.wait_result and self.counter_goal >=3 and self.getSafeFlag("goal"):
+        if self.current_state == State.reached_goal:
             rospy.loginfo(rospy.get_name() + ": Robot has reached goal, ending test in success!")
             self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
             self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
