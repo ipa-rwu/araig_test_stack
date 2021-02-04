@@ -42,7 +42,8 @@ class Test1(TestBase):
             "stop_robot"           : "/signal/runner/stop_robot",
         }
         extend_param_list = {
-            "time_wait_after_max_speed"
+            "timeout_after_max_speed",
+            "timeout_after_complete",
         }
 
         self.pre_state = None
@@ -68,14 +69,14 @@ class Test1(TestBase):
         
         # If robot has reached max velocity, but need to check if it really reached
         if self.current_state == State.start_test and self.getSafeFlag("robot_has_max_vel"):
-            rospy.loginfo(rospy.get_name() + ": Robot has max velocity, checking reliability, wait for {}s.".format(self.config_param['time_wait_after_max_speed']))
+            rospy.loginfo(rospy.get_name() + ": Robot has max velocity, after waiting for {}s, check again.".format(self.config_param['timeout_after_max_speed']))
             self.current_state = State.check_condition
         
         if self.pre_state == State.start_test and  \
             self.current_state == State.check_condition:
             if self.getSafeFlag("robot_has_max_vel"):
                 if self.checkCondition(self.getSafeFlag("robot_has_max_vel", header = True).stamp, \
-                    self.config_param['time_wait_after_max_speed']):
+                    self.config_param['timeout_after_max_speed']):
                     rospy.loginfo(rospy.get_name() + ": Robot has reached max velocity, stopping now.")
                     # Stop robot
                     self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
@@ -103,12 +104,13 @@ class Test1(TestBase):
             self._publishers["interrupt_test"].publish(self.buildNewBoolStamped(False))
             self.current_state = State.complete_test
 
-        # if test complete, wait for 3s, then enable reset 
+        # If test complete, wait for "timeout_after_complete" s, then enable reset 
         if self.current_state == State.complete_test and self.pre_state == State.start_test:
             # !!! ui should set start_test to False once get test_completed, but for now runner will pub
             self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-            rospy.sleep(3)
+            rospy.sleep(self.config_param['timeout_after_complete'])
             rospy.logwarn(rospy.get_name() + ": waiting for user to give reset signal")
+            rospy.loginfo("---------------------------------")
             self.current_state = State.wait
             self.pre_state = State.complete_test
 
