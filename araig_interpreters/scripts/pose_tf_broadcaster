@@ -7,7 +7,7 @@ import tf2_ros
 import geometry_msgs.msg
 
 if __name__ == '__main__':
-        rospy.init_node('goal_tf2_broadcaster')
+        rospy.init_node('pose_tf_broadcaster')
         module_name = "/interpreters"
         ns = module_name + rospy.get_name()
         config_goal = ns + "/goal"
