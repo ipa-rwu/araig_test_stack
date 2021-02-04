@@ -9,7 +9,7 @@ import geometry_msgs.msg
 if __name__ == '__main__':
         rospy.init_node('pose_tf_broadcaster')
         module_name = "/interpreters"
-        ns = module_name
+        ns = module_name + rospy.get_name()
         config_goal = ns + "/goal"
 
         broadcaster = tf2_ros.StaticTransformBroadcaster()
