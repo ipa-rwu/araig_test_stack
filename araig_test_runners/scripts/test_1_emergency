@@ -19,7 +19,8 @@ self._output_interface = {
     "test_failed"          : "/signal/runner/test_failed",
     "test_succeeded"       : "/signal/runner/test_succeeded",
     "start_test"           : "/signal/ui/start_test",
-    "reset_test"           : "/signal/ui/reset_test"
+    "reset_test"           : "/signal/ui/reset_test",
+    "interrupt_test"       : "/signal/ui/interrupt_test",
 }
 """
 
@@ -37,11 +38,16 @@ class Test1(TestBase):
         }
         extend_publishers_dict = {
         }
+        extend_param_list = {
+        }
 
         self.pre_state = None
         self.current_state = State.wait
 
-        super(Test1, self).__init__(extend_subscribers_dict, extend_publishers_dict, rate = rate)
+        super(Test1, self).__init__(sub_dict = extend_subscribers_dict, \
+        pub_dict = extend_publishers_dict, \
+        param_list = extend_param_list, \
+        rate = rate)
 
     def main(self):
         if self.pre_state == None and self.current_state == State.wait:
