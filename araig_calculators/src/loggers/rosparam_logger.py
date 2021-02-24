@@ -23,7 +23,7 @@ class RosparamLoggerClass(BaseLogger):
             pass 
 
     def main_loop(self):
-        rospy.logwarn_once(rospy.get_name() + ": Waiting for start signal...")
+        rospy.loginfo(rospy.get_name() + ": Waiting for start signal...")
 
         start = False
         stop = False
