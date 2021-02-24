@@ -1,5 +1,8 @@
 calculators:
   file_prefix: "test" # All calculators will prefix this to filenames that they write to.
+  dest_dir: "/home/rachel/ARAIG"
+  robot_type: "turtlebot3_sim"
+  test_type: "test1_braking"
 
   test_comp_param_node: # node name 
     param: 0.0

@@ -76,6 +76,9 @@ class diffPosesSpatial(BaseCalculator):
                     pub_msg = pub_msg_angular, \
                     log = "{}: Delta angle is {}".format(rospy.get_name(), pub_msg_angular.data))):
                     self.pre_signal_state_angular = temp[self._sub_topic_singal].data
+                    self.log_msg["Delta_angle"] = {}
+                    self.log_msg["Delta_angle"]["timestamp"] = float(pub_msg_angular.header.stamp.secs + float(pub_msg_angular.header.stamp.nsecs*(1e-9)))
+                    self.log_msg["Delta_angle"]["data"] = pub_msg_angular.data
 
                 if(self.pub_only_state_change(pre_state = self.pre_signal_state_position, \
                     current_state = temp[self._sub_topic_singal].data, \
@@ -83,6 +86,12 @@ class diffPosesSpatial(BaseCalculator):
                     pub_msg = pub_msg_position, \
                     log = "{}: Delta position is {}".format(rospy.get_name(), pub_msg_position.data))):
                     self.pre_signal_state_position = temp[self._sub_topic_singal].data
+                    self.log_msg["Delta_position"] = {}
+                    self.log_msg["Delta_position"]["timestamp"] = float(pub_msg_position.header.stamp.secs + float(pub_msg_position.header.stamp.nsecs*(1e-9)))
+                    self.log_msg["Delta_position"]["data"] = pub_msg_position.data
+                    if self.log_filename != "":
+                        self.login_file(self.log_msg)
+                        self.log_msg = {}
             else:
                 self.pre_signal_state_angular = temp[self._sub_topic_singal].data 
                 self.pre_signal_state_position = temp[self._sub_topic_singal].data

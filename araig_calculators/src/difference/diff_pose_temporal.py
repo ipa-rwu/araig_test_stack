@@ -68,7 +68,8 @@ class diffPoseTemporal(BaseCalculator):
                 else:
                     self._posestamp_start = temp[self._sub_topic_pose]
                     rospy.loginfo(rospy.get_name() + ": Started")
-
+                    self.log_msg['Started'] = float(self._posestamp_start.header.stamp.secs + \
+                        float(self._posestamp_start.header.stamp.nsecs*(1e-9)))
             self._prestate_start = temp[self._sub_topic_start].data
         
         with BaseCalculator.LOCK[self._sub_topic_stop] and BaseCalculator.LOCK[self._sub_topic_pose]:  
@@ -82,6 +83,8 @@ class diffPoseTemporal(BaseCalculator):
                 temp[self._sub_topic_stop].data == True:
                 self._posestamp_stop = temp[self._sub_topic_pose]
                 rospy.loginfo(rospy.get_name() + ": Stopped")
+                self.log_msg['Stopped'] = float(self._posestamp_stop.header.stamp.secs + \
+                    float(self._posestamp_stop.header.stamp.nsecs*(1e-9)))
 
                 delta_x = abs(self._posestamp_start.pose.position.x - self._posestamp_stop.pose.position.x)
                 delta_y = abs(self._posestamp_start.pose.position.y - self._posestamp_stop.pose.position.y)
@@ -95,6 +98,13 @@ class diffPoseTemporal(BaseCalculator):
 
                 self.PubDiag[self._pub_topic_angular].publish(pub_msg_angular)
                 self.PubDiag[self._pub_topic_position].publish(pub_msg_position)
-                rospy.loginfo("{}: Delta angle is {}".format(rospy.get_name(), pub_msg_angular.data))
                 rospy.loginfo("{}: Delta position is {}".format(rospy.get_name(), pub_msg_position.data))
+                self.log_msg['Delta_position'] = {}
+                self.log_msg['Delta_position']['timestamp'] = float(pub_msg_position.header.stamp.secs + \
+                    float(pub_msg_position.header.stamp.nsecs*(1e-9)))
+                self.log_msg['Delta_position']['data'] = pub_msg_position.data
+                if self.log_filename != "":
+                    self.login_file(self.log_msg)
+                    self.log_msg = {}
+
             self._prestate_stop = temp[self._sub_topic_stop].data
