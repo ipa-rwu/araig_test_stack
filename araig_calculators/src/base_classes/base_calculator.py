@@ -105,13 +105,13 @@ class BaseCalculator(object):
             self.PubDiag[pub_topic].publish(pub_msg)
             pre_state = current_state
             if log != None:
-                rospy.logwarn(log)
+                rospy.loginfo(log)
             return True
         elif pre_state != current_state:
             self.PubDiag[pub_topic].publish(pub_msg)
             pre_state = current_state
             if log != None:
-                rospy.logwarn(log)
+                rospy.loginfo(log)
             return True
         return True
     
