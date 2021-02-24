@@ -44,7 +44,7 @@ class RosbaggerClass(BaseLogger):
         return topics_string
 
     def main_loop(self):
-        rospy.logwarn_once(rospy.get_name() + ": Waiting for start signal...")
+        rospy.loginfo(rospy.get_name() + ": Waiting for start signal...")
         # Wait for start signal
         start = False
         stop = False
