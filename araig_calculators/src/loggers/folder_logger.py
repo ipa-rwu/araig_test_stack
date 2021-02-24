@@ -27,7 +27,7 @@ class FolderManagerClass(BaseLogger):
             pass
 
     def main_loop(self):
-        rospy.logwarn_once(rospy.get_name() + ": Waiting for start signal...")
+        rospy.loginfo(rospy.get_name() + ": Waiting for start signal...")
 
         start = False
         stop = False
@@ -68,7 +68,7 @@ class FolderManagerClass(BaseLogger):
             rospy.sleep(self.config_param[self.node_name + "/stop_offset"])
             if self.getSafeFlag("test_failed"):
                 os.rename(self.folder_name, self.folder_name + "_" + self.dt_string + "_failed")
-                rospy.loginfo(rospy.get_name() + ": test failed, rename folder")
+                rospy.loginfo(rospy.get_name() + ": Test failed, rename folder")
             if self.getSafeFlag("test_succeeded"):
                 os.rename(self.folder_name, self.folder_name + "_" + self.dt_string + "_succeeded")
-                rospy.loginfo(rospy.get_name() + ": test succeeded, rename folder")
+                rospy.loginfo(rospy.get_name() + ": Test succeeded, rename folder")
