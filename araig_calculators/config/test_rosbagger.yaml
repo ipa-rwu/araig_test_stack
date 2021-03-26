@@ -1,8 +1,10 @@
  calculators:
-  file_prefix: "test" # All calculators will prefix this to filenames that they write to.
- 
+  dest_dir: "/home/rachel/ARAIG"
+  robot_type: "mobika"
+  test_type: "test1_braking"
+
   test_bagger:
-    dest_dir: "/home/rachel/ARAIG/bags" # Full path required. Saves bags here.
+    start_offset: 2 # Wait these many seconds before killing
     stop_offset: 2 # Wait these many seconds before killing
     blacklist:
       - /rosout
