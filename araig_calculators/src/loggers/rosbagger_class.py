@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# license removed for brevity
+
 import rospy
 import subprocess, shlex
 from araig_msgs.msg import BoolStamped
@@ -41,7 +41,6 @@ class FolderBagger(BaseLogger):
             self.node_name + "/start_offset",
             self.node_name + "/stop_offset",
             self.node_name + "/blacklist",
-            self.node_name + "/whitelist",
             "/test_type"]
 
         super(FolderBagger, self).__init__(sub_dict= extend_subscribers_dict, param_list = param_list)
@@ -51,23 +50,24 @@ class FolderBagger(BaseLogger):
                 self.main_loop() 
         except rospy.ROSException:
             pass 
-    
+
     def prepare_topics(self):
         list_of_topics = rospy.get_published_topics()
         list_of_topics.sort()
         topics_string = ""
-        for topic, msg in list_of_topics:
-            for black_topic in self.config_param[self.node_name + "/blacklist"]:
-                if topic == black_topic:
-                    topic = ""
-            for white_topic in self.config_param[self.node_name + "/whitelist"]:
-                if topic == white_topic:
-                    topic = ""
-            topics_string = topics_string + topic + " "
-        
-        for white_topic in self.config_param[self.node_name + "/whitelist"]:
-            topics_string = topics_string + white_topic + " "
-        
+
+        for topic,msg in list_of_topics:
+            topic_allowed = True
+            for black_string in self.config_param[self.node_name + "/blacklist"]:
+                if black_string in topic:
+                    rospy.logwarn(rospy.get_name()
+                    + " Ignoring topic {} since it is blocked by the entry {} in blacklist"
+                    .format(topic, black_string))
+                    topic_allowed = False
+                    break
+            if topic_allowed:
+                 topics_string = topics_string + topic + " "
+
         return topics_string
 
     def main_loop(self):
@@ -75,27 +75,27 @@ class FolderBagger(BaseLogger):
         # Wait for start signal
         start = False
         stop = False
+
         while not start and not rospy.is_shutdown():
             self._rate.sleep()
             start = self.getSafeFlag("start")
-    
-         # get published topic
+
+         # Create folder -> sleep -> start recording
         if start == True and stop == False:
-            # get time
             now = datetime.now()
             dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
 
             folder_name = get_folder_name(self.pathFolder)
             create_folder(folder_name)
 
+            rospy.loginfo(rospy.get_name() + ": Start received. Sleep {}s to prepare..."
+                .format(self.config_param[self.node_name + "/start_offset"]))
             rospy.sleep(self.config_param[self.node_name + "/start_offset"])
-            currentFolder = self.getSubFolder() 
 
+            currentFolder = self.getSubFolder()
             topics_string = self.prepare_topics()
-                
-            # Prepare command
             command = "rosbag record -o " + currentFolder + "/" + self.config_param["/test_type"] + " " + topics_string
-            rospy.loginfo(rospy.get_name() + ": " + command)
+
             self.startCommandProc(command)
 
         # Wait for stop signal
@@ -103,17 +103,17 @@ class FolderBagger(BaseLogger):
             self._rate.sleep()
             stop = self.getSafeFlag("stop")
         
+        # Sleep -> Kill recorder (other loggers finish their tasks) -> rename folder
         if start == True:
             if stop or rospy.is_shutdown():
+                rospy.loginfo(rospy.get_name() + ": Stop received. Sleep {}s to settle..."
+                    .format(self.config_param[self.node_name + "/stop_offset"]))
                 rospy.sleep(self.config_param[self.node_name + "/stop_offset"])
                 self.killCommandProc()
-
-                # if kill process return a signal the we don't need sleep
-                rospy.sleep(self.config_param[self.node_name + "/stop_offset"])
-
+                rospy.sleep(0.5) # Sleep again to let process die properly
                 if self.getSafeFlag("test_failed"):
                     os.rename(folder_name, folder_name + "_" + dt_string + "_failed")
                     rospy.loginfo(rospy.get_name() + ": Test failed, rename folder")
-                if self.getSafeFlag("test_succeeded"):
+                elif self.getSafeFlag("test_succeeded"):
                     os.rename(folder_name, folder_name + "_" + dt_string + "_succeeded")
                     rospy.loginfo(rospy.get_name() + ": Test succeeded, rename folder")

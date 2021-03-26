@@ -1,12 +1,13 @@
-<launch>
+<launch>        
 
     <rosparam command="load" file="$(find araig_calculators)/config/test_calculators.yaml" />
 
-    <node pkg="araig_calculators" type="rosbagger_node" name="test_bagger" output="screen" >
+    <include  file="$(find araig_calculators)/launch/test_rosbagger.launch" />
+
+    <node pkg="araig_calculators" type="rosparam_logger_node" name="rosparam_logger_node" output="screen" >
         <remap from="/start" to="/signal/runner/start_robot"/>
         <remap from="/stop" to="/signal/runner/test_completed"/>
-        <remap from="/test_failed" to="/signal/runner/test_failed"/>
-        <remap from="/test_succeeded" to="/signal/runner/test_succeeded"/>
     </node>
+
 
 </launch>
