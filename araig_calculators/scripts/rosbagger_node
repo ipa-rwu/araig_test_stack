@@ -2,9 +2,9 @@
 
 import sys
 import os
-from loggers.rosbagger_class import RosbaggerClass
+from loggers.rosbagger_class import FolderBagger
 import rospy
 
 if __name__ == "__main__":
-    rospy.init_node("rosbagger")
-    bagger = RosbaggerClass()
+    rospy.init_node("folder_bagger")
+    bagger = FolderBagger()
