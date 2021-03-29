@@ -3,7 +3,7 @@ interpreters:
     goal:
       frame_id: map
       position:
-        x: 2.4
+        x: 0.5
         y: -0.04
         z: 0
       yaw: 1.57 # degree

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.6
 import move_base_msgs.msg
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal, MoveBaseActionResult
 import actionlib
 import rospy
 from geometry_msgs.msg import PoseStamped
@@ -21,8 +21,11 @@ class GoalInterpreterClass():
         wait_for_action,
         loop_rate_hz = 1):
 
-        self.pub_topic = "/goal"
+        self.ppub_topic_goal = "/goal"
+        self.pub_topic_result = "/done"
         self.sub_topic = "/start"
+        self.sub_topic_result = "/result"
+
 
         self.action_goal = goal
         self.action_name = goal_action
@@ -40,17 +43,19 @@ class GoalInterpreterClass():
                 rospy.sleep(1)
             if try_times == 5:
                 rospy.logerr(rospy.get_name() +": cannot connected to action server: {}, shutdown this node".format(self.action_name))
-                rospy.signal_shutdown()
+                rospy.signal_shutdown("cannot connected to action server")
         else:
             rospy.logwarn(rospy.get_name() +": will not connect to action server")
         self.pub_init()
-        self.sub_init()
+        self.sub_init(self.sub_topic, BoolStamped)
 
         self.flag_send_goal = False
 
         # init FLAG and LOCK
         GoalInterpreterClass.DATA[self.sub_topic] = False
         GoalInterpreterClass.LOCK[self.sub_topic] = threading.Lock()
+        GoalInterpreterClass.DATA[self.sub_topic_result] = ""
+        GoalInterpreterClass.LOCK[self.sub_topic_result] = threading.Lock()
         self.temp_sub[self.sub_topic] = False
         
         self.main()
@@ -59,6 +64,7 @@ class GoalInterpreterClass():
         self.action_client = actionlib.SimpleActionClient(self.action_name,MoveBaseAction)
         if self.action_client.wait_for_server(rospy.Duration(wait_time)) == True:
             rospy.loginfo(rospy.get_name() +": connected to action server: {}...".format(self.action_name))
+            self.sub_init(self.sub_topic_result, MoveBaseActionResult)
             return True
         else:
             return False
@@ -66,21 +72,34 @@ class GoalInterpreterClass():
     def callback_start(self, msg, args):
         with GoalInterpreterClass.LOCK[args]:
             GoalInterpreterClass.DATA[args] = msg.data
+    
+    def callback_result(self, msg, args):
+        with GoalInterpreterClass.LOCK[args]:
+            GoalInterpreterClass.DATA[args] = msg.status
 
     def pub_init(self):
-        self.pub_diag = rospy.Publisher(
-                self.pub_topic, 
+        self.pub_diag_goal = rospy.Publisher(
+                self.ppub_topic_goal, 
                 PoseStamped, 
                 queue_size=10,
                 latch = True 
             )
         self.goal_msg = PoseStamped()
         self.goal_msg = self.action_goal.target_pose
+
+        self.pub_diag_result = rospy.Publisher(
+                self.pub_topic_result, 
+                BoolStamped, 
+                queue_size=10,
+                latch = True 
+            )
+        self.action_result_msg = BoolStamped()
+        self.action_result_msg.header.stamp = rospy.Time.now() 
+        self.action_result_msg.data = False
     
-    def sub_init(self):
+    def sub_init(self, topic, datatype):
         self.sub_diag = {}
-        topic = self.sub_topic
-        self.sub_diag[topic] = rospy.Subscriber(topic, BoolStamped, self.callback_start, (topic))
+        self.sub_diag[topic] = rospy.Subscriber(topic, datatype, getattr(self, "callback_" + topic.replace('/', '')), (topic))
 
     #  add two executor, one for pub topic, the other one for action client  
     async def main_pub_and_wait_action(self, loop, pool):
@@ -101,9 +120,14 @@ class GoalInterpreterClass():
         )
 
     def pub_goal(self):
-        self.pub_diag.publish(self.goal_msg)
-        rospy.loginfo(rospy.get_name() + ": pub ")
+        self.pub_diag_goal.publish(self.goal_msg)
+        rospy.loginfo(rospy.get_name() + ": pub goal")
         return True
+    
+    def pub_result(self, result):
+        self.action_result_msg.header.stamp = rospy.Time.now() 
+        self.action_result_msg.data = result
+        self.pub_diag_result.publish(self.action_result_msg)
             
     def call_action(self):
         # only call action once
@@ -112,15 +136,28 @@ class GoalInterpreterClass():
 
         wait = self.action_client.wait_for_result()
         
+        rospy.loginfo(rospy.get_name() + ": finished waiting for result")
         if not wait:
             rospy.logerr(rospy.get_name() + ": didn't get response from {}".format(self.action_name))
             return False
         else:
             result = self.action_client.get_result()
+            status = self.action_client.get_state()
             if result:
-                rospy.loginfo(rospy.get_name() + ": get response from {}".format(self.action_name))
-                return True
-        
+                #  read result from subscriber
+                self.read_action_result()
+            if status == 3:
+                self.pub_result(True)
+            else:
+                rospy.logwarn(rospy.get_name() + ": move base failed to move to the goal")
+                self.pub_result(False)           
+            return True
+
+    def read_action_result(self):
+        with GoalInterpreterClass.LOCK[self.sub_topic_result]:
+            self.temp_sub[self.sub_topic_result]= GoalInterpreterClass.DATA[self.sub_topic_result]
+            rospy.logwarn(rospy.get_name() + ": result: " + str(self.temp_sub[self.sub_topic_result]))   
+
     def main(self):
         pre_signal = False
         try:
@@ -130,6 +167,7 @@ class GoalInterpreterClass():
                     self.temp_sub[self.sub_topic]= GoalInterpreterClass.DATA[self.sub_topic]
                 
                 if pre_signal == False and self.temp_sub[self.sub_topic] == True:
+                    self.pub_result(False)
                     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
                         loop.run_until_complete(self.main_pub_and_wait_action(loop, pool))
                 pre_signal = self.temp_sub[self.sub_topic]
