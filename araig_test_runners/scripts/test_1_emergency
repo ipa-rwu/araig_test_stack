@@ -15,6 +15,7 @@ self._input_interface = {
 # pub
 self._output_interface = {
     "start_robot"          : "/signal/runner/start_robot",
+    "stop_robot"            : "/signal/runner/stop_robot",
     "test_completed"       : "/signal/runner/test_completed",
     "test_failed"          : "/signal/runner/test_failed",
     "test_succeeded"       : "/signal/runner/test_succeeded",
@@ -23,12 +24,6 @@ self._output_interface = {
     "interrupt_test"       : "/signal/ui/interrupt_test",
 }
 """
-
-class State(enum.Enum):
-    wait = 1
-    start_test = 2
-    emergency = 3
-    complete_test = 4
 
 class Test1(TestBase):
     def __init__(self, rate):
@@ -39,11 +34,10 @@ class Test1(TestBase):
         extend_publishers_dict = {
         }
         extend_param_list = {
-            "timeout_after_complete",
+            "emergency_wait_timeout",
+            "acceleration_timeout",
+            "decceleration_timeout",
         }
-
-        self.pre_state = None
-        self.current_state = State.wait
 
         super(Test1, self).__init__(sub_dict = extend_subscribers_dict, \
         pub_dict = extend_publishers_dict, \
@@ -51,59 +45,46 @@ class Test1(TestBase):
         rate = rate)
 
     def main(self):
-        if self.pre_state == None and self.current_state == State.wait:
-            rospy.loginfo(rospy.get_name() + ": Waiting to start...")
-            self.pre_state = State.wait
-        
-        # Wait until start signal received
-        if self.current_state == State.wait and self.getSafeFlag("start_test"):
-            self.startRecordingAndWait(3)
-            rospy.loginfo(rospy.get_name() + ": Starting robot.")
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(True))
-            self.current_state = State.start_test
-            self.pre_state = State.start_test
-        
-        # If get emergency signal from robot
-        if self.current_state == State.start_test and self.getSafeFlag("emergency"):
-            rospy.loginfo(rospy.get_name() + ": Robot start emergency braking now.")
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-            self.current_state = State.emergency
+        # Standard startup, robot started on return
+        self.standardStartupSequence()
 
-        #  Wait until robot actually stops
-        if self.current_state == State.emergency and self.getSafeFlag("robot_has_stopped"):
-            rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test succeeded and completed!")
-            # Set test succeeded & test completed true
-            self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-            self.current_state = State.complete_test
-
-        # If interrupted
-        if self.getSafeFlag("interrupt_test") and self.pre_state == State.start_test:
-            rospy.logwarn(rospy.get_name() + ": Interrupted!!")
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-            self.current_state = State.complete_test
-
-        # If test complete, wait for "timeout_after_complete" s, then enable reset 
-        if self.current_state == State.complete_test and self.pre_state == State.start_test:
-            # !!! ui should set start_test to False once get test_completed, but for now runner will pub
+        # Wait for emergency signal. Prototype example of timed waiting.
+        rospy.loginfo(rospy.get_name() + ": Waiting for emergency signal within {}s"
+            .format(self.config_param['emergency_wait_timeout']))
+        result = self.timedLoopFallbackOnFlags(["emergency"], self.config_param['emergency_wait_timeout'])
+        if result == self._RETURN_CASE_INTERRUPTED:
+            return
+        elif result == self._RETURN_CASE_TIMED_OUT:
+            rospy.logwarn(rospy.get_name() + ": Did not get emergency signal in expected time. Test failed!")
+            self.stopRobot()
+            # TODO: Emulating UI responsibility Remove this once UI is integrated.
             self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-            rospy.sleep(self.config_param['timeout_after_complete'])
-            rospy.logwarn(rospy.get_name() + ": waiting for user to give reset signal")
-            rospy.loginfo("---------------------------------")
-            self.current_state = State.wait
-            self.pre_state = State.complete_test
+            self.testFailed()
+            self.waitForReset()
+            return()
+        else:
+            rospy.loginfo(rospy.get_name() + ": Got emergency, stopping robot.")
+            # Stop robot
+            self.stopRobot()
 
-        if self.current_state == State.wait and self.pre_state == State.complete_test and self.getSafeFlag("reset_test"):
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_failed"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(False))
-            # !!! ui should publish reset_test to False after pub True, reset signal is event
-            self._publishers["reset_test"].publish(self.buildNewBoolStamped(False))
-            rospy.logwarn(rospy.get_name() + ": user reset test")
-            self.pre_state = None
+        # Wait until robot actually stops
+        result = self.timedLoopFallbackOnFlags(["robot_has_stopped"], self.config_param['decceleration_timeout'])
+        if result == self._RETURN_CASE_INTERRUPTED:
+            return
+        elif result == self._RETURN_CASE_TIMED_OUT:
+            rospy.logerr(rospy.get_name() + ": Robot did not stop in expected {}s, ending test in failure!!"
+                    .format(self.config_param['decceleration_timeout']))
+            self.stopRobot()
+            self.testFailed()
+        else:
+            rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test succeeded!")
+            self.testSucceeded()
+
+        # TODO: Emulating UI responsibility Remove this once UI is integrated.
+        self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
+        # Once test completed, wait for reset
+        self.waitForReset()
+        return
 
 if __name__ == "__main__":
     try:
