@@ -8,7 +8,7 @@ from scipy.spatial.transform import Rotation
 if __name__ == "__main__":
     rospy.init_node('goal_interpreter')
     module_name = "/interpreters"
-    ns = module_name + rospy.get_name()
+    ns = module_name 
     config_goal = ns + "/goal"
     config_goal_action_name = ns + "/goal_action"
     config_time_wait_action = ns + "/wait_action"
