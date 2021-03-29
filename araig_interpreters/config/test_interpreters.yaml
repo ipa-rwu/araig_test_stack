@@ -1,24 +1,15 @@
 interpreters:
-  goal_interpreter: # node name 
-    goal:
-      frame_id: map
-      position:
-        x: 2.4
-        y: -0.04
-        z: 0
-      yaw: 1.57 # degree
-    goal_action: move_base # if "None", won't use action
-    wait_action: 5 # time for waiting for action available
-    rate: 100
-  pose_tf_broadcaster:
-    goal:
-      frame_id: map
-      child_frame_id: goal
-      position:
-        x: 2.4
-        y: -0.04
-        z: 0
-      yaw: 1.57 # degree
+  goal:
+    frame_id: map
+    child_frame_id: goal
+    position:
+      x: 2.4
+      y: -0.04
+      z: 0
+    yaw: 1.57 # degree
+  goal_action: move_base # if "None", won't use action
+  wait_action: 5 # time for waiting for action available
+  rate: 100
   velocity_interpreter: # node name 
     max_vel: 5
     rate: 100
