@@ -37,13 +37,13 @@ class Test4(TestBase):
         
         extend_subscribers_dict = {
             "goal"                  : "/signal/calc/robot_reached_goal_and_stopped",
-            "robot_in_collision"    : "/signal/calc/robot_in_collision"
         }
         extend_publishers_dict = {
         }
         extend_param_list = {
             "timeout_check_goal",
-            "timeout_after_complete"
+            "timeout_after_complete",
+            "timeout_after_interrupt"
         }
 
         self.pre_state = None
@@ -67,16 +67,10 @@ class Test4(TestBase):
             self.current_state = State.start_test
             self.pre_state = State.start_test
 
-        # robot in collision zoom
-        if self.current_state == State.start_test and self.getSafeFlag("robot_in_collision"):
-            rospy.loginfo(rospy.get_name() + ": Robot reached collision zoom , ending test in failure!")
-            self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-            self.current_state = State.complete_test
-
         # If interrupted
         if self.current_state == State.start_test and self.getSafeFlag("interrupt_test"):
-            rospy.logwarn(rospy.get_name() + ": Interrupted!!")
+            rospy.logwarn(rospy.get_name() + ": Interrupted!! Will wait for {}s".format(self.config_param['timeout_after_interrupt']))
+            rospy.sleep(self.config_param['timeout_after_interrupt'])
             self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
             self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
             # !!! ui should publish interrupt_test to False after pub True, interrupt_test signal is event 
