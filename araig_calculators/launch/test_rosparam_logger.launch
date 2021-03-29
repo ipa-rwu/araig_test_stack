@@ -1,4 +1,4 @@
-<launch>        
+<launch>
 
     <rosparam command="load" file="$(find araig_calculators)/config/test_calculators.yaml" />
 
@@ -8,7 +8,7 @@
         <remap from="/start" to="/signal/runner/start_robot"/>
         <remap from="/stop" to="/signal/runner/test_completed"/>
         <remap from="/test_failed" to="/signal/runner/test_failed"/>
-        <remap from="/test_succeeded" to="/signal/runner/test_completed"/>
+        <remap from="/test_succeeded" to="/signal/runner/test_succeeded"/>
     </node>
 
 

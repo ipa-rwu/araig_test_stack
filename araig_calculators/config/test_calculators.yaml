@@ -1,3 +1,12 @@
+runner:
+    timeout_after_max_speed: 2
+    timeout_after_complete: 3
+
+interpreters:
+  velocity_interpreter_node: # node name
+    max_vel: 0.8
+    rate: 100
+
 calculators:
   dest_dir: ""
   robot_type: "turtlebot3_sim"
