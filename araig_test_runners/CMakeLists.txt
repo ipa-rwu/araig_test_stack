@@ -13,7 +13,10 @@ catkin_package(
 
 catkin_install_python(PROGRAMS
    scripts/test_1_braking
-   scripts/test_4_static_obstacle
+   scripts/test_1_emergency
+   scripts/test_4
+   scripts/test_5_with_nav
+   scripts/test_5_without_nav
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

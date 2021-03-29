@@ -2,6 +2,6 @@
 
   <rosparam command="load" file="$(find araig_calculators)/config/test_calculators.yaml" />
 
-  <node pkg="araig_test_runners" type="test_1_emergency" name="test_1_emergency" output="screen"/>
+  <node pkg="araig_test_runners" type="test_4" name="test_4" output="screen"/>
 
 </launch>
