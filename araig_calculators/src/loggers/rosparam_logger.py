@@ -44,5 +44,4 @@ class RosparamLoggerClass(BaseLogger):
         # Wait for stop signal
         while not stop and not rospy.is_shutdown():
             self._rate.sleep()
-            rospy.loginfo(rospy.get_name() + ": Stop signal received...")
             stop = self.getSafeFlag("stop")
