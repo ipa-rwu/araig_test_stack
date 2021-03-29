@@ -37,7 +37,6 @@ class Test4(TestBase):
         
         extend_subscribers_dict = {
             "goal"                  : "/signal/calc/robot_reached_goal_and_stopped",
-            "robot_in_collision"    : "/signal/calc/robot_in_collision"
         }
         extend_publishers_dict = {
         }
