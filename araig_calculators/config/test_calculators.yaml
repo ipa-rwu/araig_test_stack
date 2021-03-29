@@ -1,3 +1,12 @@
+runner:
+    timeout_after_max_speed: 2
+    timeout_after_complete: 3
+
+interpreters:
+  velocity_interpreter_node: # node name
+    max_vel: 0.8
+    rate: 100
+
 calculators:
   file_prefix: "test" # All calculators will prefix this to filenames that they write to.
   dest_dir: "/home/rachel/ARAIG"
@@ -16,5 +25,22 @@ calculators:
     tolerance: 0
 
   test_bagger:
-    dest_dir: "/home/tejas/araig/bags" # Full path required. Saves bags here.
+    start_offset: 2 # Wait these many seconds before killing
     stop_offset: 2 # Wait these many seconds before killing
+    blacklist: # Any topics which have one of these STRINGS in them will not be recorded by the rosbagger
+      - /compressedDepth
+
+  rosparam_logger_node:
+    start_offset: 1
+    stop_offset: 0.5
+    namespaces:
+      - "runner"
+      - "interpreters"
+      - "calculators"
+
+  results_logger_node:
+    start_offset: 0.5
+    stop_offset: 0.1
+    logginng_topics:
+      - /data/calc/braking_time
+      - /data/calc/braking_distance

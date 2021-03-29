@@ -46,27 +46,31 @@ class ResultsLoggerClass(BaseLogger):
         while not start and not rospy.is_shutdown():
             self._rate.sleep()
             start = self.getSafeFlag("start")
-            
+
+        rospy.loginfo(rospy.get_name() + ": Start recevied. Waiting for test completion...")
         while not stop and not rospy.is_shutdown():
             self._rate.sleep()
             stop = self.getSafeFlag("stop")
 
-        while not test_succeeded and not rospy.is_shutdown():
-            self._rate.sleep()
-            test_succeeded = self.getSafeFlag("test_succeeded")
+        test_succeeded = self.getSafeFlag("test_succeeded")
 
-        if start == True and stop == True and test_succeeded == True:
-            rospy.sleep(self.config_param[self.node_name + "/start_offset"])
-            currentFolder = self.getSubFolder()
-            filename = currentFolder + "/result.yaml"
-            rospy.loginfo(rospy.get_name() + ": Writing into {}...".format(filename))
-            result = {}
+        if start == True and stop == True:
+            if test_succeeded == True:
+                rospy.sleep(self.config_param[self.node_name + "/start_offset"])
+                currentFolder = self.getSubFolder()
+                filename = currentFolder + "/result.yaml"
+                rospy.loginfo(rospy.get_name() + ": Test succeeded, writing results into {}..."
+                    .format(filename))
+                result = {}
 
-            for topic in self.result_topics_list:
-                result[topic] = self.getSafeFlag(topic)
+                for topic in self.result_topics_list:
+                    result[topic] = self.getSafeFlag(topic)
 
-            with open(filename, 'w+') as yaml_file:
-                yaml.dump(result, yaml_file, default_flow_style=False)
-        
-        rospy.sleep(self.config_param[self.node_name + "/stop_offset"])    
-        rospy.loginfo(rospy.get_name() + ": Finished writing into file")
+                with open(filename, 'w+') as yaml_file:
+                    yaml.dump(result, yaml_file, default_flow_style=False)
+
+                rospy.sleep(self.config_param[self.node_name + "/stop_offset"])
+                rospy.loginfo(rospy.get_name() + ": Finished writing into file")
+
+            else:
+                rospy.loginfo(rospy.get_name() + ": Test did not succeed, no results written")
