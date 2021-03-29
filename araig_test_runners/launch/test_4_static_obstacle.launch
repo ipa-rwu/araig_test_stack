@@ -1,4 +1,0 @@
-<launch>   
-    <!-- runner -->
-    <node pkg="araig_test_runners" type="test_4_static_obstacle" name="test_4_static_obstacle" output="screen"/>
-</launch>

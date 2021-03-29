@@ -1,6 +1,7 @@
 runner:
-    timeout_after_max_speed: 2
+    timeout_after_max_speed: 0.5
     timeout_after_complete: 3
+    timeout_check_goal: 2
 
 interpreters:
   velocity_interpreter_node: # node name

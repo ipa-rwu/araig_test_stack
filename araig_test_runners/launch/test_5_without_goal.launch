@@ -1,5 +1,0 @@
-<launch>         
-
-    <node pkg="araig_test_runners" type="test_5_without_goal" name="test_5_without_goal_node" output="screen"/>
-
-</launch>
