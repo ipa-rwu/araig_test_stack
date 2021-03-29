@@ -52,10 +52,10 @@ class BaseCalculator(object):
         IF_LOG = "/if_log"
         self.log_msg = {}
 
-        if rospy.has_param(ns + IF_LOG):
+        self.log_filename = ""
+        if rospy.has_param(ns + IF_LOG) and rospy.get_param(ns + IF_LOG) == True:
             self.log_filename = "log_" + rospy.get_name().replace('/', '') + ".yaml"
-        else:
-            self.log_filename = ""
+            
 
         self.SubDict = sub_dict
         self.PubDict = pub_dict
