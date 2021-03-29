@@ -24,30 +24,18 @@ self._output_interface = {
 }
 """
 
-class State(enum.Enum):
-    wait = 1
-    start_test = 2
-    interrupt_test = 3
-    complete_test = 4
-    check_condition = 5
-    reached_goal = 6
-
 class Test4(TestBase):
     def __init__(self, rate):
         
         extend_subscribers_dict = {
-            "goal"                  : "/signal/calc/robot_reached_goal_and_stopped",
+            "goal_and_stop"              : "/signal/calc/robot_reached_goal_and_stopped",
         }
         extend_publishers_dict = {
         }
         extend_param_list = {
-            "timeout_check_goal",
-            "timeout_after_complete",
-            "timeout_after_interrupt"
+            "goal_reach_timeout",
+            "verification_timeout",
         }
-
-        self.pre_state = None
-        self.current_state = State.wait
 
         super(Test4, self).__init__(sub_dict = extend_subscribers_dict, \
         pub_dict = extend_publishers_dict, \
@@ -55,72 +43,39 @@ class Test4(TestBase):
         rate = rate)
 
     def main(self):
-        if self.pre_state == None and self.current_state == State.wait:
-            rospy.loginfo(rospy.get_name() + ": Waiting to start...")
-            self.pre_state = State.wait
+        # Standard startup, robot started on return
+        self.standardStartupSequence()
 
-         # start test, start robot (send goal)
-        if self.current_state == State.wait and self.getSafeFlag("start_test"):
-            self.startRecordingAndWait(3)
-            rospy.loginfo(rospy.get_name() + ": Starting robot.")
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(True))
-            self.current_state = State.start_test
-            self.pre_state = State.start_test
-
-        # If interrupted
-        if self.current_state == State.start_test and self.getSafeFlag("interrupt_test"):
-            rospy.logwarn(rospy.get_name() + ": Interrupted!! Will wait for {}s".format(self.config_param['timeout_after_interrupt']))
-            rospy.sleep(self.config_param['timeout_after_interrupt'])
-            self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-            # !!! ui should publish interrupt_test to False after pub True, interrupt_test signal is event 
-            self._publishers["interrupt_test"].publish(self.buildNewBoolStamped(False))
-            self.current_state = State.complete_test
-
-        # If robot has stopped (because it found an obstacle), but maybe robot will still move
-        if self.current_state == State.start_test and self.getSafeFlag("goal"):
-            rospy.loginfo(rospy.get_name() + ": Robot has reached goal and stop, will check if robot move again in {}s".format(self.config_param['timeout_check_goal']))
-            self.current_state = State.check_condition
-        
-        # Check if robot stop and reach goal again in 2s
-        if self.pre_state == State.start_test and  \
-            self.current_state == State.check_condition:
-            if self.getSafeFlag("goal"):
-                if self.checkCondition(self.getSafeFlag("goal", header = True).stamp, \
-                    self.config_param['timeout_check_goal']):
-                    rospy.loginfo(rospy.get_name() + ": Robot has reached goal and stop.")
-                    self.current_state = State.reached_goal
-            else:
-                rospy.loginfo(rospy.get_name() + ": Robot is still moving, waiting for robot reaching goal and stop")
-                self.current_state = State.start_test
-        
-        # Test complete if robot doesn't move any more and reached the goal
-        if self.current_state == State.reached_goal:
-            rospy.loginfo(rospy.get_name() + ": Robot has reached goal, ending test in success!")
-            self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-            self.current_state = State.complete_test
-       
-        # If test complete, wait for "timeout_after_complete" s, then enable reset 
-        if self.current_state == State.complete_test and self.pre_state == State.start_test:
-            # !!! ui should set start_test to False once get test_completed, but for now runner will pub
+        # Wait until robot reaches goal
+        result = self.timedLoopFallbackOnFlags([ "goal_and_stop"], self.config_param['goal_reach_timeout'])
+        if result == self._RETURN_CASE_INTERRUPTED:
+            return
+        elif result == self._RETURN_CASE_TIMED_OUT:
+            rospy.logerr(rospy.get_name() + ": Robot did not reach goal in expected {}s, ending test in failure!!"
+                    .format(self.config_param['goal_reach_timeout']))
+            self.testFailed()
+            # TODO: Emulating UI responsibility Remove this once UI is integrated.
             self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-            rospy.sleep(self.config_param['timeout_after_complete'])
-            rospy.logwarn(rospy.get_name() + ": waiting for user to give reset signal")
-            rospy.loginfo("---------------------------------")
-            self.current_state = State.wait
-            self.pre_state = State.complete_test
+            self.waitForReset()
+            return
+        if result == 0:
+            rospy.logwarn(rospy.get_name() + ": Robot has reached goal and stopped, waiting {}s to recheck"
+                                .format(self.config_param['verification_timeout']))
+        
+        # Monitor if robot leaves goal or moves too much
+        result = self.timedLoopSequenceOnFlags([ "goal_and_stop"], self.config_param['verification_timeout'])
+        if result == self._RETURN_CASE_INTERRUPTED:
+            return
+        elif result == 0:
+            rospy.logerr(rospy.get_name() + ": Robot left goal or moved too much, ending test in failure!!")
+            self.testFailed()
+        elif result == self._RETURN_CASE_TIMED_OUT:
+            rospy.logwarn(rospy.get_name() + ": Robot stayed stopped at goal, ending test in success!!")
+            self.testSucceeded()
 
-        # If get reset signal
-        if self.current_state == State.wait and self.pre_state == State.complete_test and self.getSafeFlag("reset_test"):
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_failed"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(False))
-            # !!! ui should publish reset_test to False after pub True, reset signal is event
-            self._publishers["reset_test"].publish(self.buildNewBoolStamped(False))
-            rospy.logwarn(rospy.get_name() + ": user reset test")
-            self.pre_state = None
+        # TODO: Emulating UI responsibility Remove this once UI is integrated.
+        self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
+        self.waitForReset()
 
 if __name__ == "__main__":
     try:

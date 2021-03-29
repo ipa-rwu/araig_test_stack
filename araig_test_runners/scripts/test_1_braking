@@ -16,6 +16,7 @@ self._input_interface = {
 # pub
 self._output_interface = {
     "start_robot"          : "/signal/runner/start_robot",
+    "stop_robot"            : "/signal/runner/stop_robot",
     "test_completed"       : "/signal/runner/test_completed",
     "test_failed"          : "/signal/runner/test_failed",
     "test_succeeded"       : "/signal/runner/test_succeeded",
@@ -25,13 +26,6 @@ self._output_interface = {
 }
 """
 
-class State(enum.Enum):
-    wait = 1
-    start_test = 2
-    robot_has_max_vel = 3
-    complete_test = 4
-    check_condition = 5
-
 class Test1(TestBase):
     def __init__(self, rate):
         
@@ -39,15 +33,13 @@ class Test1(TestBase):
             "robot_has_max_vel"  : "/signal/calc/robot_has_max_vel",
         }
         extend_publishers_dict = {
-            "stop_robot"           : "/signal/runner/stop_robot",
         }
         extend_param_list = {
-            "timeout_after_max_speed",
-            "timeout_after_complete",
+            "stabilization_timeout",
+            "acceleration_timeout",
+            "verification_timeout",
+            "decceleration_timeout"
         }
-
-        self.pre_state = None
-        self.current_state = State.wait
 
         super(Test1, self).__init__(sub_dict = extend_subscribers_dict, \
         pub_dict = extend_publishers_dict, \
@@ -55,75 +47,62 @@ class Test1(TestBase):
         rate = rate)
 
     def main(self):
-        if self.pre_state == None and self.current_state == State.wait:
-            rospy.loginfo(rospy.get_name() + ": Waiting to start...")
-            self.pre_state = State.wait
-        
-        # Wait until /signal/ui/start_test received
-        if self.current_state == State.wait and self.getSafeFlag("start_test"):
-            self.startRecordingAndWait(3)
-            rospy.loginfo(rospy.get_name() + ": Starting robot.")
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(True))
-            self.current_state = State.start_test
-            self.pre_state = State.start_test
-        
-        # If robot has reached max velocity, but need to check if it really reached
-        if self.current_state == State.start_test and self.getSafeFlag("robot_has_max_vel"):
-            rospy.loginfo(rospy.get_name() + ": Robot has max velocity, after waiting for {}s, check again.".format(self.config_param['timeout_after_max_speed']))
-            self.current_state = State.check_condition
-        
-        if self.pre_state == State.start_test and  \
-            self.current_state == State.check_condition:
-            if self.getSafeFlag("robot_has_max_vel"):
-                if self.checkCondition(self.getSafeFlag("robot_has_max_vel", header = True).stamp, \
-                    self.config_param['timeout_after_max_speed']):
-                    rospy.loginfo(rospy.get_name() + ": Robot has reached max velocity, stopping now.")
-                    # Stop robot
-                    self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-                    self._publishers["stop_robot"].publish(self.buildNewBoolStamped(True))
-                    self.current_state = State.robot_has_max_vel
-            else:
-                rospy.loginfo(rospy.get_name() + ": Robot did not keep max velocity, waiting for robot reach again")
-                self.current_state = State.start_test
+        # Standard startup, robot started on return
+        self.standardStartupSequence()
 
-        #  Wait until robot actually stops
-        if self.current_state == State.robot_has_max_vel and self.getSafeFlag("robot_has_stopped"):
-            rospy.loginfo(rospy.get_name() + ": Robot has completely stopped. Test succeeded and completed!")
-            # Set test succeeded & test completed true
-            self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-            self.current_state = State.complete_test
+        # Sleep for some time to allow speed burst to settle
+        if self.sleepUninterruptedFor(self.config_param['stabilization_timeout']) == self._RETURN_CASE_INTERRUPTED:
+            return
 
-        # If interrupted
-        if self.getSafeFlag("interrupt_test") and self.pre_state == State.start_test:
-            rospy.logwarn(rospy.get_name() + ": Interrupted!! Test failed")
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
-            # !!! ui should publish interrupt_test to False after pub True, interrupt_test signal is event 
-            self._publishers["interrupt_test"].publish(self.buildNewBoolStamped(False))
-            self.current_state = State.complete_test
-
-        # If test complete, wait for "timeout_after_complete" s, then enable reset 
-        if self.current_state == State.complete_test and self.pre_state == State.start_test:
-            # !!! ui should set start_test to False once get test_completed, but for now runner will pub
+        # Wait for robot to reach max_vel
+        rospy.logwarn(rospy.get_name() + ": Waiting {}s for robot to reach max vel"
+                        .format(self.config_param['acceleration_timeout']))
+        result = self.timedLoopFallbackOnFlags(["robot_has_max_vel"], self.config_param['acceleration_timeout']) 
+        if result == self._RETURN_CASE_INTERRUPTED:
+            return
+        elif result == self._RETURN_CASE_TIMED_OUT:
+            rospy.logwarn(rospy.get_name() + ": Robot did not reach max vel in expected time, ending test in failure!!")
+            self.stopRobot()
+            # TODO: Emulating UI responsibility Remove this once UI is integrated.
             self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-            rospy.sleep(self.config_param['timeout_after_complete'])
-            rospy.logwarn(rospy.get_name() + ": waiting for user to give reset signal")
-            rospy.loginfo("---------------------------------")
-            self.current_state = State.wait
-            self.pre_state = State.complete_test
+            self.testFailed()
+            self.waitForReset()
+            return
 
-        if self.current_state == State.wait and self.pre_state == State.complete_test and self.getSafeFlag("reset_test"):
-            self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
-            self._publishers["stop_robot"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_failed"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(False))
-            self._publishers["test_completed"].publish(self.buildNewBoolStamped(False))
-            # !!! ui should set reset_test to False after set to True, reset signal is an event
-            self._publishers["reset_test"].publish(self.buildNewBoolStamped(False))
-            rospy.logwarn(rospy.get_name() + ": user has reset test")
-            self.pre_state = None
+        # Wait for some time to check again if robot still has max vel
+        rospy.logwarn(rospy.get_name() + ": Robot has reached max veloctiy, waiting {}s to check again"
+                        .format(self.config_param['verification_timeout']))
+        if self.sleepUninterruptedFor(self.config_param['verification_timeout']) == self._RETURN_CASE_INTERRUPTED:
+            return
+
+        # Check again if robot still has max_vel.
+        if self.getSafeFlag("robot_has_max_vel"):
+            rospy.logwarn(rospy.get_name() + ": Robot maintained max vel, so now stopping it")
+            # Stop robot
+            self.stopRobot()
+            # Wait until robot actually stops
+            result = self.timedLoopFallbackOnFlags(["robot_has_stopped"], self.config_param['decceleration_timeout'])
+            if result == self._RETURN_CASE_INTERRUPTED:
+                return
+            elif result == self._RETURN_CASE_TIMED_OUT:
+                rospy.logerr(rospy.get_name() + ": Robot did not stop in expected {}s, ending test in failure!!"
+                        .format(self.config_param['decceleration_timeout']))
+                self.stopRobot()
+                self.testFailed()
+            else:
+                rospy.logwarn(rospy.get_name() + ": Robot has completely stopped. Test succeeded!")
+                self.testSucceeded()
+        else :
+            # Not maintaining max_vel is considered a failure condition. This can be removed if not desired.
+            rospy.logwarn(rospy.get_name() + ": Robot did not maintain max_vel. Teset failed!")
+            self.stopRobot()
+            self.testFailed()
+
+        # TODO: Emulating UI responsibility Remove this once UI is integrated.
+        self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
+        # Once teset completed, wait for reset
+        self.waitForReset()
+        return
 
 if __name__ == "__main__":
     try:

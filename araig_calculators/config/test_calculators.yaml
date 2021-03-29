@@ -1,5 +1,19 @@
+runner:
+    start_logging_offset: 2
+    stabilization_timeout: 0.25
+    acceleration_timeout: 0.5
+    verification_timeout: 0.25
+    decceleration_timeout: 4
+    goal_reach_timeout: 10
+    emergency_wait_timeout: 3.5
+
+interpreters:
+  velocity_interpreter_node: # node name
+    max_vel: 0.8
+    rate: 100
+
 calculators:
-  dest_dir: ""
+  dest_dir: "" # Need to fill in the full path for dest dir of all logs here
   robot_type: "turtlebot3_sim"
   test_type: "test1_braking"
 
