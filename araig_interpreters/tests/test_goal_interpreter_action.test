@@ -7,7 +7,9 @@
 
     <node pkg="araig_interpreters" type="goal_interpreter" name="goal_interpreter" output="screen">
         <remap from="/start" to="/test/start"/>
-        <remap from="/goal" to="/test/goal"/>    
+        <remap from="/goal" to="/test/goal"/>  
+        <remap from="/result" to="/move_base/result"/>  
+        <remap from="/done" to="/test/done"/>    
     </node>
 
 </launch>
