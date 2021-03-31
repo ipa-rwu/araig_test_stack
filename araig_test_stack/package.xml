@@ -15,7 +15,8 @@
   <exec_depend>araig_interpreters</exec_depend>
   <exec_depend>araig_msgs</exec_depend>
   <exec_depend>araig_test_runners</exec_depend>
-
+  <exec_depend>turtlebot3_sim_tests</exec_depend>
+  
   <export>
     <metapackage/>
   </export>
