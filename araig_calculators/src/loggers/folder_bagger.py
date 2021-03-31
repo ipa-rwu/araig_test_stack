@@ -41,9 +41,15 @@ class FolderBagger(BaseLogger):
             self.node_name + "/start_offset",
             self.node_name + "/stop_offset",
             self.node_name + "/blacklist",
+            self.node_name + "/whitelist",
             "/test_type"]
 
         super(FolderBagger, self).__init__(sub_dict= extend_subscribers_dict, param_list = param_list)
+
+        # Default whitelist topics that should always be recorded for every test
+        self.whitelist = ["/signal/", "/data", "usb_cam", "/tf"]
+        # Optional whitelist topics that are test specific
+        self.whitelist = self.whitelist + self.config_param[self.node_name + "/whitelist"]
 
         try:
             while not rospy.is_shutdown():
@@ -57,12 +63,13 @@ class FolderBagger(BaseLogger):
         topics_string = ""
 
         for topic,msg in list_of_topics:
-            topic_allowed = True
+            topic_allowed = False
+            for white_string in self.whitelist:
+                if white_string in topic:
+                    topic_allowed = True
+                    break
             for black_string in self.config_param[self.node_name + "/blacklist"]:
                 if black_string in topic:
-                    rospy.logwarn(rospy.get_name()
-                    + " Ignoring topic {} since it is blocked by the entry {} in blacklist"
-                    .format(topic, black_string))
                     topic_allowed = False
                     break
             if topic_allowed:
