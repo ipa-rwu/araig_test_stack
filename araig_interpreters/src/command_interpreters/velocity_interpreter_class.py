@@ -33,7 +33,7 @@ class VelocityInterpreterClass():
                 self.pub_topic, 
                 Twist, 
                 queue_size=10,
-                latch = True
+                latch = False
             )
 
     def callback_start(self, msg, args):
