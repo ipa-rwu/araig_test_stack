@@ -117,7 +117,7 @@ class BaseLogger(object):
                     self.config_param[arg] = rospy.get_param(ns + arg)
             else:
                 rospy.logerr("{}: {} param not set!!".format(ns, arg))
-                rospy.signal_shutdown()
+                rospy.signal_shutdown("param not set")
 
     def logScreenFile(self, log_msg):
         if self.config_param[rospy.get_name() + "/screen"]:
