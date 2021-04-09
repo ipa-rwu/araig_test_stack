@@ -91,12 +91,12 @@ class FolderBagger(BaseLogger):
         if start == True and stop == False:
             now = datetime.now()
             dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
-
             folder_name = get_folder_name(self.pathFolder)
-            create_folder(folder_name)
 
             rospy.loginfo(rospy.get_name() + ": Start received. Sleep {}s to prepare..."
                 .format(self.config_param[self.node_name + "/start_offset"]))
+            create_folder(folder_name)
+
             rospy.sleep(self.config_param[self.node_name + "/start_offset"])
 
             currentFolder = self.getSubFolder()
