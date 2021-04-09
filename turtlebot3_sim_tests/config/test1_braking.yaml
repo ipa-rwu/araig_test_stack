@@ -1,6 +1,9 @@
 runner:
-  timeout_after_max_speed: 2
-  timeout_after_complete: 3
+  start_logging_offset: 10
+  stabilization_timeout: 0.25
+  acceleration_timeout: 2
+  verification_timeout: 0.25
+  decceleration_timeout: 2
     
 interpreters:
   velocity_interpreter_node: # node name 
@@ -8,7 +11,7 @@ interpreters:
     rate: 100
 
 calculators:
-  dest_dir: ""
+  dest_dir: "/home/tejas/ARAIG"
   robot_type: "turtlebot3_sim"
   test_type: "test1_braking"
 
@@ -39,22 +42,13 @@ calculators:
       - /data/calc/braking_distance
 
   folder_bagger_node:
-    start_offset: 1 # sleep after creating folder
-    stop_offset: 2 # sleep before killing
+    start_offset: 2 # Wait these many seconds before killing
+    stop_offset: 2 # Wait these many seconds before killing
+    whitelist:
+    # Default whitelist: ["/signal/", "/data", "usb_cam", "/tf"]
+    # Any topics which have one of these STRINGS in them will be added to the whitelist for recording,
+      - hedge
+      - ros
     blacklist:
-      - /sensor_usb_cam/image_raw/compressed/parameter_updates
-      - /sensor_usb_cam/image_raw/compressed/parameter_descriptions
-      - /sensor_usb_cam/image_raw/compressedDepth
-      - /sensor_usb_cam/image_raw/compressedDepth/parameter_descriptions
-      - /sensor_usb_cam/image_raw/compressedDepth/parameter_updates
-      - /sensor_usb_cam/image_raw/theora
-      - /sensor_usb_cam/image_raw/theora/parameter_descriptions
-      - /sensor_usb_cam/image_raw/theora/parameter_updates
-      - /sensor_usb_cam2/image_raw/compressed/parameter_updates
-      - /sensor_usb_cam2/image_raw/compressed/parameter_descriptions
-      - /sensor_usb_cam2/image_raw/compressedDepth
-      - /sensor_usb_cam2/image_raw/compressedDepth/parameter_descriptions
-      - /sensor_usb_cam2/image_raw/compressedDepth/parameter_updates
-      - /sensor_usb_cam2/image_raw/theora
-      - /sensor_usb_cam2/image_raw/theora/parameter_descriptions
-      - /sensor_usb_cam2/image_raw/theora/parameter_updates
+    # Any WHITELISTED topics which have one of these STRINGS in them will be rejected for recording
+      - compressed

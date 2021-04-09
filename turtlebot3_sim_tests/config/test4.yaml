@@ -1,7 +1,7 @@
 runner:
-  timeout_check_goal: 2
-  timeout_after_complete: 3
-  timeout_after_interrupt: 10
+  start_logging_offset: 2
+  verification_timeout: 0.25
+  goal_reach_timeout: 20
   
 interpreters: 
   goal:
@@ -17,7 +17,7 @@ interpreters:
   rate: 100
 
 calculators:
-  dest_dir: ""
+  dest_dir: "/home/tejas/ARAIG"
   robot_type: "turtlebot3_sim"
   test_type: "test4_nav"
 
@@ -50,22 +50,14 @@ calculators:
       - /data/calc/goal_time
 
   folder_bagger_node:
-    start_offset: 1 # sleep after creating folder
-    stop_offset: 2 # sleep before killing
+    start_offset: 2 # Wait these many seconds before killing
+    stop_offset: 2 # Wait these many seconds before killing
+    whitelist:
+    # Default whitelist: ["/signal/", "/data", "usb_cam", "/tf"]
+    # Any topics which have one of these STRINGS in them will be added to the whitelist for recording,
+      - hedge
+      - ros
+      - move_base
     blacklist:
-      - /sensor_usb_cam/image_raw/compressed/parameter_updates
-      - /sensor_usb_cam/image_raw/compressed/parameter_descriptions
-      - /sensor_usb_cam/image_raw/compressedDepth
-      - /sensor_usb_cam/image_raw/compressedDepth/parameter_descriptions
-      - /sensor_usb_cam/image_raw/compressedDepth/parameter_updates
-      - /sensor_usb_cam/image_raw/theora
-      - /sensor_usb_cam/image_raw/theora/parameter_descriptions
-      - /sensor_usb_cam/image_raw/theora/parameter_updates
-      - /sensor_usb_cam2/image_raw/compressed/parameter_updates
-      - /sensor_usb_cam2/image_raw/compressed/parameter_descriptions
-      - /sensor_usb_cam2/image_raw/compressedDepth
-      - /sensor_usb_cam2/image_raw/compressedDepth/parameter_descriptions
-      - /sensor_usb_cam2/image_raw/compressedDepth/parameter_updates
-      - /sensor_usb_cam2/image_raw/theora
-      - /sensor_usb_cam2/image_raw/theora/parameter_descriptions
-      - /sensor_usb_cam2/image_raw/theora/parameter_updates
+    # Any WHITELISTED topics which have one of these STRINGS in them will be rejected for recording
+      - compressed
