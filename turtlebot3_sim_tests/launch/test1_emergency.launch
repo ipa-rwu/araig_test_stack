@@ -9,6 +9,7 @@
 <!-- interpreters -->
     <node pkg="araig_interpreters" type="velocity_interpreter" name="velocity_interpreter_node" output="screen">
         <remap from="/start" to="/signal/runner/start_robot"/>
+        <remap from="/stop" to="/signal/runner/stop_robot"/>
         <remap from="/velocity" to="/cmd_vel"/>    
     </node>
 
