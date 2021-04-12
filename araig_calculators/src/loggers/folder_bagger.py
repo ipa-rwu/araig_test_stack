@@ -124,3 +124,11 @@ class FolderBagger(BaseLogger):
                 elif self.getSafeFlag("test_succeeded"):
                     os.rename(folder_name, folder_name + "_" + dt_string + "_succeeded")
                     rospy.loginfo(rospy.get_name() + ": Test succeeded, rename folder")
+
+        rospy.loginfo(rospy.get_name() + ": Waiting for trigger signals to reset")
+        # Wait for stop and start to go low
+        while (stop or start) and not rospy.is_shutdown():
+                self._rate.sleep()
+                stop = self.getSafeFlag("stop")
+                start = self.getSafeFlag("start")
+        rospy.loginfo(rospy.get_name() + ": Resetting.")
