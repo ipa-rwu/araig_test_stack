@@ -1,0 +1,32 @@
+<launch>        
+
+    <rosparam command="load" file="$(find araig_calculators)/config/test_calculators.yaml" />
+
+    <include  file="$(find araig_calculators)/launch/test_folder_bagger.launch" />
+
+    <node pkg="araig_calculators" type="pose_series_logger_node" name="robot_pose_logger" output="screen" >
+        <remap from="/start" to="/signal/runner/start_robot"/>
+        <remap from="/stop" to="/signal/runner/test_completed"/>
+        <remap from ="/in_pose_stamped" to="/data/interpreter/location/robot" />
+    </node>
+
+    <!-- pub fake robot_location  -->
+    <node pkg="rostopic" type="rostopic" name="obstacle_location_node" args="pub -r 10 /data/interpreter/location/robot geometry_msgs/PoseStamped
+    '{
+        header:{
+            frame_id: '/map'
+        },
+        pose:{
+            position: {
+                x: 0.4,
+                y: 0.3,
+                z: 0.2},
+            orientation: {
+                x: 0.7071068,
+                y: 0.0,
+                z: 0.0,
+                w: 0.7071068}
+                }
+        }'"/>
+
+</launch>
