@@ -54,3 +54,23 @@ calculators:
     logginng_topics:
       - /data/calc/braking_time
       - /data/calc/braking_distance
+
+  speed_logger:
+    start_offset: 1.5 # Must be longer than folder bagger, since this tends to be created first.
+    stop_offset: 0.1
+    logged_data_title: "robot_speed"
+    column_headers: ["Time", "Speed"]
+
+  robot_pose_logger:
+    start_offset: 1.5 # Must be longer than folder bagger, since this tends to be created first.
+    stop_offset: 0.1
+    logged_data_title: "robot_pose"
+    column_headers: ["Time", "Seq",
+                              "Pose.Position.x",
+                              "Pose.Position.y",
+                              "Pose.Position.z",
+                              "Pose.Orientation.x",
+                              "Pose.Orientation.y",
+                              "Pose.Orientation.z",
+                              "Pose.Orientation.w",
+                              "Roll(deg)", "Pitch(deg)", "Yaw(deg)"]

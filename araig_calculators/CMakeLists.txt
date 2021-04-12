@@ -19,6 +19,8 @@ catkin_install_python(PROGRAMS
    scripts/comp_poses_node
    scripts/comp_topics_node
    scripts/folder_bagger_node
+   scripts/float_series_logger_node
+   scripts/pose_series_logger_node
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
