@@ -104,9 +104,9 @@ class BaseLogger(object):
             size = len(os.listdir(self.pathFolder))
             num = str(size)
             currentFolder = self.pathFolder + num
-            return currentFolder
         except OSError:
             rospy.logerr_once("%s: Can't find the folder: %s", rospy.get_name(), currentFolder)
+        return currentFolder
     
     def getConfig(self, param_list):
         for arg in param_list:
