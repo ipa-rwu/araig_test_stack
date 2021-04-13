@@ -65,3 +65,17 @@ calculators:
     blacklist:
     # Any WHITELISTED topics which have one of these STRINGS in them will be rejected for recording
       - compressed
+
+  robot_pose_logger:
+    start_offset: 1.5 # Must be longer than folder bagger, since this tends to be created first.
+    stop_offset: 0.1
+    logged_data_title: "robot_pose"
+    column_headers: ["Time", "Seq",
+                              "Pose.Position.x",
+                              "Pose.Position.y",
+                              "Pose.Position.z",
+                              "Pose.Orientation.x",
+                              "Pose.Orientation.y",
+                              "Pose.Orientation.z",
+                              "Pose.Orientation.w",
+                              "Roll(deg)", "Pitch(deg)", "Yaw(deg)"]
