@@ -74,3 +74,10 @@ class ResultsLoggerClass(BaseLogger):
 
             else:
                 rospy.loginfo(rospy.get_name() + ": Test did not succeed, no results written")
+
+        # Wait for stop and start to go low
+        while (stop or start) and not rospy.is_shutdown():
+                self._rate.sleep()
+                stop = self.getSafeFlag("stop")
+                start = self.getSafeFlag("start")
+        rospy.loginfo(rospy.get_name() + ": Resetting.")
