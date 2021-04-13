@@ -1,6 +1,9 @@
 <launch>        
 
-    <rosparam command="load" file="$(find araig_calculators)/config/test_calculators.yaml" />
+    <arg name="dest_dir" default="$(env HOME)/ARAIG" />
+
+    <rosparam command="load" file="$(find turtlebot3_sim_tests)/config/test1_braking.yaml" />
+    <param name="/calculators/dest_dir" value="$(arg dest_dir)" />
 
     <include  file="$(find araig_calculators)/launch/test_folder_bagger.launch" />
 
