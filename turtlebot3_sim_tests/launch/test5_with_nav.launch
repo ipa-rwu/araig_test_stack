@@ -1,8 +1,10 @@
 <launch>   
 <!-- run rostest 1 -->
     <arg name="test" default="1"/>
+    <arg name="dest_dir" default="$(env HOME)/ARAIG" />
 
-    <rosparam command="load" file="$(find turtlebot3_sim_tests)/config/test5_with_nav.yaml" />
+    <rosparam command="load" file="$(find turtlebot3_sim_tests)/config/test1_braking.yaml" />
+    <param name="/calculators/dest_dir" value="$(arg dest_dir)" />
 
 <!-- test runner -->
     <node pkg="araig_test_runners" type="test_5_with_nav" name="test_5_with_nav_runner" output="screen">
