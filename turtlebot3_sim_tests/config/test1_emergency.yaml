@@ -50,3 +50,9 @@ calculators:
     blacklist:
     # Any WHITELISTED topics which have one of these STRINGS in them will be rejected for recording
       - compressed
+
+  robot_speed_logger:
+    start_offset: 1.5 # Must be longer than folder bagger, since this tends to be created first.
+    stop_offset: 0.1
+    logged_data_title: "robot_speed" # Used to name the file
+    column_headers: ["Time", "Speed"]

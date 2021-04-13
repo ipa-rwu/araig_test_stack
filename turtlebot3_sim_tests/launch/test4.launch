@@ -77,7 +77,17 @@
         <remap from="/test_succeeded" to="/signal/runner/test_succeeded"/>
     </node>
 
+    <!-- Pose logger -->
+    <node pkg="araig_calculators" type="pose_series_logger_node" name="robot_pose_logger" output="screen">
+        <remap from="/start" to="/signal/ui/start_test"/>
+        <remap from="/stop" to="/signal/runner/test_completed"/>
+        <remap from="/in_pose_stamped" to="/data/interpreter/location/robot"/>
+    </node>
+
+    <!-- RQT Multiplotter -->
     <node name="plotter" type="rqt_multiplot" pkg="rqt_multiplot"
         args="--multiplot-config $(find turtlebot3_sim_tests)/config/plotter/speed_position.xml --multiplot-run-all">
     </node>
+
 </launch>
+
