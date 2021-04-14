@@ -6,24 +6,34 @@ import rostest
 import rospy
 from  araig_msgs.msg import BoolStamped
 import os
+
 class TestFolderLogger(unittest.TestCase):
 
     def setUp(self):
         _pub_topic_start = '/test/start'
         _pub_topic_stop = '/test/stop'
+        _pub_topic_success = '/test/test_succeeded'
+        _pub_topic_fail = '/test/test_failed'      
 
         rospy.init_node('test_folder_logger', anonymous=True)
         self.pub_start = rospy.Publisher(_pub_topic_start, BoolStamped, latch=True, queue_size=10)
         self.pub_stop = rospy.Publisher(_pub_topic_stop, BoolStamped, latch=True, queue_size=10)
+        self.pub_success = rospy.Publisher(_pub_topic_success, BoolStamped, latch=True, queue_size=10)
+        self.pub_fail = rospy.Publisher(_pub_topic_fail, BoolStamped, latch=True, queue_size=10)
 
-        while (not rospy.has_param("/calculators/dest_dir") and \
-            not rospy.has_param("/calculators/robot_type") and \
-            not rospy.has_param("/calculators/test_type")):
+        module = "/calculators"
+
+        while (not rospy.has_param(module + "/robot_type") and \
+            not rospy.has_param(module + "/test_type")):
             time.sleep(0.1)
-        
-        self.dest_dir = rospy.get_param("/calculators/dest_dir")
-        self.robot_type = rospy.get_param("/calculators/robot_type")
-        self.test_type = rospy.get_param("/calculators/test_type")
+                
+        if (not rospy.has_param(module + "/dest_dir") or rospy.get_param(module + "/dest_dir") == "") :
+            self.dest_dir = os.path.expanduser("~")
+        else:
+            self.dest_dir = rospy.get_param(module + "/dest_dir")
+
+        self.robot_type = rospy.get_param(module + "/robot_type")
+        self.test_type = rospy.get_param(module + "/test_type")
         
         self.i = 0
 
@@ -36,7 +46,7 @@ class TestFolderLogger(unittest.TestCase):
             pub_msg.data = True
             self.pub_start.publish(pub_msg)
 
-            rospy.sleep(1)
+            rospy.sleep(3)
             if os.listdir(self.path):
                 self.result = True
             else:
@@ -44,11 +54,7 @@ class TestFolderLogger(unittest.TestCase):
 
             self.assertTrue(self.result, msg='there is no folder')
 
-            for i in os.listdir(self.path):
-                print(i)
-                os.rmdir(self.path + i)
-
-            rospy.sleep(1)
+            rospy.sleep(2)
             pub_msg.header.stamp = rospy.Time.now()
             pub_msg.data = False
             self.pub_start.publish(pub_msg)
@@ -62,10 +68,25 @@ class TestFolderLogger(unittest.TestCase):
             pub_msg.header.stamp = rospy.Time.now()
             pub_msg.data = False
             self.pub_stop.publish(pub_msg)
+            
+            rospy.sleep(1)
+            pub_msg.header.stamp = rospy.Time.now()
+            pub_msg.data = True
+            self.pub_success.publish(pub_msg)
 
+            rospy.sleep(3)
+            for i in os.listdir(self.path):
+                try:
+                    os.rmdir(self.path + i)
+                except:
+                    files = os.listdir(self.path + i)
+                    for f in files:
+                        os.remove(os.path.join(self.path + i, f))
+                        os.rmdir(self.path + i)
             self.i += 1
+
 
 if __name__ == '__main__':
     pkg = 'araig_calculators'
-    name = 'test_folder_logger'
+    name = 'test_folder_bagger'
     rostest.rosrun(pkg, name, TestFolderLogger)

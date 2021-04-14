@@ -1,0 +1,15 @@
+<launch>
+
+    <rosparam command="load" file="$(find araig_calculators)/config/test_calculators.yaml" />
+
+    <node pkg="araig_calculators" type="folder_bagger_node" name="test_folder_bagger_node" output="screen">
+        <remap from="/start" to="/test/start"/>
+        <remap from="/stop" to="/test/stop"/>
+        <remap from="/test_failed" to="/test/test_failed"/>
+        <remap from="/test_succeeded" to="/test/test_succeeded"/>
+    </node>
+
+    <test test-name="test_folder_logger" pkg="araig_calculators" type="test_folder_bagger_node.py">
+    </test>
+
+</launch>
