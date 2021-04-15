@@ -36,6 +36,7 @@ class Test5NoNav(TestBase):
         }
         extend_param_list = {
             "goal_reach_timeout",
+            "verification_timeout",
         }
 
         super(Test5NoNav, self).__init__(sub_dict = extend_subscribers_dict, \
@@ -46,7 +47,13 @@ class Test5NoNav(TestBase):
     def main(self):
         # Standard startup, robot started on return
         self.standardStartupSequence()
-            
+
+        # Sleep a short duration to allow robot to start moving, in order not to get premature robot stopped signal
+        rospy.loginfo(rospy.get_name() + ": Sleeping {}s for robo to start moving"
+                                .format(self.config_param['verification_timeout']))
+        if self.sleepUninterruptedFor(self.config_param['verification_timeout']) == self._RETURN_CASE_INTERRUPTED:
+            return
+
         # Once robot starts moving, there are 4 completion conditions:
         # 1. Fail if robot collides with obstacle
         # 2. Fail if interrupted by user
