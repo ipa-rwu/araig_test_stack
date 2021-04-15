@@ -8,7 +8,7 @@ interpreters:
     rate: 100
 
 calculators:
-  dest_dir: "/home/tejas/ARAIG"
+  dest_dir: ""
   robot_type: "turtlebot3_sim"
   test_type: "test5_without_nav"
 
