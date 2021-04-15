@@ -28,7 +28,7 @@ calculators:
   test_comp_topics_node: # node name 
     tolerance: 0
 
-  test_bagger:
+  test_folder_bagger_node:
     start_offset: 2 # Wait these many seconds before killing
     stop_offset: 2 # Wait these many seconds before killing
     whitelist:

@@ -5,6 +5,7 @@ from araig_msgs.msg import BoolStamped, Float64Stamped
 import threading
 import sys
 import os
+
 class BaseLogger(object):
     def __init__(self, sub_dict = {}, result_list = [], param_list = [], rate = 100):
         self._rate = rospy.Rate(rate)
@@ -75,11 +76,11 @@ class BaseLogger(object):
 
         module_name = "/calculators"
 
-        if rospy.has_param(module_name + DEST_DIR):
-            dest_dir = rospy.get_param(module_name + DEST_DIR)
+        if not rospy.has_param(module_name + DEST_DIR) or rospy.get_param(module_name + DEST_DIR) == "":
+            dest_dir = os.path.expanduser("~") + "/ARAIG"
+            rospy.logwarn("{} param not set!!, will use {}".format(module_name + DEST_DIR, dest_dir))     
         else:
-            rospy.logerr("{} param not set!!".format(module_name + DEST_DIR))
-            sys.exit()
+            dest_dir = rospy.get_param(module_name + DEST_DIR)
 
         if not os.path.exists(dest_dir):    
             rospy.logwarn(rospy.get_name() + ": " + dest_dir + " did not exist, trying to create it. Verify it exists before continuing.")
