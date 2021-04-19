@@ -4,7 +4,7 @@ import rospy
 import subprocess, shlex
 from araig_msgs.msg import BoolStamped
 from base_classes.base_logger import BaseLogger
-from base_classes.base import create_logging_folder, get_sub_folder, get_root_folder
+from base_classes.base import create_logging_folder, get_sub_folder, get_root_folder, create_file
 import threading
 from datetime import datetime
 import os
@@ -102,10 +102,10 @@ class FolderBagger(BaseLogger):
             
             rospy.sleep(self.config_param[self.node_name + "/start_offset"])
 
-            currentFolder = get_sub_folder()
+            current_folder = get_sub_folder()
 
             topics_string = self.prepare_topics()
-            command = "rosbag record -o " + currentFolder + "/" + self.config_param["/test_type"] + " " + topics_string
+            command = "rosbag record -o " + current_folder + "/" + self.config_param["/test_type"] + " " + topics_string
 
             self.startCommandProc(command)
 
@@ -123,11 +123,11 @@ class FolderBagger(BaseLogger):
                 self.killCommandProc()
                 rospy.sleep(0.5) # Sleep again to let process die properly
                 if self.getSafeFlag("test_failed"):
-                    os.rename(folder_name, folder_name + "_" + dt_string + "_failed")
-                    rospy.loginfo(rospy.get_name() + ": Test failed, rename folder")
+                    create_file(current_folder, "failed_" + dt_string)
+                    rospy.loginfo(rospy.get_name() + ": Test failed, create file " + "failed_" + dt_string)
                 elif self.getSafeFlag("test_succeeded"):
-                    os.rename(folder_name, folder_name + "_" + dt_string + "_succeeded")
-                    rospy.loginfo(rospy.get_name() + ": Test succeeded, rename folder")
+                    create_file(current_folder, "succeeded_" + dt_string)
+                    rospy.loginfo(rospy.get_name() + ": Test succeeded, create file " + "succeeded_" + dt_string)
 
         rospy.loginfo(rospy.get_name() + ": Waiting for trigger signals to reset")
         # Wait for stop and start to go low

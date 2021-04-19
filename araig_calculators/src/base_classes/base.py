@@ -68,6 +68,9 @@ def get_sub_folder():
         num = str(len(os.listdir(root)))
     else:
         rospy.logerr("{}: Can't find folder {}, Please create it manually.".format(rospy.get_name(), root))
-        
+
     current_folder = root + num
     return current_folder
+
+def create_file(folder, filename):
+    with open(folder + "/" + filename, mode='a'): pass
