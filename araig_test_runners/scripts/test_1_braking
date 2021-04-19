@@ -62,10 +62,9 @@ class Test1(TestBase):
             return
         elif result == self._RETURN_CASE_TIMED_OUT:
             rospy.logwarn(rospy.get_name() + ": Robot did not reach max vel in expected time, ending test in failure!!")
-            self.stopRobot()
+            self.testFailed()
             # TODO: Emulating UI responsibility Remove this once UI is integrated.
             self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-            self.testFailed()
             self.waitForReset()
             return
 
@@ -87,7 +86,6 @@ class Test1(TestBase):
             elif result == self._RETURN_CASE_TIMED_OUT:
                 rospy.logerr(rospy.get_name() + ": Robot did not stop in expected {}s, ending test in failure!!"
                         .format(self.config_param['decceleration_timeout']))
-                self.stopRobot()
                 self.testFailed()
             else:
                 rospy.logwarn(rospy.get_name() + ": Robot has completely stopped. Test succeeded!")
@@ -95,7 +93,6 @@ class Test1(TestBase):
         else :
             # Not maintaining max_vel is considered a failure condition. This can be removed if not desired.
             rospy.logwarn(rospy.get_name() + ": Robot did not maintain max_vel. Teset failed!")
-            self.stopRobot()
             self.testFailed()
 
         # TODO: Emulating UI responsibility Remove this once UI is integrated.

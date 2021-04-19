@@ -145,17 +145,18 @@ class TestBase(object):
         self.startRobot()
 
     def testCompleted(self):
+        self.stopRobot()
         self._publishers["test_completed"].publish(self.buildNewBoolStamped(True))
 
     def testSucceeded(self):
+        self.testCompleted()
         self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(True))
         self._publishers["test_failed"].publish(self.buildNewBoolStamped(False))
-        self.testCompleted()
 
     def testFailed(self):
+        self.testCompleted()
         self._publishers["test_failed"].publish(self.buildNewBoolStamped(True))
         self._publishers["test_succeeded"].publish(self.buildNewBoolStamped(False))
-        self.testCompleted()
 
     # TODO: These functions can eventually be used as "nodes" in a Behaviour Tree like structure
     def waitForReset(self):

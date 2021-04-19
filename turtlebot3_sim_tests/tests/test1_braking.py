@@ -87,7 +87,7 @@ class Test1Braking(unittest.TestCase):
             delta= 0.0)
 
             # pub /signal/ui/reset_test
-            rospy.sleep(5)
+            rospy.sleep(10)
             pub_msg.data = True
             pub_msg.header.stamp = rospy.Time.now()
             self.pub_reset.publish(pub_msg)
@@ -133,7 +133,7 @@ class Test1Braking(unittest.TestCase):
             msg = 'Test{}: Test_Failed should be True, but get {}'.format(self.counter, self.result_failed))
 
             # pub /signal/ui/reset_test
-            rospy.sleep(5)
+            rospy.sleep(10)
             pub_msg.header.stamp = rospy.Time.now()
             self.pub_reset.publish(pub_msg)
             rospy.sleep(1)

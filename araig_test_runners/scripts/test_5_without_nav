@@ -76,7 +76,6 @@ class Test5NoNav(TestBase):
 
         # TODO: Emulating UI responsibility Remove this once UI is integrated.
         self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
-        self.stopRobot()
         self.waitForReset()
         return
 
