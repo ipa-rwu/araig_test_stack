@@ -2,6 +2,7 @@
 import rospy
 import yaml
 from base_classes.base_logger import BaseLogger
+from base_classes.base import get_sub_folder, check_folder
 from araig_msgs.msg import Float64Stamped
 import threading
 
@@ -57,17 +58,17 @@ class ResultsLoggerClass(BaseLogger):
         if start == True and stop == True:
             if test_succeeded == True:
                 rospy.sleep(self.config_param[self.node_name + "/start_offset"])
-                currentFolder = self.getSubFolder()
-                filename = currentFolder + "/result.yaml"
-                rospy.loginfo(rospy.get_name() + ": Test succeeded, writing results into {}..."
-                    .format(filename))
                 result = {}
-
                 for topic in self.result_topics_list:
                     result[topic] = self.getSafeFlag(topic)
 
-                with open(filename, 'w+') as yaml_file:
-                    yaml.dump(result, yaml_file, default_flow_style=False)
+                folder = get_sub_folder()
+                if check_folder(folder):
+                    filename = folder + "/result.yaml"
+                    rospy.loginfo(rospy.get_name() + ": Test succeeded, writing results into {}..."
+                        .format(filename))
+                    with open(filename, 'w+') as yaml_file:
+                        yaml.dump(result, yaml_file, default_flow_style=False)
 
                 rospy.sleep(self.config_param[self.node_name + "/stop_offset"])
                 rospy.loginfo(rospy.get_name() + ": Finished writing into file")

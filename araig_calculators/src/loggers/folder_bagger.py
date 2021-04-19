@@ -4,6 +4,7 @@ import rospy
 import subprocess, shlex
 from araig_msgs.msg import BoolStamped
 from base_classes.base_logger import BaseLogger
+from base_classes.base import create_logging_folder, get_sub_folder, get_root_folder
 import threading
 from datetime import datetime
 import os
@@ -91,15 +92,18 @@ class FolderBagger(BaseLogger):
         if start == True and stop == False:
             now = datetime.now()
             dt_string = now.strftime("%d_%m_%Y_%H_%M_%S")
-            folder_name = get_folder_name(self.pathFolder)
 
+            root_folder = get_root_folder()
+            
             rospy.loginfo(rospy.get_name() + ": Start received. Sleep {}s to prepare..."
                 .format(self.config_param[self.node_name + "/start_offset"]))
-            create_folder(folder_name)
-
+            
+            create_logging_folder(root_folder)
+            
             rospy.sleep(self.config_param[self.node_name + "/start_offset"])
 
-            currentFolder = self.getSubFolder()
+            currentFolder = get_sub_folder()
+
             topics_string = self.prepare_topics()
             command = "rosbag record -o " + currentFolder + "/" + self.config_param["/test_type"] + " " + topics_string
 

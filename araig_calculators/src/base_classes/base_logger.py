@@ -5,7 +5,7 @@ from araig_msgs.msg import BoolStamped, Float64Stamped
 import threading
 import sys
 import os
-from .base import getRootFolder
+from .base import get_root_folder
 
 class BaseLogger(object):
     def __init__(self, sub_dict = {}, result_list = [], param_list = [], rate = 100):
@@ -39,7 +39,7 @@ class BaseLogger(object):
             self._flag[topic] = Float64Stamped()
             self._flag[topic].data = float("inf")
         
-        self.pathFolder = getRootFolder()
+        self.root_folder = get_root_folder()
 
     def setSafeFlag(self, key, value):
         if not key in self._input_interface.keys() and not key in self.result_list:
@@ -69,19 +69,6 @@ class BaseLogger(object):
     def killCommandProc(self):
         self.command_proc.send_signal(subprocess.signal.SIGINT)
         rospy.loginfo(rospy.get_name() + ": Destructor killing process {}!".format(self.command_proc))
-
-    def getSubFolder(self):
-        try: 
-            size = len(os.listdir(self.pathFolder))
-            num = str(size)
-            currentFolder = self.pathFolder + num
-        except OSError:
-            rospy.logerr_once("%s: Can't find the folder: %s, will create it", rospy.get_name(), currentFolder)
-            try:
-                os.mkdir(currentFolder)
-            except OSError:
-                os.makedirs(currentFolder)
-        return currentFolder
     
     def getConfig(self, param_list):
         for arg in param_list:

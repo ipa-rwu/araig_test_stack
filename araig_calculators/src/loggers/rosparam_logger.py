@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import rospy
 from base_classes.base_logger import BaseLogger
-
+from base_classes.base import get_sub_folder, check_folder
+import os
 class RosparamLoggerClass(BaseLogger):
     def __init__(self):
         
@@ -33,16 +34,18 @@ class RosparamLoggerClass(BaseLogger):
 
         if start == True and stop == False:
             rospy.sleep(self.config_param[self.node_name + "/start_offset"])
-            currentSubFolder = self.getSubFolder()
+            folder = get_sub_folder()
+            
             for ns in self.config_param[self.node_name + "/namespaces"]:
-                command = "rosparam dump " + currentSubFolder +"/param_"+ ns + ".yaml" + " /" + ns
-                self.startCommandProc(command)
-                rospy.loginfo(rospy.get_name() + ": Save rosparam under namespace: " + ns)
-                rospy.sleep(self.config_param[self.node_name + "/stop_offset"])
-                self.killCommandProc()
+                if check_folder(folder):
+                    command = "rosparam dump " + folder +"/param_"+ ns + ".yaml" + " /" + ns
+                    self.startCommandProc(command)
+                    rospy.loginfo(rospy.get_name() + ": Save rosparam under namespace: " + ns)
+                    rospy.sleep(self.config_param[self.node_name + "/stop_offset"])
+                    self.killCommandProc()
 
         # Wait for stop signal
-        while not stop and not rospy.is_shutdown():
+        while stop is False and start is True and not rospy.is_shutdown():
             self._rate.sleep()
-            rospy.loginfo(rospy.get_name() + ": Stop signal received...")
             stop = self.getSafeFlag("stop")
+            start = self.getSafeFlag("start")
