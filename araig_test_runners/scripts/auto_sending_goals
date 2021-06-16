@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+import rospy
+from base.base_runner import TestBase
+import enum
+
+""""
+BASE INTERFACES
+# sub
+self._input_interface = {
+    "robot_has_stopped"    : "/signal/calc/robot_has_stopped",
+    "start_test"           : "/signal/ui/start_test",
+    "interrupt_test"       : "/signal/ui/interrupt_test",
+    "reset_test"           : "/signal/ui/reset_test",
+    "began_recording"      : "/signal/logger/begin_write"
+}
+# pub
+self._output_interface = {
+    "start_robot"          : "/signal/runner/start_robot",
+    "test_completed"       : "/signal/runner/test_completed",
+    "test_failed"          : "/signal/runner/test_failed",
+    "test_succeeded"       : "/signal/runner/test_succeeded",
+    "start_test"           : "/signal/ui/start_test",
+    "reset_test"           : "/signal/ui/reset_test",
+    "interrupt_test"       : "/signal/ui/interrupt_test",
+}
+"""
+
+class AutoSendingGoals(TestBase):
+    def __init__(self, rate):
+
+        extend_subscribers_dict = {
+            "goal_and_stop"              : "/signal/calc/robot_reached_goal_and_stopped",
+        }
+        extend_publishers_dict = {
+        }
+        extend_param_list = {
+            "goal_reach_timeout",
+            "verification_timeout",
+            "test_breaking_timeout",
+        }
+
+        super(AutoSendingGoals, self).__init__(sub_dict = extend_subscribers_dict, \
+        pub_dict = extend_publishers_dict, \
+        param_list = extend_param_list, \
+        rate = rate)
+
+    def auto_reset(self):
+        rospy.logwarn("----------------------------------------------------------")
+        rospy.logwarn(rospy.get_name() + ": Waiting for user to give reset signal")
+        rospy.logwarn("----------------------------------------------------------")
+
+        # TODO: ui should set reset_test to False after set to True, reset signal is an event
+        self._publishers["reset_test"].publish(self.buildNewBoolStamped(True))
+        rospy.logwarn(rospy.get_name() + ": Resetting")
+        rospy.sleep(self.config_param['test_breaking_timeout'])
+        for key in self._output_interface:
+            self._publishers[key].publish(self.buildNewBoolStamped(False))
+        self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
+        rospy.sleep(self.config_param['test_breaking_timeout'])
+        self._publishers["start_test"].publish(self.buildNewBoolStamped(True))
+
+    def main(self):
+        # Standard startup, robot started on return True, or interrupted on return False
+        if not self.standardStartupSequence():
+            return
+
+        # Wait until robot reaches goal
+        result = self.timedLoopFallbackOnFlags([ "goal_and_stop"], self.config_param['goal_reach_timeout'])
+        if result == self._RETURN_CASE_INTERRUPTED:
+            return
+        elif result == self._RETURN_CASE_TIMED_OUT:
+            rospy.logerr(rospy.get_name() + ": Robot did not reach goal in expected {}s, ending test in failure!!"
+                    .format(self.config_param['goal_reach_timeout']))
+            self.testFailed()
+            # TODO: Emulating UI responsibility Remove this once UI is integrated.
+            self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
+            self.auto_reset()
+            return
+        if result == 0:
+            rospy.logwarn(rospy.get_name() + ": Robot has reached goal and stopped, waiting {}s to recheck"
+                                .format(self.config_param['verification_timeout']))
+
+        # Monitor if robot leaves goal or moves too much
+        result = self.timedLoopSequenceOnFlags([ "goal_and_stop"], self.config_param['verification_timeout'])
+        if result == self._RETURN_CASE_INTERRUPTED:
+            return
+        elif result == 0:
+            rospy.logerr(rospy.get_name() + ": Robot left goal or moved too much, ending test in failure!!")
+            self.testFailed()
+        elif result == self._RETURN_CASE_TIMED_OUT:
+            rospy.logwarn(rospy.get_name() + ": Robot stayed stopped at goal, ending test in success!!")
+            self.testSucceeded()
+
+        # TODO: Emulating UI responsibility Remove this once UI is integrated.
+        self._publishers["start_test"].publish(self.buildNewBoolStamped(False))
+        self.auto_reset()
+
+if __name__ == "__main__":
+    try:
+        rospy.init_node("auto_sending_goals", disable_signals=True)
+        test = AutoSendingGoals(100)
+    except rospy.ROSException:
+        pass
