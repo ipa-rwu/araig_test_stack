@@ -32,6 +32,7 @@ class AutoSendingGoals(TestBase):
             "goal_and_stop"              : "/signal/calc/robot_reached_goal_and_stopped",
         }
         extend_publishers_dict = {
+            "interpreter_done"              :"signal/interpreter/done"
         }
         extend_param_list = {
             "goal_reach_timeout",
@@ -55,6 +56,7 @@ class AutoSendingGoals(TestBase):
         rospy.sleep(self.config_param['test_breaking_timeout'])
         for key in self._output_interface:
             self._publishers[key].publish(self.buildNewBoolStamped(False))
+        self._publishers["interpreter_done"].publish(self.buildNewBoolStamped(False))
         self._publishers["start_robot"].publish(self.buildNewBoolStamped(False))
         rospy.sleep(self.config_param['test_breaking_timeout'])
         self._publishers["start_test"].publish(self.buildNewBoolStamped(True))
@@ -77,18 +79,7 @@ class AutoSendingGoals(TestBase):
             self.auto_reset()
             return
         if result == 0:
-            rospy.logwarn(rospy.get_name() + ": Robot has reached goal and stopped, waiting {}s to recheck"
-                                .format(self.config_param['verification_timeout']))
-
-        # Monitor if robot leaves goal or moves too much
-        result = self.timedLoopSequenceOnFlags([ "goal_and_stop"], self.config_param['verification_timeout'])
-        if result == self._RETURN_CASE_INTERRUPTED:
-            return
-        elif result == 0:
-            rospy.logerr(rospy.get_name() + ": Robot left goal or moved too much, ending test in failure!!")
-            self.testFailed()
-        elif result == self._RETURN_CASE_TIMED_OUT:
-            rospy.logwarn(rospy.get_name() + ": Robot stayed stopped at goal, ending test in success!!")
+            rospy.logwarn(rospy.get_name() + ": Robot has reached goal and stopped")
             self.testSucceeded()
 
         # TODO: Emulating UI responsibility Remove this once UI is integrated.
