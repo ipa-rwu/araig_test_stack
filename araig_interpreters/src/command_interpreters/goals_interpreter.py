@@ -7,28 +7,67 @@ from geometry_msgs.msg import PoseStamped
 import threading
 import asyncio
 import concurrent.futures
-import time
-
+from scipy.spatial.transform import Rotation
+import math
+import numpy as np
 from araig_msgs.msg import BoolStamped
+from pprint import pprint
+
+def define_circle(p1, p2, p3):
+    temp = p2[0] * p2[0] + p2[1] * p2[1]
+    bc = (p1[0] * p1[0] + p1[1] * p1[1] - temp) / 2
+    cd = (temp - p3[0] * p3[0] - p3[1] * p3[1]) / 2
+    det = (p1[0] - p2[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p2[1])
+
+    if abs(det) < 1.0e-6:
+        return (None, np.inf)
+
+    # Center of circle
+    cx = (bc*(p2[1] - p3[1]) - cd*(p1[1] - p2[1])) / det
+    cy = ((p1[0] - p2[0]) * cd - (p2[0] - p3[0]) * bc) / det
+
+    radius = np.sqrt((cx - p1[0])**2 + (cy - p1[1])**2)
+    return ((cx, cy), radius)
+
+class GoalPath():
+    def __init__(self):
+        pass
+    def circle(num, p1, p2, p3):
+        (cx, cy), r = define_circle(p1, p2, p3)
+        for i in range(num):
+            theta=2*math.pi*i/num
+            x= r*math.cos(theta) + cx
+            y= r*math.sin(theta) + cy
+            w= math.pi/2 + theta
+            yield x,y,w
 
 # input: goal =  MoveBaseGoal()
-class GoalInterpreterClass():
+class GoalsInterpreter():
     LOCK = {}
     DATA = {}
     def __init__(self,
-        goal,
+        goal_path_type,
+        path_size,
+        goal_num,
+        frame_id,
+        points,
         goal_action,
         wait_for_action,
         loop_rate_hz = 1):
 
-        self.ppub_topic_goal = "/goal"
+        self.pub_topic_goal = "/goal"
         self.pub_topic_result = "/done"
         self.sub_topic = "/start"
         self.sub_topic_result = "/result"
 
+        self.num_goal = 0
+        print(points)
 
-        self.action_goal = goal
+        self.goals = list(self.generate_goals(goal_path_type, 10, points))
+        pprint(self.goals)
+
         self.action_name = goal_action
+        self.frame_id = frame_id
         self.loop_rate_hz = loop_rate_hz
         self.rate = rospy.Rate(loop_rate_hz)
 
@@ -52,13 +91,34 @@ class GoalInterpreterClass():
         self.flag_send_goal = False
 
         # init FLAG and LOCK
-        GoalInterpreterClass.DATA[self.sub_topic] = False
-        GoalInterpreterClass.LOCK[self.sub_topic] = threading.Lock()
-        GoalInterpreterClass.DATA[self.sub_topic_result] = ""
-        GoalInterpreterClass.LOCK[self.sub_topic_result] = threading.Lock()
+        GoalsInterpreter.DATA[self.sub_topic] = False
+        GoalsInterpreter.LOCK[self.sub_topic] = threading.Lock()
+        GoalsInterpreter.DATA[self.sub_topic_result] = ""
+        GoalsInterpreter.LOCK[self.sub_topic_result] = threading.Lock()
         self.temp_sub[self.sub_topic] = False
 
         self.main()
+
+    def generate_goals(self, path_type, num, points):
+        path = getattr(GoalPath, path_type)
+        return path(num, *points)
+
+    def pack_goal(self, goal, frame_id):
+        packed_goal = MoveBaseGoal()
+        packed_goal.target_pose.header.frame_id = frame_id
+        packed_goal.target_pose.header.stamp = rospy.Time.now()
+        packed_goal.target_pose.pose.position.x = goal[0]
+        packed_goal.target_pose.pose.position.y = goal[1]
+
+        yaw = goal[2]
+        rot = Rotation.from_euler('xyz', [0, 0, yaw], degrees=False)
+        q = rot.as_quat()
+
+        packed_goal.target_pose.pose.orientation.x = q[0]
+        packed_goal.target_pose.pose.orientation.y = q[1]
+        packed_goal.target_pose.pose.orientation.z = q[2]
+        packed_goal.target_pose.pose.orientation.w = q[3]
+        return packed_goal
 
     def action_init(self, wait_time):
         self.action_client = actionlib.SimpleActionClient(self.action_name,MoveBaseAction)
@@ -70,22 +130,20 @@ class GoalInterpreterClass():
             return False
 
     def callback_start(self, msg, args):
-        with GoalInterpreterClass.LOCK[args]:
-            GoalInterpreterClass.DATA[args] = msg.data
+        with GoalsInterpreter.LOCK[args]:
+            GoalsInterpreter.DATA[args] = msg.data
 
     def callback_result(self, msg, args):
-        with GoalInterpreterClass.LOCK[args]:
-            GoalInterpreterClass.DATA[args] = msg.status
+        with GoalsInterpreter.LOCK[args]:
+            GoalsInterpreter.DATA[args] = msg.status
 
     def pub_init(self):
         self.pub_diag_goal = rospy.Publisher(
-                self.ppub_topic_goal,
+                self.pub_topic_goal,
                 PoseStamped,
                 queue_size=10,
                 latch = True
             )
-        self.goal_msg = PoseStamped()
-        self.goal_msg = self.action_goal.target_pose
 
         self.pub_diag_result = rospy.Publisher(
                 self.pub_topic_result,
@@ -120,7 +178,9 @@ class GoalInterpreterClass():
         )
 
     def pub_goal(self):
-        self.pub_diag_goal.publish(self.goal_msg)
+        goal = self.pack_goal(self.goals[self.num_goal], self.frame_id)
+        goal_msg = goal.target_pose
+        self.pub_diag_goal.publish(goal_msg)
         rospy.loginfo(rospy.get_name() + ": pub goal")
         return True
 
@@ -131,7 +191,7 @@ class GoalInterpreterClass():
 
     def call_action(self):
         # only call action once
-        self.action_client.send_goal(self.action_goal)
+        self.action_client.send_goal(self.pack_goal(self.goals[self.num_goal], self.frame_id))
         rospy.loginfo(rospy.get_name() + ": send goal to {}".format(self.action_name))
 
         wait = self.action_client.wait_for_result()
@@ -154,8 +214,8 @@ class GoalInterpreterClass():
             return True
 
     def read_action_result(self):
-        with GoalInterpreterClass.LOCK[self.sub_topic_result]:
-            self.temp_sub[self.sub_topic_result]= GoalInterpreterClass.DATA[self.sub_topic_result]
+        with GoalsInterpreter.LOCK[self.sub_topic_result]:
+            self.temp_sub[self.sub_topic_result]= GoalsInterpreter.DATA[self.sub_topic_result]
             rospy.logwarn(rospy.get_name() + ": result: " + str(self.temp_sub[self.sub_topic_result]))
 
     def main(self):
@@ -163,13 +223,14 @@ class GoalInterpreterClass():
         try:
             loop = asyncio.get_event_loop()
             while not rospy.is_shutdown():
-                with GoalInterpreterClass.LOCK[self.sub_topic]:
-                    self.temp_sub[self.sub_topic]= GoalInterpreterClass.DATA[self.sub_topic]
+                with GoalsInterpreter.LOCK[self.sub_topic]:
+                    self.temp_sub[self.sub_topic]= GoalsInterpreter.DATA[self.sub_topic]
 
                 if pre_signal == False and self.temp_sub[self.sub_topic] == True:
                     self.pub_result(False)
                     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
                         loop.run_until_complete(self.main_pub_and_wait_action(loop, pool))
+                        self.num_goal += 1
                 pre_signal = self.temp_sub[self.sub_topic]
                 self.rate.sleep()
         except rospy.ROSException:

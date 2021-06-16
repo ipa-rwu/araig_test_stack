@@ -1,0 +1,37 @@
+#!/usr/bin/env python3.6
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+import rospy
+from  command_interpreters.goals_interpreter import GoalsInterpreter
+import move_base_msgs.msg
+from scipy.spatial.transform import Rotation
+
+if __name__ == "__main__":
+    rospy.init_node('goal_interpreter')
+    module_name = "/interpreters"
+    ns = module_name
+    config_goal = ns + "/goal"
+    config_goal_action_name = ns + "/goal_action"
+    config_time_wait_action = ns + "/wait_action"
+    config_rate = ns + "/rate"
+    goal_path_type = config_goal + "/path_type"
+    path_size = config_goal + "/path_size"
+    goal_num = config_goal + "/goal_num"
+    frame_id = config_goal + '/frame_id'
+    points = config_goal + '/points'
+    goal_action_name = rospy.get_param(config_goal_action_name)
+
+    if goal_action_name != "None":
+        time_wait_action = rospy.get_param(config_time_wait_action)
+    else:
+        time_wait_action = 0
+
+    rate = rospy.get_param(config_rate)
+
+    interpreter = GoalsInterpreter(goal_path_type = rospy.get_param(goal_path_type),
+                                        path_size = rospy.get_param(path_size),
+                                        goal_num = rospy.get_param(goal_num),
+                                        frame_id = rospy.get_param(frame_id),
+                                        points = rospy.get_param(points),
+                                        goal_action = goal_action_name,
+                                        wait_for_action= time_wait_action,
+                                        loop_rate_hz = rate)

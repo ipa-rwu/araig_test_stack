@@ -1,0 +1,10 @@
+interpreters:
+  goals:
+    frame_id: map
+    path_type: circle
+    path_size: 10
+    goal_num: 10
+    points: [[-2.5, -0.14], [0.005, -2.12], [2, 0.008]]
+  goal_action: move_base # if "None", won't use action
+  wait_action: 5
+  rate: 100
