@@ -17,7 +17,7 @@ catkin_install_python(PROGRAMS
    scripts/test_4
    scripts/test_5_with_nav
    scripts/test_5_without_nav
-   scripts//auto_collect_data
+   scripts/auto_sending_goals
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
