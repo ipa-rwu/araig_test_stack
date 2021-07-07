@@ -1,0 +1,617 @@
+RosSystem { Name 'demo'
+    RosComponents ( 
+
+        ComponentInterface { name '/gazebo'
+            RosParameters {
+                RosParameter '/gazebo/sor_pgs_precon_iters' {RefParameter './gazebo./gazebo./gazebo/sor_pgs_precon_iters' value 0},
+                RosParameter '/gazebo/sor_pgs_w' {RefParameter './gazebo./gazebo./gazebo/sor_pgs_w' value 1.4},
+                RosParameter '/gazebo/auto_disable_bodies' {RefParameter './gazebo./gazebo./gazebo/auto_disable_bodies' value False},
+                RosParameter '/gazebo/sor_pgs_rms_error_tol' {RefParameter './gazebo./gazebo./gazebo/sor_pgs_rms_error_tol' value 0.0},
+                RosParameter '/gazebo/gravity_z' {RefParameter './gazebo./gazebo./gazebo/gravity_z' value -9.8},
+                RosParameter '/gazebo/contact_surface_layer' {RefParameter './gazebo./gazebo./gazebo/contact_surface_layer' value 0.01},
+                RosParameter '/gazebo/max_update_rate' {RefParameter './gazebo./gazebo./gazebo/max_update_rate' value 1000.0},
+                RosParameter '/gazebo/cfm' {RefParameter './gazebo./gazebo./gazebo/cfm' value 1e-05},
+                RosParameter '/gazebo/erp' {RefParameter './gazebo./gazebo./gazebo/erp' value 0.2},
+                RosParameter '/gazebo/gravity_x' {RefParameter './gazebo./gazebo./gazebo/gravity_x' value 0.0},
+                RosParameter '/gazebo/time_step' {RefParameter './gazebo./gazebo./gazebo/time_step' value 0.001},
+                RosParameter '/gazebo/gravity_y' {RefParameter './gazebo./gazebo./gazebo/gravity_y' value 0.0},
+                RosParameter '/gazebo/enable_ros_network' {RefParameter './gazebo./gazebo./gazebo/enable_ros_network' value True},
+                RosParameter '/gazebo/contact_max_correcting_vel' {RefParameter './gazebo./gazebo./gazebo/contact_max_correcting_vel' value 2000.0},
+                RosParameter '/gazebo/max_contacts' {RefParameter './gazebo./gazebo./gazebo/max_contacts' value 20},
+                RosParameter '/gazebo/sor_pgs_iters' {RefParameter './gazebo./gazebo./gazebo/sor_pgs_iters' value 150}}
+            RosPublishers {
+                RosPublisher '/odom' {RefPublisher './gazebo./gazebo./odom'},
+                RosPublisher '/scan' {RefPublisher './gazebo./gazebo./scan'},
+                RosPublisher '/imu' {RefPublisher './gazebo./gazebo./imu'},
+                RosPublisher '/gazebo/parameter_descriptions' {RefPublisher './gazebo./gazebo./gazebo/parameter_descriptions'},
+                RosPublisher '/joint_states' {RefPublisher './gazebo./gazebo./joint_states'},
+                RosPublisher '/gazebo/link_states' {RefPublisher './gazebo./gazebo./gazebo/link_states'},
+                RosPublisher '/gazebo/model_states' {RefPublisher './gazebo./gazebo./gazebo/model_states'},
+                RosPublisher '/gazebo/parameter_updates' {RefPublisher './gazebo./gazebo./gazebo/parameter_updates'}}
+            RosSubscribers {
+                RosSubscriber '/cmd_vel' {RefSubscriber './gazebo./gazebo./cmd_vel'},
+                RosSubscriber '/gazebo/set_model_state' {RefSubscriber './gazebo./gazebo./gazebo/set_model_state'},
+                RosSubscriber '/gazebo/set_link_state' {RefSubscriber './gazebo./gazebo./gazebo/set_link_state'}}
+            RosSrvServers {
+                RosServiceServer '/gazebo/get_model_state' {RefServer './gazebo./gazebo./gazebo/get_model_state'},
+                RosServiceServer '/gazebo/reset_simulation' {RefServer './gazebo./gazebo./gazebo/reset_simulation'},
+                RosServiceServer '/imu_service' {RefServer './gazebo./gazebo./imu_service'},
+                RosServiceServer '/gazebo/set_model_state' {RefServer './gazebo./gazebo./gazebo/set_model_state'},
+                RosServiceServer '/gazebo/spawn_urdf_model' {RefServer './gazebo./gazebo./gazebo/spawn_urdf_model'},
+                RosServiceServer '/gazebo/set_link_properties' {RefServer './gazebo./gazebo./gazebo/set_link_properties'},
+                RosServiceServer '/gazebo/get_joint_properties' {RefServer './gazebo./gazebo./gazebo/get_joint_properties'},
+                RosServiceServer '/gazebo/apply_body_wrench' {RefServer './gazebo./gazebo./gazebo/apply_body_wrench'},
+                RosServiceServer '/gazebo/get_link_state' {RefServer './gazebo./gazebo./gazebo/get_link_state'},
+                RosServiceServer '/gazebo/delete_model' {RefServer './gazebo./gazebo./gazebo/delete_model'},
+                RosServiceServer '/gazebo/get_model_properties' {RefServer './gazebo./gazebo./gazebo/get_model_properties'},
+                RosServiceServer '/gazebo/set_light_properties' {RefServer './gazebo./gazebo./gazebo/set_light_properties'},
+                RosServiceServer '/gazebo/clear_joint_forces' {RefServer './gazebo./gazebo./gazebo/clear_joint_forces'},
+                RosServiceServer '/gazebo/get_link_properties' {RefServer './gazebo./gazebo./gazebo/get_link_properties'},
+                RosServiceServer '/gazebo/apply_joint_effort' {RefServer './gazebo./gazebo./gazebo/apply_joint_effort'},
+                RosServiceServer '/gazebo/get_physics_properties' {RefServer './gazebo./gazebo./gazebo/get_physics_properties'},
+                RosServiceServer '/gazebo/set_link_state' {RefServer './gazebo./gazebo./gazebo/set_link_state'},
+                RosServiceServer '/gazebo/set_joint_properties' {RefServer './gazebo./gazebo./gazebo/set_joint_properties'},
+                RosServiceServer '/gazebo/reset_world' {RefServer './gazebo./gazebo./gazebo/reset_world'},
+                RosServiceServer '/gazebo/set_model_configuration' {RefServer './gazebo./gazebo./gazebo/set_model_configuration'},
+                RosServiceServer '/gazebo/get_world_properties' {RefServer './gazebo./gazebo./gazebo/get_world_properties'},
+                RosServiceServer '/gazebo/delete_light' {RefServer './gazebo./gazebo./gazebo/delete_light'},
+                RosServiceServer '/gazebo/set_parameters' {RefServer './gazebo./gazebo./gazebo/set_parameters'},
+                RosServiceServer '/gazebo/spawn_sdf_model' {RefServer './gazebo./gazebo./gazebo/spawn_sdf_model'},
+                RosServiceServer '/gazebo/unpause_physics' {RefServer './gazebo./gazebo./gazebo/unpause_physics'},
+                RosServiceServer '/gazebo/get_light_properties' {RefServer './gazebo./gazebo./gazebo/get_light_properties'},
+                RosServiceServer '/gazebo/clear_body_wrenches' {RefServer './gazebo./gazebo./gazebo/clear_body_wrenches'},
+                RosServiceServer '/gazebo/pause_physics' {RefServer './gazebo./gazebo./gazebo/pause_physics'},
+                RosServiceServer '/gazebo/set_physics_properties' {RefServer './gazebo./gazebo./gazebo/set_physics_properties'}}
+        },
+
+        ComponentInterface { name '/move_base'
+            RosParameters {
+                RosParameter '/move_base/DWAPlannerROS/max_vel_trans' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/max_vel_trans' value 0.22},
+                RosParameter '/move_base/DWAPlannerROS/twirling_scale' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/twirling_scale' value 0.0},
+                RosParameter '/move_base/DWAPlannerROS/stop_time_buffer' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/stop_time_buffer' value 0.2},
+                RosParameter '/move_base/DWAPlannerROS/latch_xy_goal_tolerance' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/latch_xy_goal_tolerance' value False},
+                RosParameter '/move_base/planner_frequency' {RefParameter './move_base./move_base./move_base/planner_frequency' value 5.0},
+                RosParameter '/move_base/DWAPlannerROS/max_vel_x' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/max_vel_x' value 0.22},
+                RosParameter '/move_base/DWAPlannerROS/acc_lim_theta' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/acc_lim_theta' value 3.2},
+                RosParameter '/move_base/local_costmap/obstacle_layer/footprint_clearing_enabled' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/footprint_clearing_enabled' value True},
+                RosParameter '/move_base/DWAPlannerROS/max_vel_y' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/max_vel_y' value 0.0},
+                RosParameter '/move_base/DWAPlannerROS/scaling_speed' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/scaling_speed' value 0.25},
+                RosParameter '/move_base/DWAPlannerROS/sim_granularity' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/sim_granularity' value 0.025},
+                RosParameter '/move_base/recovery_behavior_enabled' {RefParameter './move_base./move_base./move_base/recovery_behavior_enabled' value True},
+                RosParameter '/move_base/DWAPlannerROS/theta_stopped_vel' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/theta_stopped_vel' value 0.1},
+                RosParameter '/move_base/DWAPlannerROS/oscillation_reset_angle' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/oscillation_reset_angle' value 0.2},
+                RosParameter '/move_base/DWAPlannerROS/vth_samples' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/vth_samples' value 40},
+                RosParameter '/move_base/local_costmap/obstacle_layer/observation_sources' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/observation_sources' value scan},
+                RosParameter '/move_base/DWAPlannerROS/controller_frequency' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/controller_frequency' value 10.0},
+                RosParameter '/move_base/planner_patience' {RefParameter './move_base./move_base./move_base/planner_patience' value 5.0},
+                RosParameter '/move_base/controller_frequency' {RefParameter './move_base./move_base./move_base/controller_frequency' value 10.0},
+                RosParameter '/move_base/DWAPlannerROS/occdist_scale' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/occdist_scale' value 0.02},
+                RosParameter '/move_base/DWAPlannerROS/use_dwa' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/use_dwa' value True},
+                RosParameter '/move_base/aggressive_reset/reset_distance' {RefParameter './move_base./move_base./move_base/aggressive_reset/reset_distance' value 1.84},
+                RosParameter '/move_base/DWAPlannerROS/xy_goal_tolerance' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/xy_goal_tolerance' value 0.05},
+                RosParameter '/move_base/oscillation_distance' {RefParameter './move_base./move_base./move_base/oscillation_distance' value 0.2},
+                RosParameter '/move_base/restore_defaults' {RefParameter './move_base./move_base./move_base/restore_defaults' value False},
+                RosParameter '/move_base/base_local_planner' {RefParameter './move_base./move_base./move_base/base_local_planner' value dwa_local_planner/DWAPlannerROS},
+                RosParameter '/move_base/local_costmap/resolution' {RefParameter './move_base./move_base./move_base/local_costmap/resolution' value 0.05},
+                RosParameter '/move_base/shutdown_costmaps' {RefParameter './move_base./move_base./move_base/shutdown_costmaps' value False},
+                RosParameter '/move_base/local_costmap/origin_x' {RefParameter './move_base./move_base./move_base/local_costmap/origin_x' value 0.0},
+                RosParameter '/move_base/DWAPlannerROS/vx_samples' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/vx_samples' value 20},
+                RosParameter '/move_base/local_costmap/publish_frequency' {RefParameter './move_base./move_base./move_base/local_costmap/publish_frequency' value 10.0},
+                RosParameter '/move_base/clearing_rotation_allowed' {RefParameter './move_base./move_base./move_base/clearing_rotation_allowed' value True},
+                RosParameter '/move_base/local_costmap/obstacle_layer/max_obstacle_height' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/max_obstacle_height' value 2.0},
+                RosParameter '/move_base/local_costmap/inflation_layer/inflate_unknown' {RefParameter './move_base./move_base./move_base/local_costmap/inflation_layer/inflate_unknown' value False},
+                RosParameter '/move_base/local_costmap/update_frequency' {RefParameter './move_base./move_base./move_base/local_costmap/update_frequency' value 10.0},
+                RosParameter '/move_base/local_costmap/origin_y' {RefParameter './move_base./move_base./move_base/local_costmap/origin_y' value 0.0},
+                RosParameter '/move_base/oscillation_timeout' {RefParameter './move_base./move_base./move_base/oscillation_timeout' value 10.0},
+                RosParameter '/move_base/local_costmap/obstacle_layer/scan/marking' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/scan/marking' value True},
+                RosParameter '/move_base/local_costmap/map_type' {RefParameter './move_base./move_base./move_base/local_costmap/map_type' value costmap},
+                RosParameter '/move_base/local_costmap/obstacle_layer/scan/data_type' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/scan/data_type' value LaserScan},
+                RosParameter '/move_base/local_costmap/footprint' {RefParameter './move_base./move_base./move_base/local_costmap/footprint' value [[-0.105,-0.105],[-0.105,0.105],[0.041,0.105],[0.041,-0.105]]},
+                RosParameter '/move_base/local_costmap/height' {RefParameter './move_base./move_base./move_base/local_costmap/height' value 3},
+                RosParameter '/move_base/local_costmap/robot_radius' {RefParameter './move_base./move_base./move_base/local_costmap/robot_radius' value 0.46},
+                RosParameter '/move_base/local_costmap/obstacle_layer/scan/topic' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/scan/topic' value scan},
+                RosParameter '/move_base/local_costmap/static_map' {RefParameter './move_base./move_base./move_base/local_costmap/static_map' value False},
+                RosParameter '/move_base/local_costmap/obstacle_layer/obstacle_range' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/obstacle_range' value 3.0},
+                RosParameter '/move_base/DWAPlannerROS/path_distance_bias' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/path_distance_bias' value 32.0},
+                RosParameter '/move_base/local_costmap/obstacle_layer/scan/sensor_frame' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/scan/sensor_frame' value base_scan},
+                RosParameter '/move_base/local_costmap/global_frame' {RefParameter './move_base./move_base./move_base/local_costmap/global_frame' value odom},
+                RosParameter '/move_base/local_costmap/rolling_window' {RefParameter './move_base./move_base./move_base/local_costmap/rolling_window' value True},
+                RosParameter '/move_base/local_costmap/plugins' {RefParameter './move_base./move_base./move_base/local_costmap/plugins' value [{'type': 'costmap_2d::ObstacleLayer', 'name': 'obstacle_layer'}, {'type': 'costmap_2d::InflationLayer', 'name': 'inflation_layer'}]},
+                RosParameter '/move_base/local_costmap/transform_tolerance' {RefParameter './move_base./move_base./move_base/local_costmap/transform_tolerance' value 0.5},
+                RosParameter '/move_base/local_costmap/inflation_layer/inflation_radius' {RefParameter './move_base./move_base./move_base/local_costmap/inflation_layer/inflation_radius' value 1.0},
+                RosParameter '/move_base/local_costmap/obstacle_layer/combination_method' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/combination_method' value 1},
+                RosParameter '/move_base/local_costmap/obstacle_layer/scan/clearing' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/scan/clearing' value True},
+                RosParameter '/move_base/local_costmap/obstacle_layer/enabled' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/enabled' value True},
+                RosParameter '/move_base/local_costmap/inflation_layer/enabled' {RefParameter './move_base./move_base./move_base/local_costmap/inflation_layer/enabled' value True},
+                RosParameter '/move_base/local_costmap/inflation_layer/cost_scaling_factor' {RefParameter './move_base./move_base./move_base/local_costmap/inflation_layer/cost_scaling_factor' value 3.0},
+                RosParameter '/move_base/local_costmap/robot_base_frame' {RefParameter './move_base./move_base./move_base/local_costmap/robot_base_frame' value base_footprint},
+                RosParameter '/move_base/local_costmap/width' {RefParameter './move_base./move_base./move_base/local_costmap/width' value 3},
+                RosParameter '/move_base/local_costmap/footprint_padding' {RefParameter './move_base./move_base./move_base/local_costmap/footprint_padding' value 0.01},
+                RosParameter '/move_base/controller_patience' {RefParameter './move_base./move_base./move_base/controller_patience' value 15.0},
+                RosParameter '/move_base/DWAPlannerROS/oscillation_reset_dist' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/oscillation_reset_dist' value 0.05},
+                RosParameter '/move_base/make_plan_clear_costmap' {RefParameter './move_base./move_base./move_base/make_plan_clear_costmap' value True},
+                RosParameter '/move_base/DWAPlannerROS/max_scaling_factor' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/max_scaling_factor' value 0.2},
+                RosParameter '/move_base/global_costmap/inflation_layer/enabled' {RefParameter './move_base./move_base./move_base/global_costmap/inflation_layer/enabled' value True},
+                RosParameter '/move_base/global_costmap/map_type' {RefParameter './move_base./move_base./move_base/global_costmap/map_type' value costmap},
+                RosParameter '/move_base/DWAPlannerROS/min_vel_y' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/min_vel_y' value 0.0},
+                RosParameter '/move_base/global_costmap/resolution' {RefParameter './move_base./move_base./move_base/global_costmap/resolution' value 0.05},
+                RosParameter '/move_base/global_costmap/origin_y' {RefParameter './move_base./move_base./move_base/global_costmap/origin_y' value 0.0},
+                RosParameter '/move_base/global_costmap/robot_radius' {RefParameter './move_base./move_base./move_base/global_costmap/robot_radius' value 0.46},
+                RosParameter '/move_base/global_costmap/update_frequency' {RefParameter './move_base./move_base./move_base/global_costmap/update_frequency' value 10.0},
+                RosParameter '/move_base/DWAPlannerROS/publish_traj_pc' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/publish_traj_pc' value True},
+                RosParameter '/move_base/global_costmap/obstacle_layer/scan/data_type' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/scan/data_type' value LaserScan},
+                RosParameter '/move_base/DWAPlannerROS/prune_plan' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/prune_plan' value False},
+                RosParameter '/move_base/global_costmap/height' {RefParameter './move_base./move_base./move_base/global_costmap/height' value 10},
+                RosParameter '/move_base/DWAPlannerROS/goal_distance_bias' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/goal_distance_bias' value 20.0},
+                RosParameter '/move_base/DWAPlannerROS/max_vel_theta' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/max_vel_theta' value 2.75},
+                RosParameter '/move_base/conservative_reset_dist' {RefParameter './move_base./move_base./move_base/conservative_reset_dist' value 3.0},
+                RosParameter '/move_base/DWAPlannerROS/min_vel_trans' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/min_vel_trans' value 0.11},
+                RosParameter '/move_base/local_costmap/obstacle_layer/raytrace_range' {RefParameter './move_base./move_base./move_base/local_costmap/obstacle_layer/raytrace_range' value 3.5},
+                RosParameter '/move_base/global_costmap/obstacle_layer/observation_sources' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/observation_sources' value scan},
+                RosParameter '/move_base/global_costmap/footprint_padding' {RefParameter './move_base./move_base./move_base/global_costmap/footprint_padding' value 0.01},
+                RosParameter '/move_base/DWAPlannerROS/restore_defaults' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/restore_defaults' value False},
+                RosParameter '/move_base/DWAPlannerROS/min_vel_theta' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/min_vel_theta' value 1.37},
+                RosParameter '/move_base/global_costmap/obstacle_layer/combination_method' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/combination_method' value 1},
+                RosParameter '/move_base/DWAPlannerROS/sim_time' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/sim_time' value 1.5},
+                RosParameter '/move_base/DWAPlannerROS/min_vel_x' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/min_vel_x' value -0.22},
+                RosParameter '/move_base/global_costmap/obstacle_layer/scan/marking' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/scan/marking' value True},
+                RosParameter '/move_base/global_costmap/robot_base_frame' {RefParameter './move_base./move_base./move_base/global_costmap/robot_base_frame' value base_footprint},
+                RosParameter '/move_base/DWAPlannerROS/acc_lim_x' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/acc_lim_x' value 2.5},
+                RosParameter '/move_base/global_costmap/obstacle_layer/max_obstacle_height' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/max_obstacle_height' value 2.0},
+                RosParameter '/move_base/global_costmap/plugins' {RefParameter './move_base./move_base./move_base/global_costmap/plugins' value [{'type': 'costmap_2d::StaticLayer', 'name': 'static_layer'}, {'type': 'costmap_2d::ObstacleLayer', 'name': 'obstacle_layer'}, {'type': 'costmap_2d::InflationLayer', 'name': 'inflation_layer'}]},
+                RosParameter '/move_base/global_costmap/global_frame' {RefParameter './move_base./move_base./move_base/global_costmap/global_frame' value map},
+                RosParameter '/move_base/DWAPlannerROS/forward_point_distance' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/forward_point_distance' value 0.325},
+                RosParameter '/move_base/global_costmap/transform_tolerance' {RefParameter './move_base./move_base./move_base/global_costmap/transform_tolerance' value 0.5},
+                RosParameter '/move_base/global_costmap/inflation_layer/inflate_unknown' {RefParameter './move_base./move_base./move_base/global_costmap/inflation_layer/inflate_unknown' value False},
+                RosParameter '/move_base/make_plan_add_unreachable_goal' {RefParameter './move_base./move_base./move_base/make_plan_add_unreachable_goal' value True},
+                RosParameter '/move_base/base_global_planner' {RefParameter './move_base./move_base./move_base/base_global_planner' value navfn/NavfnROS},
+                RosParameter '/move_base/global_costmap/static_layer/enabled' {RefParameter './move_base./move_base./move_base/global_costmap/static_layer/enabled' value True},
+                RosParameter '/move_base/DWAPlannerROS/angular_sim_granularity' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/angular_sim_granularity' value 0.1},
+                RosParameter '/move_base/global_costmap/static_map' {RefParameter './move_base./move_base./move_base/global_costmap/static_map' value True},
+                RosParameter '/move_base/global_costmap/obstacle_layer/scan/clearing' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/scan/clearing' value True},
+                RosParameter '/move_base/conservative_reset/reset_distance' {RefParameter './move_base./move_base./move_base/conservative_reset/reset_distance' value 3.0},
+                RosParameter '/move_base/global_costmap/obstacle_layer/obstacle_range' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/obstacle_range' value 3.0},
+                RosParameter '/move_base/global_costmap/width' {RefParameter './move_base./move_base./move_base/global_costmap/width' value 10},
+                RosParameter '/move_base/DWAPlannerROS/yaw_goal_tolerance' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/yaw_goal_tolerance' value 0.17},
+                RosParameter '/move_base/global_costmap/obstacle_layer/scan/sensor_frame' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/scan/sensor_frame' value base_scan},
+                RosParameter '/move_base/global_costmap/publish_frequency' {RefParameter './move_base./move_base./move_base/global_costmap/publish_frequency' value 10.0},
+                RosParameter '/move_base/max_planning_retries' {RefParameter './move_base./move_base./move_base/max_planning_retries' value -1},
+                RosParameter '/move_base/global_costmap/obstacle_layer/raytrace_range' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/raytrace_range' value 3.5},
+                RosParameter '/move_base/global_costmap/footprint' {RefParameter './move_base./move_base./move_base/global_costmap/footprint' value [[-0.105,-0.105],[-0.105,0.105],[0.041,0.105],[0.041,-0.105]]},
+                RosParameter '/move_base/DWAPlannerROS/acc_lim_trans' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/acc_lim_trans' value 0.1},
+                RosParameter '/move_base/global_costmap/origin_x' {RefParameter './move_base./move_base./move_base/global_costmap/origin_x' value 0.0},
+                RosParameter '/move_base/global_costmap/obstacle_layer/scan/topic' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/scan/topic' value scan},
+                RosParameter '/move_base/global_costmap/obstacle_layer/enabled' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/enabled' value True},
+                RosParameter '/move_base/DWAPlannerROS/acc_lim_y' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/acc_lim_y' value 0.0},
+                RosParameter '/move_base/global_costmap/obstacle_layer/footprint_clearing_enabled' {RefParameter './move_base./move_base./move_base/global_costmap/obstacle_layer/footprint_clearing_enabled' value True},
+                RosParameter '/move_base/global_costmap/inflation_layer/inflation_radius' {RefParameter './move_base./move_base./move_base/global_costmap/inflation_layer/inflation_radius' value 1.0},
+                RosParameter '/move_base/DWAPlannerROS/vy_samples' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/vy_samples' value 1},
+                RosParameter '/move_base/global_costmap/inflation_layer/cost_scaling_factor' {RefParameter './move_base./move_base./move_base/global_costmap/inflation_layer/cost_scaling_factor' value 3.0},
+                RosParameter '/move_base/DWAPlannerROS/trans_stopped_vel' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/trans_stopped_vel' value 0.1},
+                RosParameter '/move_base/DWAPlannerROS/publish_cost_grid_pc' {RefParameter './move_base./move_base./move_base/DWAPlannerROS/publish_cost_grid_pc' value True}}
+            RosPublishers {
+                RosPublisher '/move_base/DWAPlannerROS/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/DWAPlannerROS/parameter_descriptions'},
+                RosPublisher '/move_base/global_costmap/static_layer/parameter_updates' {RefPublisher './move_base./move_base./move_base/global_costmap/static_layer/parameter_updates'},
+                RosPublisher '/move_base/local_costmap/inflation_layer/parameter_updates' {RefPublisher './move_base./move_base./move_base/local_costmap/inflation_layer/parameter_updates'},
+                RosPublisher '/move_base/local_costmap/inflation_layer/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/local_costmap/inflation_layer/parameter_descriptions'},
+                RosPublisher '/move_base/global_costmap/static_layer/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/global_costmap/static_layer/parameter_descriptions'},
+                RosPublisher '/move_base/local_costmap/costmap_updates' {RefPublisher './move_base./move_base./move_base/local_costmap/costmap_updates'},
+                RosPublisher '/move_base/NavfnROS/plan' {RefPublisher './move_base./move_base./move_base/NavfnROS/plan'},
+                RosPublisher '/move_base/current_goal' {RefPublisher './move_base./move_base./move_base/current_goal'},
+                RosPublisher '/move_base/local_costmap/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/local_costmap/parameter_descriptions'},
+                RosPublisher '/move_base/DWAPlannerROS/trajectory_cloud' {RefPublisher './move_base./move_base./move_base/DWAPlannerROS/trajectory_cloud'},
+                RosPublisher '/move_base/parameter_updates' {RefPublisher './move_base./move_base./move_base/parameter_updates'},
+                RosPublisher '/move_base/global_costmap/inflation_layer/parameter_updates' {RefPublisher './move_base./move_base./move_base/global_costmap/inflation_layer/parameter_updates'},
+                RosPublisher '/cmd_vel' {RefPublisher './move_base./move_base./cmd_vel'},
+                RosPublisher '/move_base/local_costmap/parameter_updates' {RefPublisher './move_base./move_base./move_base/local_costmap/parameter_updates'},
+                RosPublisher '/move_base/DWAPlannerROS/cost_cloud' {RefPublisher './move_base./move_base./move_base/DWAPlannerROS/cost_cloud'},
+                RosPublisher '/move_base/global_costmap/footprint' {RefPublisher './move_base./move_base./move_base/global_costmap/footprint'},
+                RosPublisher '/move_base/local_costmap/obstacle_layer/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/local_costmap/obstacle_layer/parameter_descriptions'},
+                RosPublisher '/move_base/goal' {RefPublisher './move_base./move_base./move_base/goal'},
+                RosPublisher '/move_base/local_costmap/footprint' {RefPublisher './move_base./move_base./move_base/local_costmap/footprint'},
+                RosPublisher '/move_base/DWAPlannerROS/global_plan' {RefPublisher './move_base./move_base./move_base/DWAPlannerROS/global_plan'},
+                RosPublisher '/move_base/DWAPlannerROS/local_plan' {RefPublisher './move_base./move_base./move_base/DWAPlannerROS/local_plan'},
+                RosPublisher '/move_base/global_costmap/inflation_layer/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/global_costmap/inflation_layer/parameter_descriptions'},
+                RosPublisher '/move_base/global_costmap/obstacle_layer/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/global_costmap/obstacle_layer/parameter_descriptions'},
+                RosPublisher '/move_base/local_costmap/obstacle_layer/parameter_updates' {RefPublisher './move_base./move_base./move_base/local_costmap/obstacle_layer/parameter_updates'},
+                RosPublisher '/move_base/global_costmap/obstacle_layer/parameter_updates' {RefPublisher './move_base./move_base./move_base/global_costmap/obstacle_layer/parameter_updates'},
+                RosPublisher '/move_base/global_costmap/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/global_costmap/parameter_descriptions'},
+                RosPublisher '/move_base/parameter_descriptions' {RefPublisher './move_base./move_base./move_base/parameter_descriptions'},
+                RosPublisher '/move_base/DWAPlannerROS/parameter_updates' {RefPublisher './move_base./move_base./move_base/DWAPlannerROS/parameter_updates'},
+                RosPublisher '/move_base/global_costmap/costmap' {RefPublisher './move_base./move_base./move_base/global_costmap/costmap'},
+                RosPublisher '/move_base/local_costmap/costmap' {RefPublisher './move_base./move_base./move_base/local_costmap/costmap'},
+                RosPublisher '/move_base/global_costmap/parameter_updates' {RefPublisher './move_base./move_base./move_base/global_costmap/parameter_updates'},
+                RosPublisher '/move_base/global_costmap/costmap_updates' {RefPublisher './move_base./move_base./move_base/global_costmap/costmap_updates'}}
+            RosSubscribers {
+                RosSubscriber '/scan' {RefSubscriber './move_base./move_base./scan'},
+                RosSubscriber '/map' {RefSubscriber './move_base./move_base./map'},
+                RosSubscriber '/move_base/global_costmap/footprint' {RefSubscriber './move_base./move_base./move_base/global_costmap/footprint'},
+                RosSubscriber '/odom' {RefSubscriber './move_base./move_base./odom'},
+                RosSubscriber '/move_base/local_costmap/footprint' {RefSubscriber './move_base./move_base./move_base/local_costmap/footprint'},
+                RosSubscriber '/move_base_simple/goal' {RefSubscriber './move_base./move_base./move_base_simple/goal'}}
+            RosSrvServers {
+                RosServiceServer '/move_base/global_costmap/obstacle_layer/set_parameters' {RefServer './move_base./move_base./move_base/global_costmap/obstacle_layer/set_parameters'},
+                RosServiceServer '/move_base/global_costmap/inflation_layer/set_parameters' {RefServer './move_base./move_base./move_base/global_costmap/inflation_layer/set_parameters'},
+                RosServiceServer '/move_base/clear_costmaps' {RefServer './move_base./move_base./move_base/clear_costmaps'},
+                RosServiceServer '/move_base/global_costmap/set_parameters' {RefServer './move_base./move_base./move_base/global_costmap/set_parameters'},
+                RosServiceServer '/move_base/make_plan' {RefServer './move_base./move_base./move_base/make_plan'},
+                RosServiceServer '/move_base/DWAPlannerROS/set_parameters' {RefServer './move_base./move_base./move_base/DWAPlannerROS/set_parameters'},
+                RosServiceServer '/move_base/global_costmap/static_layer/set_parameters' {RefServer './move_base./move_base./move_base/global_costmap/static_layer/set_parameters'},
+                RosServiceServer '/move_base/local_costmap/inflation_layer/set_parameters' {RefServer './move_base./move_base./move_base/local_costmap/inflation_layer/set_parameters'},
+                RosServiceServer '/move_base/set_parameters' {RefServer './move_base./move_base./move_base/set_parameters'},
+                RosServiceServer '/move_base/NavfnROS/make_plan' {RefServer './move_base./move_base./move_base/NavfnROS/make_plan'},
+                RosServiceServer '/move_base/local_costmap/obstacle_layer/set_parameters' {RefServer './move_base./move_base./move_base/local_costmap/obstacle_layer/set_parameters'},
+                RosServiceServer '/move_base/local_costmap/set_parameters' {RefServer './move_base./move_base./move_base/local_costmap/set_parameters'}}
+            RosActionServers {
+                RosServer '/move_base' {RefServer './move_base./move_base./move_base'}}
+        },
+
+        ComponentInterface { name '/map_server'
+            RosPublishers {
+                RosPublisher '/map' {RefPublisher './map_server./map_server./map'},
+                RosPublisher '/map_metadata' {RefPublisher './map_server./map_server./map_metadata'}}
+            RosSrvServers {
+                RosServiceServer '/static_map' {RefServer './map_server./map_server./static_map'}}
+        },
+
+        ComponentInterface { name '/robot_state_publisher'
+            RosParameters {
+                RosParameter '/robot_state_publisher/publish_frequency' {RefParameter './robot_state_publisher./robot_state_publisher./robot_state_publisher/publish_frequency' value 50.0}}
+            RosSubscribers {
+                RosSubscriber '/joint_states' {RefSubscriber './robot_state_publisher./robot_state_publisher./joint_states'}}
+        },
+
+        ComponentInterface { name '/amcl'
+            RosParameters {
+                RosParameter '/amcl/update_min_a' {RefParameter './amcl./amcl./amcl/update_min_a' value 0.2},
+                RosParameter '/amcl/recovery_alpha_slow' {RefParameter './amcl./amcl./amcl/recovery_alpha_slow' value 0.0},
+                RosParameter '/amcl/initial_pose_a' {RefParameter './amcl./amcl./amcl/initial_pose_a' value -0.002289031488993695},
+                RosParameter '/amcl/resample_interval' {RefParameter './amcl./amcl./amcl/resample_interval' value 1},
+                RosParameter '/amcl/laser_z_max' {RefParameter './amcl./amcl./amcl/laser_z_max' value 0.05},
+                RosParameter '/amcl/laser_z_hit' {RefParameter './amcl./amcl./amcl/laser_z_hit' value 0.5},
+                RosParameter '/amcl/kld_z' {RefParameter './amcl./amcl./amcl/kld_z' value 0.99},
+                RosParameter '/amcl/odom_frame_id' {RefParameter './amcl./amcl./amcl/odom_frame_id' value odom},
+                RosParameter '/amcl/laser_likelihood_max_dist' {RefParameter './amcl./amcl./amcl/laser_likelihood_max_dist' value 2.0},
+                RosParameter '/amcl/kld_err' {RefParameter './amcl./amcl./amcl/kld_err' value 0.02},
+                RosParameter '/amcl/laser_z_rand' {RefParameter './amcl./amcl./amcl/laser_z_rand' value 0.5},
+                RosParameter '/amcl/odom_alpha2' {RefParameter './amcl./amcl./amcl/odom_alpha2' value 0.1},
+                RosParameter '/amcl/laser_max_beams' {RefParameter './amcl./amcl./amcl/laser_max_beams' value 180},
+                RosParameter '/amcl/odom_alpha1' {RefParameter './amcl./amcl./amcl/odom_alpha1' value 0.1},
+                RosParameter '/amcl/global_frame_id' {RefParameter './amcl./amcl./amcl/global_frame_id' value map},
+                RosParameter '/amcl/initial_cov_xx' {RefParameter './amcl./amcl./amcl/initial_cov_xx' value 0.1630707330720913},
+                RosParameter '/amcl/recovery_alpha_fast' {RefParameter './amcl./amcl./amcl/recovery_alpha_fast' value 0.0},
+                RosParameter '/amcl/gui_publish_rate' {RefParameter './amcl./amcl./amcl/gui_publish_rate' value 50.0},
+                RosParameter '/amcl/beam_skip_distance' {RefParameter './amcl./amcl./amcl/beam_skip_distance' value 0.5},
+                RosParameter '/amcl/odom_alpha4' {RefParameter './amcl./amcl./amcl/odom_alpha4' value 0.1},
+                RosParameter '/amcl/save_pose_rate' {RefParameter './amcl./amcl./amcl/save_pose_rate' value 0.5},
+                RosParameter '/amcl/tf_broadcast' {RefParameter './amcl./amcl./amcl/tf_broadcast' value True},
+                RosParameter '/amcl/odom_alpha5' {RefParameter './amcl./amcl./amcl/odom_alpha5' value 0.2},
+                RosParameter '/amcl/laser_sigma_hit' {RefParameter './amcl./amcl./amcl/laser_sigma_hit' value 0.2},
+                RosParameter '/amcl/do_beamskip' {RefParameter './amcl./amcl./amcl/do_beamskip' value False},
+                RosParameter '/amcl/odom_model_type' {RefParameter './amcl./amcl./amcl/odom_model_type' value diff},
+                RosParameter '/amcl/laser_model_type' {RefParameter './amcl./amcl./amcl/laser_model_type' value likelihood_field},
+                RosParameter '/amcl/max_particles' {RefParameter './amcl./amcl./amcl/max_particles' value 3000},
+                RosParameter '/amcl/initial_cov_yy' {RefParameter './amcl./amcl./amcl/initial_cov_yy' value 0.21284507810818504},
+                RosParameter '/amcl/laser_min_range' {RefParameter './amcl./amcl./amcl/laser_min_range' value -1.0},
+                RosParameter '/amcl/laser_max_range' {RefParameter './amcl./amcl./amcl/laser_max_range' value 3.5},
+                RosParameter '/amcl/laser_z_short' {RefParameter './amcl./amcl./amcl/laser_z_short' value 0.05},
+                RosParameter '/amcl/min_particles' {RefParameter './amcl./amcl./amcl/min_particles' value 500},
+                RosParameter '/amcl/restore_defaults' {RefParameter './amcl./amcl./amcl/restore_defaults' value False},
+                RosParameter '/amcl/transform_tolerance' {RefParameter './amcl./amcl./amcl/transform_tolerance' value 0.5},
+                RosParameter '/amcl/base_frame_id' {RefParameter './amcl./amcl./amcl/base_frame_id' value base_footprint},
+                RosParameter '/amcl/use_map_topic' {RefParameter './amcl./amcl./amcl/use_map_topic' value False},
+                RosParameter '/amcl/laser_lambda_short' {RefParameter './amcl./amcl./amcl/laser_lambda_short' value 0.1},
+                RosParameter '/amcl/beam_skip_threshold' {RefParameter './amcl./amcl./amcl/beam_skip_threshold' value 0.3},
+                RosParameter '/amcl/initial_cov_aa' {RefParameter './amcl./amcl./amcl/initial_cov_aa' value 0.06545914817032515},
+                RosParameter '/amcl/odom_alpha3' {RefParameter './amcl./amcl./amcl/odom_alpha3' value 0.1},
+                RosParameter '/amcl/initial_pose_x' {RefParameter './amcl./amcl./amcl/initial_pose_x' value -2.04481202646095},
+                RosParameter '/amcl/first_map_only' {RefParameter './amcl./amcl./amcl/first_map_only' value False},
+                RosParameter '/amcl/initial_pose_y' {RefParameter './amcl./amcl./amcl/initial_pose_y' value -0.4569526669961053},
+                RosParameter '/amcl/update_min_d' {RefParameter './amcl./amcl./amcl/update_min_d' value 0.2}}
+            RosPublishers {
+                RosPublisher '/amcl_pose' {RefPublisher './amcl./amcl./amcl_pose'},
+                RosPublisher '/particlecloud' {RefPublisher './amcl./amcl./particlecloud'},
+                RosPublisher '/diagnostics' {RefPublisher './amcl./amcl./diagnostics'},
+                RosPublisher '/amcl/parameter_descriptions' {RefPublisher './amcl./amcl./amcl/parameter_descriptions'},
+                RosPublisher '/amcl/parameter_updates' {RefPublisher './amcl./amcl./amcl/parameter_updates'}}
+            RosSubscribers {
+                RosSubscriber '/scan' {RefSubscriber './amcl./amcl./scan'},
+                RosSubscriber '/initialpose' {RefSubscriber './amcl./amcl./initialpose'}}
+            RosSrvServers {
+                RosServiceServer '/request_nomotion_update' {RefServer './amcl./amcl./request_nomotion_update'},
+                RosServiceServer '/global_localization' {RefServer './amcl./amcl./global_localization'},
+                RosServiceServer '/set_map' {RefServer './amcl./amcl./set_map'},
+                RosServiceServer '/amcl/set_parameters' {RefServer './amcl./amcl./amcl/set_parameters'}}
+        }
+)
+        Parameters {
+          Parameter { name '/robot_description' type <class 'str value <?xml version="1.0" encoding="utf-8"?>
+<!-- =================================================================================== -->
+<!-- |    This document was autogenerated by xacro from /opt/ros/melodic/share/turtlebot3_description/urdf/turtlebot3_burger.urdf.xacro | -->
+<!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
+<!-- =================================================================================== -->
+<robot name="turtlebot3_burger">
+  <!-- Init colour -->
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="dark">
+    <color rgba="0.3 0.3 0.3 1.0"/>
+  </material>
+  <material name="light_black">
+    <color rgba="0.4 0.4 0.4 1.0"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  <material name="orange">
+    <color rgba="1.0 0.423529411765 0.0392156862745 1.0"/>
+  </material>
+  <material name="brown">
+    <color rgba="0.870588235294 0.811764705882 0.764705882353 1.0"/>
+  </material>
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <gazebo reference="base_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo reference="wheel_left_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>1 0 0</fdir1>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="wheel_right_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>1 0 0</fdir1>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="caster_back_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>1.0</maxVel>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo reference="imu_link">
+    <sensor name="imu" type="imu">
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+    </sensor>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="turtlebot3_burger_controller">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometrySource>world</odometrySource>
+      <publishOdomTF>true</publishOdomTF>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <publishWheelTF>false</publishWheelTF>
+      <publishTf>true</publishTf>
+      <publishWheelJointState>true</publishWheelJointState>
+      <legacyMode>false</legacyMode>
+      <updateRate>30</updateRate>
+      <leftJoint>wheel_left_joint</leftJoint>
+      <rightJoint>wheel_right_joint</rightJoint>
+      <wheelSeparation>0.160</wheelSeparation>
+      <wheelDiameter>0.066</wheelDiameter>
+      <wheelAcceleration>1</wheelAcceleration>
+      <wheelTorque>10</wheelTorque>
+      <rosDebugLevel>na</rosDebugLevel>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_imu.so" name="imu_plugin">
+      <alwaysOn>true</alwaysOn>
+      <bodyName>imu_link</bodyName>
+      <frameName>imu_link</frameName>
+      <topicName>imu</topicName>
+      <serviceName>imu_service</serviceName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <updateRate>0</updateRate>
+      <imu>
+        <noise>
+          <type>gaussian</type>
+          <rate>
+            <mean>0.0</mean>
+            <stddev>2e-4</stddev>
+            <bias_mean>0.0000075</bias_mean>
+            <bias_stddev>0.0000008</bias_stddev>
+          </rate>
+          <accel>
+            <mean>0.0</mean>
+            <stddev>1.7e-2</stddev>
+            <bias_mean>0.1</bias_mean>
+            <bias_stddev>0.001</bias_stddev>
+          </accel>
+        </noise>
+      </imu>
+    </plugin>
+  </gazebo>
+  <gazebo reference="base_scan">
+    <material>Gazebo/FlatBlack</material>
+    <sensor name="lds_lfcd_sensor" type="ray">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>5</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>0.0</min_angle>
+            <max_angle>6.28319</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.120</min>
+          <max>3.5</max>
+          <resolution>0.015</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin filename="libgazebo_ros_laser.so" name="gazebo_ros_lds_lfcd_controller">
+        <topicName>scan</topicName>
+        <frameName>base_scan</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <link name="base_footprint"/>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.010"/>
+  </joint>
+  <link name="base_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.032 0 0.0"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_description/meshes/bases/burger_base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="light_black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.032 0 0.070"/>
+      <geometry>
+        <box size="0.140 0.140 0.143"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="8.2573504e-01"/>
+      <inertia ixx="2.2124416e-03" ixy="-1.2294101e-05" ixz="3.4938785e-05" iyy="2.1193702e-03" iyz="-5.0120904e-06" izz="2.0064271e-03"/>
+    </inertial>
+  </link>
+  <joint name="wheel_left_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_left_link"/>
+    <origin rpy="-1.57 0 0" xyz="0.0 0.08 0.023"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="wheel_left_link">
+    <visual>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_description/meshes/wheels/left_tire.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.018" radius="0.033"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="2.8498940e-02"/>
+      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
+    </inertial>
+  </link>
+  <joint name="wheel_right_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="wheel_right_link"/>
+    <origin rpy="-1.57 0 0" xyz="0.0 -0.080 0.023"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <link name="wheel_right_link">
+    <visual>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_description/meshes/wheels/right_tire.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.018" radius="0.033"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="2.8498940e-02"/>
+      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09" iyy="1.1192413e-05" iyz="-1.4400107e-11" izz="2.0712558e-05"/>
+    </inertial>
+  </link>
+  <joint name="caster_back_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_back_link"/>
+    <origin rpy="-1.57 0 0" xyz="-0.081 0 -0.004"/>
+  </joint>
+  <link name="caster_back_link">
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.001 0"/>
+      <geometry>
+        <box size="0.030 0.009 0.020"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin rpy="0 0 0" xyz="-0.032 0 0.068"/>
+  </joint>
+  <link name="imu_link"/>
+  <joint name="scan_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_scan"/>
+    <origin rpy="0 0 0" xyz="-0.032 0 0.172"/>
+  </joint>
+  <link name="base_scan">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+      <geometry>
+        <mesh filename="package://turtlebot3_description/meshes/sensors/lds.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.015 0 -0.0065"/>
+      <geometry>
+        <cylinder length="0.0315" radius="0.055"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.114"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001"/>
+    </inertial>
+  </link>
+</robot>
+
+},
+          Parameter { name '/use_sim_time' type <class 'bool value True}}
+}
