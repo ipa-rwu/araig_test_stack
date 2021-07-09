@@ -1,5 +1,5 @@
-PackageSet { package { 
-  CatkinPackage dummy_package { artifact {
+PackageSet {
+  CatkinPackage dummy_package {
     Artifact /amcl {
       Node { name /amcl
         ServiceServers {
@@ -323,4 +323,4 @@ PackageSet { package {
           Parameter { name '/amcl/laser_z_hit' type Double },
           Parameter { name '/move_base/DWAPlannerROS/yaw_goal_tolerance' type Double },
           Parameter { name '/amcl/initial_cov_yy' type Double }}}}
-}}}}
+}}
