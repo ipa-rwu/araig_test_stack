@@ -1,0 +1,1346 @@
+nodes:
+  /amcl:
+    ActionClients: []
+    ActionServers: []
+    Parameters: []
+    Publishers:
+    - Minimal: /particlecloud
+      Name: /particlecloud
+      Namespace: /
+      Type: geometry_msgs/PoseArray
+    - Minimal: /parameter_descriptions
+      Name: /amcl/parameter_descriptions
+      Namespace: /amcl/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /parameter_updates
+      Name: /amcl/parameter_updates
+      Namespace: /amcl/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /amcl_pose
+      Name: /amcl_pose
+      Namespace: /
+      Type: geometry_msgs/PoseWithCovarianceStamped
+    - Minimal: /diagnostics
+      Name: /diagnostics
+      Namespace: /
+      Type: diagnostic_msgs/DiagnosticArray
+    Services:
+    - Minimal: /set_parameters
+      Name: /amcl/set_parameters
+      Namespace: /amcl/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /set_map
+      Name: /set_map
+      Namespace: /
+      Type: nav_msgs/SetMap
+    - Minimal: /global_localization
+      Name: /global_localization
+      Namespace: /
+      Type: std_srvs/Empty
+    - Minimal: /request_nomotion_update
+      Name: /request_nomotion_update
+      Namespace: /
+      Type: std_srvs/Empty
+    Subscribers:
+    - Minimal: /initialpose
+      Name: /initialpose
+      Namespace: /
+      Type: geometry_msgs/PoseWithCovarianceStamped
+    - Minimal: /scan
+      Name: /scan
+      Namespace: /
+      Type: sensor_msgs/LaserScan
+  /gazebo:
+    ActionClients: []
+    ActionServers: []
+    Parameters: []
+    Publishers:
+    - Minimal: /link_states
+      Name: /gazebo/link_states
+      Namespace: /gazebo/
+      Type: gazebo_msgs/LinkStates
+    - Minimal: /odom
+      Name: /odom
+      Namespace: /
+      Type: nav_msgs/Odometry
+    - Minimal: /scan
+      Name: /scan
+      Namespace: /
+      Type: sensor_msgs/LaserScan
+    - Minimal: /model_states
+      Name: /gazebo/model_states
+      Namespace: /gazebo/
+      Type: gazebo_msgs/ModelStates
+    - Minimal: /imu
+      Name: /imu
+      Namespace: /
+      Type: sensor_msgs/Imu
+    - Minimal: /parameter_descriptions
+      Name: /gazebo/parameter_descriptions
+      Namespace: /gazebo/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /joint_states
+      Name: /joint_states
+      Namespace: /
+      Type: sensor_msgs/JointState
+    - Minimal: /parameter_updates
+      Name: /gazebo/parameter_updates
+      Namespace: /gazebo/
+      Type: dynamic_reconfigure/Config
+    Services:
+    - Minimal: /unpause_physics
+      Name: /gazebo/unpause_physics
+      Namespace: /gazebo/
+      Type: std_srvs/Empty
+    - Minimal: /get_light_properties
+      Name: /gazebo/get_light_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/GetLightProperties
+    - Minimal: /clear_body_wrenches
+      Name: /gazebo/clear_body_wrenches
+      Namespace: /gazebo/
+      Type: gazebo_msgs/BodyRequest
+    - Minimal: /pause_physics
+      Name: /gazebo/pause_physics
+      Namespace: /gazebo/
+      Type: std_srvs/Empty
+    - Minimal: /set_physics_properties
+      Name: /gazebo/set_physics_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SetPhysicsProperties
+    - Minimal: /reset_simulation
+      Name: /gazebo/reset_simulation
+      Namespace: /gazebo/
+      Type: std_srvs/Empty
+    - Minimal: /get_model_state
+      Name: /gazebo/get_model_state
+      Namespace: /gazebo/
+      Type: gazebo_msgs/GetModelState
+    - Minimal: /apply_joint_effort
+      Name: /gazebo/apply_joint_effort
+      Namespace: /gazebo/
+      Type: gazebo_msgs/ApplyJointEffort
+    - Minimal: /clear_joint_forces
+      Name: /gazebo/clear_joint_forces
+      Namespace: /gazebo/
+      Type: gazebo_msgs/JointRequest
+    - Minimal: /imu_service
+      Name: /imu_service
+      Namespace: /
+      Type: std_srvs/Empty
+    - Minimal: /set_model_state
+      Name: /gazebo/set_model_state
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SetModelState
+    - Minimal: /set_link_state
+      Name: /gazebo/set_link_state
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SetLinkState
+    - Minimal: /spawn_urdf_model
+      Name: /gazebo/spawn_urdf_model
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SpawnModel
+    - Minimal: /set_joint_properties
+      Name: /gazebo/set_joint_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SetJointProperties
+    - Minimal: /set_link_properties
+      Name: /gazebo/set_link_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SetLinkProperties
+    - Minimal: /reset_world
+      Name: /gazebo/reset_world
+      Namespace: /gazebo/
+      Type: std_srvs/Empty
+    - Minimal: /get_joint_properties
+      Name: /gazebo/get_joint_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/GetJointProperties
+    - Minimal: /get_physics_properties
+      Name: /gazebo/get_physics_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/GetPhysicsProperties
+    - Minimal: /set_model_configuration
+      Name: /gazebo/set_model_configuration
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SetModelConfiguration
+    - Minimal: /apply_body_wrench
+      Name: /gazebo/apply_body_wrench
+      Namespace: /gazebo/
+      Type: gazebo_msgs/ApplyBodyWrench
+    - Minimal: /get_world_properties
+      Name: /gazebo/get_world_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/GetWorldProperties
+    - Minimal: /get_link_state
+      Name: /gazebo/get_link_state
+      Namespace: /gazebo/
+      Type: gazebo_msgs/GetLinkState
+    - Minimal: /get_link_properties
+      Name: /gazebo/get_link_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/GetLinkProperties
+    - Minimal: /delete_light
+      Name: /gazebo/delete_light
+      Namespace: /gazebo/
+      Type: gazebo_msgs/DeleteLight
+    - Minimal: /delete_model
+      Name: /gazebo/delete_model
+      Namespace: /gazebo/
+      Type: gazebo_msgs/DeleteModel
+    - Minimal: /set_parameters
+      Name: /gazebo/set_parameters
+      Namespace: /gazebo/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /get_model_properties
+      Name: /gazebo/get_model_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/GetModelProperties
+    - Minimal: /spawn_sdf_model
+      Name: /gazebo/spawn_sdf_model
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SpawnModel
+    - Minimal: /set_light_properties
+      Name: /gazebo/set_light_properties
+      Namespace: /gazebo/
+      Type: gazebo_msgs/SetLightProperties
+    Subscribers:
+    - Minimal: /cmd_vel
+      Name: /cmd_vel
+      Namespace: /
+      Type: geometry_msgs/Twist
+    - Minimal: /set_model_state
+      Name: /gazebo/set_model_state
+      Namespace: /gazebo/
+      Type: gazebo_msgs/ModelState
+    - Minimal: /set_link_state
+      Name: /gazebo/set_link_state
+      Namespace: /gazebo/
+      Type: gazebo_msgs/LinkState
+  /map_server:
+    ActionClients: []
+    ActionServers: []
+    Parameters: []
+    Publishers:
+    - Minimal: /map_metadata
+      Name: /map_metadata
+      Namespace: /
+      Type: nav_msgs/MapMetaData
+    - Minimal: /map
+      Name: /map
+      Namespace: /
+      Type: nav_msgs/OccupancyGrid
+    Services:
+    - Minimal: /static_map
+      Name: /static_map
+      Namespace: /
+      Type: nav_msgs/GetMap
+    Subscribers: []
+  /move_base:
+    ActionClients: []
+    ActionServers:
+    - Minimal: /move_base/
+      Name: /move_base/
+      Namespace: /
+      Type: move_base_msgs/MoveBase
+    Parameters: []
+    Publishers:
+    - Minimal: /costmap_updates
+      Name: /move_base/local_costmap/costmap_updates
+      Namespace: /move_base/local_costmap/
+      Type: map_msgs/OccupancyGridUpdate
+    - Minimal: /parameter_descriptions
+      Name: /move_base/global_costmap/inflation_layer/parameter_descriptions
+      Namespace: /move_base/global_costmap/inflation_layer/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /plan
+      Name: /move_base/NavfnROS/plan
+      Namespace: /move_base/NavfnROS/
+      Type: nav_msgs/Path
+    - Minimal: /parameter_descriptions
+      Name: /move_base/global_costmap/obstacle_layer/parameter_descriptions
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /parameter_descriptions
+      Name: /move_base/local_costmap/parameter_descriptions
+      Namespace: /move_base/local_costmap/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /costmap_updates
+      Name: /move_base/global_costmap/costmap_updates
+      Namespace: /move_base/global_costmap/
+      Type: map_msgs/OccupancyGridUpdate
+    - Minimal: /parameter_updates
+      Name: /move_base/local_costmap/parameter_updates
+      Namespace: /move_base/local_costmap/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /trajectory_cloud
+      Name: /move_base/DWAPlannerROS/trajectory_cloud
+      Namespace: /move_base/DWAPlannerROS/
+      Type: sensor_msgs/PointCloud2
+    - Minimal: /parameter_updates
+      Name: /move_base/parameter_updates
+      Namespace: /move_base/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /current_goal
+      Name: /move_base/current_goal
+      Namespace: /move_base/
+      Type: geometry_msgs/PoseStamped
+    - Minimal: /parameter_descriptions
+      Name: /move_base/global_costmap/parameter_descriptions
+      Namespace: /move_base/global_costmap/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /parameter_updates
+      Name: /move_base/local_costmap/obstacle_layer/parameter_updates
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /parameter_descriptions
+      Name: /move_base/DWAPlannerROS/parameter_descriptions
+      Namespace: /move_base/DWAPlannerROS/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /parameter_updates
+      Name: /move_base/global_costmap/inflation_layer/parameter_updates
+      Namespace: /move_base/global_costmap/inflation_layer/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /parameter_descriptions
+      Name: /move_base/parameter_descriptions
+      Namespace: /move_base/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /global_plan
+      Name: /move_base/DWAPlannerROS/global_plan
+      Namespace: /move_base/DWAPlannerROS/
+      Type: nav_msgs/Path
+    - Minimal: /cmd_vel
+      Name: /cmd_vel
+      Namespace: /
+      Type: geometry_msgs/Twist
+    - Minimal: /parameter_descriptions
+      Name: /move_base/local_costmap/inflation_layer/parameter_descriptions
+      Namespace: /move_base/local_costmap/inflation_layer/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /parameter_descriptions
+      Name: /move_base/local_costmap/obstacle_layer/parameter_descriptions
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Type: dynamic_reconfigure/ConfigDescription
+    - Minimal: /cost_cloud
+      Name: /move_base/DWAPlannerROS/cost_cloud
+      Namespace: /move_base/DWAPlannerROS/
+      Type: sensor_msgs/PointCloud2
+    - Minimal: /parameter_updates
+      Name: /move_base/DWAPlannerROS/parameter_updates
+      Namespace: /move_base/DWAPlannerROS/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /footprint
+      Name: /move_base/global_costmap/footprint
+      Namespace: /move_base/global_costmap/
+      Type: geometry_msgs/PolygonStamped
+    - Minimal: /parameter_updates
+      Name: /move_base/global_costmap/obstacle_layer/parameter_updates
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /costmap
+      Name: /move_base/local_costmap/costmap
+      Namespace: /move_base/local_costmap/
+      Type: nav_msgs/OccupancyGrid
+    - Minimal: /local_plan
+      Name: /move_base/DWAPlannerROS/local_plan
+      Namespace: /move_base/DWAPlannerROS/
+      Type: nav_msgs/Path
+    - Minimal: /costmap
+      Name: /move_base/global_costmap/costmap
+      Namespace: /move_base/global_costmap/
+      Type: nav_msgs/OccupancyGrid
+    - Minimal: /parameter_updates
+      Name: /move_base/global_costmap/parameter_updates
+      Namespace: /move_base/global_costmap/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /parameter_updates
+      Name: /move_base/global_costmap/static_layer/parameter_updates
+      Namespace: /move_base/global_costmap/static_layer/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /footprint
+      Name: /move_base/local_costmap/footprint
+      Namespace: /move_base/local_costmap/
+      Type: geometry_msgs/PolygonStamped
+    - Minimal: /parameter_updates
+      Name: /move_base/local_costmap/inflation_layer/parameter_updates
+      Namespace: /move_base/local_costmap/inflation_layer/
+      Type: dynamic_reconfigure/Config
+    - Minimal: /goal
+      Name: /move_base/goal
+      Namespace: /move_base/
+      Type: move_base_msgs/MoveBaseActionGoal
+    - Minimal: /parameter_descriptions
+      Name: /move_base/global_costmap/static_layer/parameter_descriptions
+      Namespace: /move_base/global_costmap/static_layer/
+      Type: dynamic_reconfigure/ConfigDescription
+    Services:
+    - Minimal: /set_parameters
+      Name: /move_base/global_costmap/set_parameters
+      Namespace: /move_base/global_costmap/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /set_parameters
+      Name: /move_base/set_parameters
+      Namespace: /move_base/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /set_parameters
+      Name: /move_base/global_costmap/static_layer/set_parameters
+      Namespace: /move_base/global_costmap/static_layer/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /set_parameters
+      Name: /move_base/local_costmap/inflation_layer/set_parameters
+      Namespace: /move_base/local_costmap/inflation_layer/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /set_parameters
+      Name: /move_base/global_costmap/obstacle_layer/set_parameters
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /make_plan
+      Name: /move_base/NavfnROS/make_plan
+      Namespace: /move_base/NavfnROS/
+      Type: nav_msgs/GetPlan
+    - Minimal: /make_plan
+      Name: /move_base/make_plan
+      Namespace: /move_base/
+      Type: nav_msgs/GetPlan
+    - Minimal: /set_parameters
+      Name: /move_base/global_costmap/inflation_layer/set_parameters
+      Namespace: /move_base/global_costmap/inflation_layer/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /set_parameters
+      Name: /move_base/local_costmap/obstacle_layer/set_parameters
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /clear_costmaps
+      Name: /move_base/clear_costmaps
+      Namespace: /move_base/
+      Type: std_srvs/Empty
+    - Minimal: /set_parameters
+      Name: /move_base/DWAPlannerROS/set_parameters
+      Namespace: /move_base/DWAPlannerROS/
+      Type: dynamic_reconfigure/Reconfigure
+    - Minimal: /set_parameters
+      Name: /move_base/local_costmap/set_parameters
+      Namespace: /move_base/local_costmap/
+      Type: dynamic_reconfigure/Reconfigure
+    Subscribers:
+    - Minimal: /scan
+      Name: /scan
+      Namespace: /
+      Type: sensor_msgs/LaserScan
+    - Minimal: /map
+      Name: /map
+      Namespace: /
+      Type: nav_msgs/OccupancyGrid
+    - Minimal: /footprint
+      Name: /move_base/local_costmap/footprint
+      Namespace: /move_base/local_costmap/
+      Type: geometry_msgs/PolygonStamped
+    - Minimal: /footprint
+      Name: /move_base/global_costmap/footprint
+      Namespace: /move_base/global_costmap/
+      Type: geometry_msgs/PolygonStamped
+    - Minimal: /goal
+      Name: /move_base_simple/goal
+      Namespace: /move_base_simple/
+      Type: geometry_msgs/PoseStamped
+    - Minimal: /odom
+      Name: /odom
+      Namespace: /
+      Type: nav_msgs/Odometry
+  /robot_state_publisher:
+    ActionClients: []
+    ActionServers: []
+    Parameters: []
+    Publishers: []
+    Services: []
+    Subscribers:
+    - Minimal: /joint_states
+      Name: /joint_states
+      Namespace: /
+      Type: sensor_msgs/JointState
+  parameters_node:
+    ActionClients: []
+    ActionServers: []
+    Parameters:
+    - Minimal: /inflate_unknown
+      Name: /move_base/local_costmap/inflation_layer/inflate_unknown
+      Namespace: /move_base/local_costmap/inflation_layer/
+      Value: false
+    - Minimal: /beam_skip_distance
+      Name: /amcl/beam_skip_distance
+      Namespace: /amcl/
+      Value: 0.5
+    - Minimal: /base_frame_id
+      Name: /amcl/base_frame_id
+      Namespace: /amcl/
+      Value: base_footprint
+    - Minimal: /transform_tolerance
+      Name: /amcl/transform_tolerance
+      Namespace: /amcl/
+      Value: 0.5
+    - Minimal: /initial_pose_a
+      Name: /amcl/initial_pose_a
+      Namespace: /amcl/
+      Value: 0.0023981284249806087
+    - Minimal: /beam_skip_threshold
+      Name: /amcl/beam_skip_threshold
+      Namespace: /amcl/
+      Value: 0.3
+    - Minimal: /odom_frame_id
+      Name: /amcl/odom_frame_id
+      Namespace: /amcl/
+      Value: odom
+    - Minimal: /width
+      Name: /move_base/local_costmap/width
+      Namespace: /move_base/local_costmap/
+      Value: 3
+    - Minimal: /min_vel_y
+      Name: /move_base/DWAPlannerROS/min_vel_y
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.0
+    - Minimal: /controller_patience
+      Name: /move_base/controller_patience
+      Namespace: /move_base/
+      Value: 15.0
+    - Minimal: /inflation_radius
+      Name: /move_base/local_costmap/inflation_layer/inflation_radius
+      Namespace: /move_base/local_costmap/inflation_layer/
+      Value: 1.0
+    - Minimal: /acc_lim_theta
+      Name: /move_base/DWAPlannerROS/acc_lim_theta
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 3.2
+    - Minimal: /min_particles
+      Name: /amcl/min_particles
+      Namespace: /amcl/
+      Value: 500
+    - Minimal: /enabled
+      Name: /move_base/local_costmap/inflation_layer/enabled
+      Namespace: /move_base/local_costmap/inflation_layer/
+      Value: true
+    - Minimal: /min_vel_trans
+      Name: /move_base/DWAPlannerROS/min_vel_trans
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.11
+    - Minimal: /static_map
+      Name: /move_base/local_costmap/static_map
+      Namespace: /move_base/local_costmap/
+      Value: false
+    - Minimal: /max_contacts
+      Name: /gazebo/max_contacts
+      Namespace: /gazebo/
+      Value: 20
+    - Minimal: /laser_z_hit
+      Name: /amcl/laser_z_hit
+      Namespace: /amcl/
+      Value: 0.5
+    - Minimal: /origin_x
+      Name: /move_base/local_costmap/origin_x
+      Namespace: /move_base/local_costmap/
+      Value: 0.0
+    - Minimal: /vy_samples
+      Name: /move_base/DWAPlannerROS/vy_samples
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 1
+    - Minimal: /origin_y
+      Name: /move_base/local_costmap/origin_y
+      Namespace: /move_base/local_costmap/
+      Value: 0.0
+    - Minimal: /sim_time
+      Name: /move_base/DWAPlannerROS/sim_time
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 1.5
+    - Minimal: /footprint
+      Name: /move_base/local_costmap/footprint
+      Namespace: /move_base/local_costmap/
+      Value: '[[-0.105,-0.105],[-0.105,0.105],[0.041,0.105],[0.041,-0.105]]'
+    - Minimal: /laser_max_range
+      Name: /amcl/laser_max_range
+      Namespace: /amcl/
+      Value: 3.5
+    - Minimal: /sor_pgs_w
+      Name: /gazebo/sor_pgs_w
+      Namespace: /gazebo/
+      Value: 1.4
+    - Minimal: /odom_model_type
+      Name: /amcl/odom_model_type
+      Namespace: /amcl/
+      Value: diff
+    - Minimal: /map_type
+      Name: /move_base/local_costmap/map_type
+      Namespace: /move_base/local_costmap/
+      Value: costmap
+    - Minimal: /gravity_x
+      Name: /gazebo/gravity_x
+      Namespace: /gazebo/
+      Value: 0.0
+    - Minimal: /controller_frequency
+      Name: /move_base/controller_frequency
+      Namespace: /move_base/
+      Value: 10.0
+    - Minimal: /robot_description
+      Name: /robot_description
+      Namespace: /
+      Value: "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!-- ===================================================================================\
+        \ -->\n<!-- |    This document was autogenerated by xacro from /opt/ros/melodic/share/turtlebot3_description/urdf/turtlebot3_burger.urdf.xacro\
+        \ | -->\n<!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED          \
+        \                       | -->\n<!-- ===================================================================================\
+        \ -->\n<robot name=\"turtlebot3_burger\">\n  <!-- Init colour -->\n  <material\
+        \ name=\"black\">\n    <color rgba=\"0.0 0.0 0.0 1.0\"/>\n  </material>\n\
+        \  <material name=\"dark\">\n    <color rgba=\"0.3 0.3 0.3 1.0\"/>\n  </material>\n\
+        \  <material name=\"light_black\">\n    <color rgba=\"0.4 0.4 0.4 1.0\"/>\n\
+        \  </material>\n  <material name=\"blue\">\n    <color rgba=\"0.0 0.0 0.8\
+        \ 1.0\"/>\n  </material>\n  <material name=\"green\">\n    <color rgba=\"\
+        0.0 0.8 0.0 1.0\"/>\n  </material>\n  <material name=\"grey\">\n    <color\
+        \ rgba=\"0.5 0.5 0.5 1.0\"/>\n  </material>\n  <material name=\"orange\">\n\
+        \    <color rgba=\"1.0 0.423529411765 0.0392156862745 1.0\"/>\n  </material>\n\
+        \  <material name=\"brown\">\n    <color rgba=\"0.870588235294 0.811764705882\
+        \ 0.764705882353 1.0\"/>\n  </material>\n  <material name=\"red\">\n    <color\
+        \ rgba=\"0.8 0.0 0.0 1.0\"/>\n  </material>\n  <material name=\"white\">\n\
+        \    <color rgba=\"1.0 1.0 1.0 1.0\"/>\n  </material>\n  <gazebo reference=\"\
+        base_link\">\n    <material>Gazebo/DarkGrey</material>\n  </gazebo>\n  <gazebo\
+        \ reference=\"wheel_left_link\">\n    <mu1>0.1</mu1>\n    <mu2>0.1</mu2>\n\
+        \    <kp>500000.0</kp>\n    <kd>10.0</kd>\n    <minDepth>0.001</minDepth>\n\
+        \    <maxVel>0.1</maxVel>\n    <fdir1>1 0 0</fdir1>\n    <material>Gazebo/FlatBlack</material>\n\
+        \  </gazebo>\n  <gazebo reference=\"wheel_right_link\">\n    <mu1>0.1</mu1>\n\
+        \    <mu2>0.1</mu2>\n    <kp>500000.0</kp>\n    <kd>10.0</kd>\n    <minDepth>0.001</minDepth>\n\
+        \    <maxVel>0.1</maxVel>\n    <fdir1>1 0 0</fdir1>\n    <material>Gazebo/FlatBlack</material>\n\
+        \  </gazebo>\n  <gazebo reference=\"caster_back_link\">\n    <mu1>0.1</mu1>\n\
+        \    <mu2>0.1</mu2>\n    <kp>1000000.0</kp>\n    <kd>100.0</kd>\n    <minDepth>0.001</minDepth>\n\
+        \    <maxVel>1.0</maxVel>\n    <material>Gazebo/FlatBlack</material>\n  </gazebo>\n\
+        \  <gazebo reference=\"imu_link\">\n    <sensor name=\"imu\" type=\"imu\"\
+        >\n      <always_on>true</always_on>\n      <visualize>false</visualize>\n\
+        \    </sensor>\n    <material>Gazebo/FlatBlack</material>\n  </gazebo>\n \
+        \ <gazebo>\n    <plugin filename=\"libgazebo_ros_diff_drive.so\" name=\"turtlebot3_burger_controller\"\
+        >\n      <commandTopic>cmd_vel</commandTopic>\n      <odometryTopic>odom</odometryTopic>\n\
+        \      <odometryFrame>odom</odometryFrame>\n      <odometrySource>world</odometrySource>\n\
+        \      <publishOdomTF>true</publishOdomTF>\n      <robotBaseFrame>base_footprint</robotBaseFrame>\n\
+        \      <publishWheelTF>false</publishWheelTF>\n      <publishTf>true</publishTf>\n\
+        \      <publishWheelJointState>true</publishWheelJointState>\n      <legacyMode>false</legacyMode>\n\
+        \      <updateRate>30</updateRate>\n      <leftJoint>wheel_left_joint</leftJoint>\n\
+        \      <rightJoint>wheel_right_joint</rightJoint>\n      <wheelSeparation>0.160</wheelSeparation>\n\
+        \      <wheelDiameter>0.066</wheelDiameter>\n      <wheelAcceleration>1</wheelAcceleration>\n\
+        \      <wheelTorque>10</wheelTorque>\n      <rosDebugLevel>na</rosDebugLevel>\n\
+        \    </plugin>\n  </gazebo>\n  <gazebo>\n    <plugin filename=\"libgazebo_ros_imu.so\"\
+        \ name=\"imu_plugin\">\n      <alwaysOn>true</alwaysOn>\n      <bodyName>imu_link</bodyName>\n\
+        \      <frameName>imu_link</frameName>\n      <topicName>imu</topicName>\n\
+        \      <serviceName>imu_service</serviceName>\n      <gaussianNoise>0.0</gaussianNoise>\n\
+        \      <updateRate>0</updateRate>\n      <imu>\n        <noise>\n        \
+        \  <type>gaussian</type>\n          <rate>\n            <mean>0.0</mean>\n\
+        \            <stddev>2e-4</stddev>\n            <bias_mean>0.0000075</bias_mean>\n\
+        \            <bias_stddev>0.0000008</bias_stddev>\n          </rate>\n   \
+        \       <accel>\n            <mean>0.0</mean>\n            <stddev>1.7e-2</stddev>\n\
+        \            <bias_mean>0.1</bias_mean>\n            <bias_stddev>0.001</bias_stddev>\n\
+        \          </accel>\n        </noise>\n      </imu>\n    </plugin>\n  </gazebo>\n\
+        \  <gazebo reference=\"base_scan\">\n    <material>Gazebo/FlatBlack</material>\n\
+        \    <sensor name=\"lds_lfcd_sensor\" type=\"ray\">\n      <pose>0 0 0 0 0\
+        \ 0</pose>\n      <visualize>false</visualize>\n      <update_rate>5</update_rate>\n\
+        \      <ray>\n        <scan>\n          <horizontal>\n            <samples>360</samples>\n\
+        \            <resolution>1</resolution>\n            <min_angle>0.0</min_angle>\n\
+        \            <max_angle>6.28319</max_angle>\n          </horizontal>\n   \
+        \     </scan>\n        <range>\n          <min>0.120</min>\n          <max>3.5</max>\n\
+        \          <resolution>0.015</resolution>\n        </range>\n        <noise>\n\
+        \          <type>gaussian</type>\n          <mean>0.0</mean>\n          <stddev>0.01</stddev>\n\
+        \        </noise>\n      </ray>\n      <plugin filename=\"libgazebo_ros_laser.so\"\
+        \ name=\"gazebo_ros_lds_lfcd_controller\">\n        <topicName>scan</topicName>\n\
+        \        <frameName>base_scan</frameName>\n      </plugin>\n    </sensor>\n\
+        \  </gazebo>\n  <link name=\"base_footprint\"/>\n  <joint name=\"base_joint\"\
+        \ type=\"fixed\">\n    <parent link=\"base_footprint\"/>\n    <child link=\"\
+        base_link\"/>\n    <origin rpy=\"0 0 0\" xyz=\"0.0 0.0 0.010\"/>\n  </joint>\n\
+        \  <link name=\"base_link\">\n    <visual>\n      <origin rpy=\"0 0 0\" xyz=\"\
+        -0.032 0 0.0\"/>\n      <geometry>\n        <mesh filename=\"package://turtlebot3_description/meshes/bases/burger_base.stl\"\
+        \ scale=\"0.001 0.001 0.001\"/>\n      </geometry>\n      <material name=\"\
+        light_black\"/>\n    </visual>\n    <collision>\n      <origin rpy=\"0 0 0\"\
+        \ xyz=\"-0.032 0 0.070\"/>\n      <geometry>\n        <box size=\"0.140 0.140\
+        \ 0.143\"/>\n      </geometry>\n    </collision>\n    <inertial>\n      <origin\
+        \ rpy=\"0 0 0\" xyz=\"0 0 0\"/>\n      <mass value=\"8.2573504e-01\"/>\n \
+        \     <inertia ixx=\"2.2124416e-03\" ixy=\"-1.2294101e-05\" ixz=\"3.4938785e-05\"\
+        \ iyy=\"2.1193702e-03\" iyz=\"-5.0120904e-06\" izz=\"2.0064271e-03\"/>\n \
+        \   </inertial>\n  </link>\n  <joint name=\"wheel_left_joint\" type=\"continuous\"\
+        >\n    <parent link=\"base_link\"/>\n    <child link=\"wheel_left_link\"/>\n\
+        \    <origin rpy=\"-1.57 0 0\" xyz=\"0.0 0.08 0.023\"/>\n    <axis xyz=\"\
+        0 0 1\"/>\n  </joint>\n  <link name=\"wheel_left_link\">\n    <visual>\n \
+        \     <origin rpy=\"1.57 0 0\" xyz=\"0 0 0\"/>\n      <geometry>\n       \
+        \ <mesh filename=\"package://turtlebot3_description/meshes/wheels/left_tire.stl\"\
+        \ scale=\"0.001 0.001 0.001\"/>\n      </geometry>\n      <material name=\"\
+        dark\"/>\n    </visual>\n    <collision>\n      <origin rpy=\"0 0 0\" xyz=\"\
+        0 0 0\"/>\n      <geometry>\n        <cylinder length=\"0.018\" radius=\"\
+        0.033\"/>\n      </geometry>\n    </collision>\n    <inertial>\n      <origin\
+        \ xyz=\"0 0 0\"/>\n      <mass value=\"2.8498940e-02\"/>\n      <inertia ixx=\"\
+        1.1175580e-05\" ixy=\"-4.2369783e-11\" ixz=\"-5.9381719e-09\" iyy=\"1.1192413e-05\"\
+        \ iyz=\"-1.4400107e-11\" izz=\"2.0712558e-05\"/>\n    </inertial>\n  </link>\n\
+        \  <joint name=\"wheel_right_joint\" type=\"continuous\">\n    <parent link=\"\
+        base_link\"/>\n    <child link=\"wheel_right_link\"/>\n    <origin rpy=\"\
+        -1.57 0 0\" xyz=\"0.0 -0.080 0.023\"/>\n    <axis xyz=\"0 0 1\"/>\n  </joint>\n\
+        \  <link name=\"wheel_right_link\">\n    <visual>\n      <origin rpy=\"1.57\
+        \ 0 0\" xyz=\"0 0 0\"/>\n      <geometry>\n        <mesh filename=\"package://turtlebot3_description/meshes/wheels/right_tire.stl\"\
+        \ scale=\"0.001 0.001 0.001\"/>\n      </geometry>\n      <material name=\"\
+        dark\"/>\n    </visual>\n    <collision>\n      <origin rpy=\"0 0 0\" xyz=\"\
+        0 0 0\"/>\n      <geometry>\n        <cylinder length=\"0.018\" radius=\"\
+        0.033\"/>\n      </geometry>\n    </collision>\n    <inertial>\n      <origin\
+        \ xyz=\"0 0 0\"/>\n      <mass value=\"2.8498940e-02\"/>\n      <inertia ixx=\"\
+        1.1175580e-05\" ixy=\"-4.2369783e-11\" ixz=\"-5.9381719e-09\" iyy=\"1.1192413e-05\"\
+        \ iyz=\"-1.4400107e-11\" izz=\"2.0712558e-05\"/>\n    </inertial>\n  </link>\n\
+        \  <joint name=\"caster_back_joint\" type=\"fixed\">\n    <parent link=\"\
+        base_link\"/>\n    <child link=\"caster_back_link\"/>\n    <origin rpy=\"\
+        -1.57 0 0\" xyz=\"-0.081 0 -0.004\"/>\n  </joint>\n  <link name=\"caster_back_link\"\
+        >\n    <collision>\n      <origin rpy=\"0 0 0\" xyz=\"0 0.001 0\"/>\n    \
+        \  <geometry>\n        <box size=\"0.030 0.009 0.020\"/>\n      </geometry>\n\
+        \    </collision>\n    <inertial>\n      <origin xyz=\"0 0 0\"/>\n      <mass\
+        \ value=\"0.005\"/>\n      <inertia ixx=\"0.001\" ixy=\"0.0\" ixz=\"0.0\"\
+        \ iyy=\"0.001\" iyz=\"0.0\" izz=\"0.001\"/>\n    </inertial>\n  </link>\n\
+        \  <joint name=\"imu_joint\" type=\"fixed\">\n    <parent link=\"base_link\"\
+        />\n    <child link=\"imu_link\"/>\n    <origin rpy=\"0 0 0\" xyz=\"-0.032\
+        \ 0 0.068\"/>\n  </joint>\n  <link name=\"imu_link\"/>\n  <joint name=\"scan_joint\"\
+        \ type=\"fixed\">\n    <parent link=\"base_link\"/>\n    <child link=\"base_scan\"\
+        />\n    <origin rpy=\"0 0 0\" xyz=\"-0.032 0 0.172\"/>\n  </joint>\n  <link\
+        \ name=\"base_scan\">\n    <visual>\n      <origin rpy=\"0 0 0\" xyz=\"0 0\
+        \ 0.0\"/>\n      <geometry>\n        <mesh filename=\"package://turtlebot3_description/meshes/sensors/lds.stl\"\
+        \ scale=\"0.001 0.001 0.001\"/>\n      </geometry>\n      <material name=\"\
+        dark\"/>\n    </visual>\n    <collision>\n      <origin rpy=\"0 0 0\" xyz=\"\
+        0.015 0 -0.0065\"/>\n      <geometry>\n        <cylinder length=\"0.0315\"\
+        \ radius=\"0.055\"/>\n      </geometry>\n    </collision>\n    <inertial>\n\
+        \      <mass value=\"0.114\"/>\n      <origin xyz=\"0 0 0\"/>\n      <inertia\
+        \ ixx=\"0.001\" ixy=\"0.0\" ixz=\"0.0\" iyy=\"0.001\" iyz=\"0.0\" izz=\"0.001\"\
+        />\n    </inertial>\n  </link>\n</robot>\n\n"
+    - Minimal: /robot_radius
+      Name: /move_base/local_costmap/robot_radius
+      Namespace: /move_base/local_costmap/
+      Value: 0.46
+    - Minimal: /initial_cov_aa
+      Name: /amcl/initial_cov_aa
+      Namespace: /amcl/
+      Value: 0.06757203304252996
+    - Minimal: /sensor_frame
+      Name: /move_base/global_costmap/obstacle_layer/scan/sensor_frame
+      Namespace: /move_base/global_costmap/obstacle_layer/scan/
+      Value: base_scan
+    - Minimal: /vx_samples
+      Name: /move_base/DWAPlannerROS/vx_samples
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 20
+    - Minimal: /global_frame
+      Name: /move_base/local_costmap/global_frame
+      Namespace: /move_base/local_costmap/
+      Value: odom
+    - Minimal: /laser_model_type
+      Name: /amcl/laser_model_type
+      Namespace: /amcl/
+      Value: likelihood_field
+    - Minimal: /use_sim_time
+      Name: /use_sim_time
+      Namespace: /
+      Value: true
+    - Minimal: /planner_frequency
+      Name: /move_base/planner_frequency
+      Namespace: /move_base/
+      Value: 5.0
+    - Minimal: /rolling_window
+      Name: /move_base/local_costmap/rolling_window
+      Namespace: /move_base/local_costmap/
+      Value: true
+    - Minimal: /contact_surface_layer
+      Name: /gazebo/contact_surface_layer
+      Namespace: /gazebo/
+      Value: 0.01
+    - Minimal: /recovery_alpha_slow
+      Name: /amcl/recovery_alpha_slow
+      Namespace: /amcl/
+      Value: 0.0
+    - Minimal: /kld_err
+      Name: /amcl/kld_err
+      Namespace: /amcl/
+      Value: 0.02
+    - Minimal: /recovery_alpha_fast
+      Name: /amcl/recovery_alpha_fast
+      Namespace: /amcl/
+      Value: 0.0
+    - Minimal: /max_particles
+      Name: /amcl/max_particles
+      Namespace: /amcl/
+      Value: 3000
+    - Minimal: /robot_base_frame
+      Name: /move_base/local_costmap/robot_base_frame
+      Namespace: /move_base/local_costmap/
+      Value: base_footprint
+    - Minimal: /odom_alpha2
+      Name: /amcl/odom_alpha2
+      Namespace: /amcl/
+      Value: 0.1
+    - Minimal: /obstacle_range
+      Name: /move_base/local_costmap/obstacle_layer/obstacle_range
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Value: 3.0
+    - Minimal: /odom_alpha5
+      Name: /amcl/odom_alpha5
+      Namespace: /amcl/
+      Value: 0.2
+    - Minimal: /raytrace_range
+      Name: /move_base/global_costmap/obstacle_layer/raytrace_range
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Value: 3.5
+    - Minimal: /kld_z
+      Name: /amcl/kld_z
+      Namespace: /amcl/
+      Value: 0.99
+    - Minimal: /topic
+      Name: /move_base/local_costmap/obstacle_layer/scan/topic
+      Namespace: /move_base/local_costmap/obstacle_layer/scan/
+      Value: scan
+    - Minimal: /auto_disable_bodies
+      Name: /gazebo/auto_disable_bodies
+      Namespace: /gazebo/
+      Value: false
+    - Minimal: /clearing
+      Name: /move_base/local_costmap/obstacle_layer/scan/clearing
+      Namespace: /move_base/local_costmap/obstacle_layer/scan/
+      Value: true
+    - Minimal: /do_beamskip
+      Name: /amcl/do_beamskip
+      Namespace: /amcl/
+      Value: false
+    - Minimal: /marking
+      Name: /move_base/local_costmap/obstacle_layer/scan/marking
+      Namespace: /move_base/local_costmap/obstacle_layer/scan/
+      Value: true
+    - Minimal: /use_map_topic
+      Name: /amcl/use_map_topic
+      Namespace: /amcl/
+      Value: false
+    - Minimal: /sensor_frame
+      Name: /move_base/local_costmap/obstacle_layer/scan/sensor_frame
+      Namespace: /move_base/local_costmap/obstacle_layer/scan/
+      Value: base_scan
+    - Minimal: /data_type
+      Name: /move_base/local_costmap/obstacle_layer/scan/data_type
+      Namespace: /move_base/local_costmap/obstacle_layer/scan/
+      Value: LaserScan
+    - Minimal: /initial_pose_y
+      Name: /amcl/initial_pose_y
+      Namespace: /amcl/
+      Value: -0.4528103387463812
+    - Minimal: /combination_method
+      Name: /move_base/local_costmap/obstacle_layer/combination_method
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Value: 1
+    - Minimal: /initial_cov_yy
+      Name: /amcl/initial_cov_yy
+      Namespace: /amcl/
+      Value: 0.22223261885081125
+    - Minimal: /enabled
+      Name: /move_base/local_costmap/obstacle_layer/enabled
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Value: true
+    - Minimal: /latch_xy_goal_tolerance
+      Name: /move_base/DWAPlannerROS/latch_xy_goal_tolerance
+      Namespace: /move_base/DWAPlannerROS/
+      Value: false
+    - Minimal: /raytrace_range
+      Name: /move_base/local_costmap/obstacle_layer/raytrace_range
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Value: 3.5
+    - Minimal: /footprint_clearing_enabled
+      Name: /move_base/local_costmap/obstacle_layer/footprint_clearing_enabled
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Value: true
+    - Minimal: /footprint_padding
+      Name: /move_base/global_costmap/footprint_padding
+      Namespace: /move_base/global_costmap/
+      Value: 0.01
+    - Minimal: /cfm
+      Name: /gazebo/cfm
+      Namespace: /gazebo/
+      Value: 1.0e-05
+    - Minimal: /gui_publish_rate
+      Name: /amcl/gui_publish_rate
+      Namespace: /amcl/
+      Value: 50.0
+    - Minimal: /observation_sources
+      Name: /move_base/local_costmap/obstacle_layer/observation_sources
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Value: scan
+    - Minimal: /gravity_y
+      Name: /gazebo/gravity_y
+      Namespace: /gazebo/
+      Value: 0.0
+    - Minimal: /publish_cost_grid_pc
+      Name: /move_base/DWAPlannerROS/publish_cost_grid_pc
+      Namespace: /move_base/DWAPlannerROS/
+      Value: true
+    - Minimal: /max_obstacle_height
+      Name: /move_base/local_costmap/obstacle_layer/max_obstacle_height
+      Namespace: /move_base/local_costmap/obstacle_layer/
+      Value: 2.0
+    - Minimal: /odom_alpha3
+      Name: /amcl/odom_alpha3
+      Namespace: /amcl/
+      Value: 0.1
+    - Minimal: /resolution
+      Name: /move_base/local_costmap/resolution
+      Namespace: /move_base/local_costmap/
+      Value: 0.05
+    - Minimal: /global_frame
+      Name: /move_base/global_costmap/global_frame
+      Namespace: /move_base/global_costmap/
+      Value: map
+    - Minimal: /publish_frequency
+      Name: /move_base/local_costmap/publish_frequency
+      Namespace: /move_base/local_costmap/
+      Value: 10.0
+    - Minimal: /laser_sigma_hit
+      Name: /amcl/laser_sigma_hit
+      Namespace: /amcl/
+      Value: 0.2
+    - Minimal: /clearing_rotation_allowed
+      Name: /move_base/clearing_rotation_allowed
+      Namespace: /move_base/
+      Value: true
+    - Minimal: /cost_scaling_factor
+      Name: /move_base/local_costmap/inflation_layer/cost_scaling_factor
+      Namespace: /move_base/local_costmap/inflation_layer/
+      Value: 3.0
+    - Minimal: /laser_lambda_short
+      Name: /amcl/laser_lambda_short
+      Namespace: /amcl/
+      Value: 0.1
+    - Minimal: /restore_defaults
+      Name: /move_base/restore_defaults
+      Namespace: /move_base/
+      Value: false
+    - Minimal: /max_vel_trans
+      Name: /move_base/DWAPlannerROS/max_vel_trans
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.22
+    - Minimal: /data_type
+      Name: /move_base/global_costmap/obstacle_layer/scan/data_type
+      Namespace: /move_base/global_costmap/obstacle_layer/scan/
+      Value: LaserScan
+    - Minimal: /combination_method
+      Name: /move_base/global_costmap/obstacle_layer/combination_method
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Value: 1
+    - Minimal: /stop_time_buffer
+      Name: /move_base/DWAPlannerROS/stop_time_buffer
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.2
+    - Minimal: /conservative_reset_dist
+      Name: /move_base/conservative_reset_dist
+      Namespace: /move_base/
+      Value: 3.0
+    - Minimal: /enabled
+      Name: /move_base/global_costmap/obstacle_layer/enabled
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Value: true
+    - Minimal: /publish_traj_pc
+      Name: /move_base/DWAPlannerROS/publish_traj_pc
+      Namespace: /move_base/DWAPlannerROS/
+      Value: true
+    - Minimal: /occdist_scale
+      Name: /move_base/DWAPlannerROS/occdist_scale
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.02
+    - Minimal: /max_planning_retries
+      Name: /move_base/max_planning_retries
+      Namespace: /move_base/
+      Value: -1
+    - Minimal: /min_vel_theta
+      Name: /move_base/DWAPlannerROS/min_vel_theta
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 1.37
+    - Minimal: /footprint_clearing_enabled
+      Name: /move_base/global_costmap/obstacle_layer/footprint_clearing_enabled
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Value: true
+    - Minimal: /base_global_planner
+      Name: /move_base/base_global_planner
+      Namespace: /move_base/
+      Value: navfn/NavfnROS
+    - Minimal: /oscillation_timeout
+      Name: /move_base/oscillation_timeout
+      Namespace: /move_base/
+      Value: 10.0
+    - Minimal: /make_plan_add_unreachable_goal
+      Name: /move_base/make_plan_add_unreachable_goal
+      Namespace: /move_base/
+      Value: true
+    - Minimal: /observation_sources
+      Name: /move_base/global_costmap/obstacle_layer/observation_sources
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Value: scan
+    - Minimal: /erp
+      Name: /gazebo/erp
+      Namespace: /gazebo/
+      Value: 0.2
+    - Minimal: /update_frequency
+      Name: /move_base/global_costmap/update_frequency
+      Namespace: /move_base/global_costmap/
+      Value: 10.0
+    - Minimal: /max_obstacle_height
+      Name: /move_base/global_costmap/obstacle_layer/max_obstacle_height
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Value: 2.0
+    - Minimal: /laser_likelihood_max_dist
+      Name: /amcl/laser_likelihood_max_dist
+      Namespace: /amcl/
+      Value: 2.0
+    - Minimal: /height
+      Name: /move_base/global_costmap/height
+      Namespace: /move_base/global_costmap/
+      Value: 10
+    - Minimal: /resolution
+      Name: /move_base/global_costmap/resolution
+      Namespace: /move_base/global_costmap/
+      Value: 0.05
+    - Minimal: /recovery_behavior_enabled
+      Name: /move_base/recovery_behavior_enabled
+      Namespace: /move_base/
+      Value: true
+    - Minimal: /contact_max_correcting_vel
+      Name: /gazebo/contact_max_correcting_vel
+      Namespace: /gazebo/
+      Value: 2000.0
+    - Minimal: /first_map_only
+      Name: /amcl/first_map_only
+      Namespace: /amcl/
+      Value: false
+    - Minimal: /publish_frequency
+      Name: /move_base/global_costmap/publish_frequency
+      Namespace: /move_base/global_costmap/
+      Value: 10.0
+    - Minimal: /laser_z_short
+      Name: /amcl/laser_z_short
+      Namespace: /amcl/
+      Value: 0.05
+    - Minimal: /planner_patience
+      Name: /move_base/planner_patience
+      Namespace: /move_base/
+      Value: 5.0
+    - Minimal: /footprint_padding
+      Name: /move_base/local_costmap/footprint_padding
+      Namespace: /move_base/local_costmap/
+      Value: 0.01
+    - Minimal: /time_step
+      Name: /gazebo/time_step
+      Namespace: /gazebo/
+      Value: 0.001
+    - Minimal: /odom_alpha1
+      Name: /amcl/odom_alpha1
+      Namespace: /amcl/
+      Value: 0.1
+    - Minimal: /make_plan_clear_costmap
+      Name: /move_base/make_plan_clear_costmap
+      Namespace: /move_base/
+      Value: true
+    - Minimal: /laser_z_max
+      Name: /amcl/laser_z_max
+      Namespace: /amcl/
+      Value: 0.05
+    - Minimal: /max_vel_theta
+      Name: /move_base/DWAPlannerROS/max_vel_theta
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 2.75
+    - Minimal: /base_local_planner
+      Name: /move_base/base_local_planner
+      Namespace: /move_base/
+      Value: dwa_local_planner/DWAPlannerROS
+    - Minimal: /publish_frequency
+      Name: /robot_state_publisher/publish_frequency
+      Namespace: /robot_state_publisher/
+      Value: 50.0
+    - Minimal: /acc_lim_y
+      Name: /move_base/DWAPlannerROS/acc_lim_y
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.0
+    - Minimal: /resample_interval
+      Name: /amcl/resample_interval
+      Namespace: /amcl/
+      Value: 1
+    - Minimal: /laser_min_range
+      Name: /amcl/laser_min_range
+      Namespace: /amcl/
+      Value: -1.0
+    - Minimal: /goal_distance_bias
+      Name: /move_base/DWAPlannerROS/goal_distance_bias
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 20.0
+    - Minimal: /restore_defaults
+      Name: /move_base/DWAPlannerROS/restore_defaults
+      Namespace: /move_base/DWAPlannerROS/
+      Value: false
+    - Minimal: /path_distance_bias
+      Name: /move_base/DWAPlannerROS/path_distance_bias
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 32.0
+    - Minimal: /angular_sim_granularity
+      Name: /move_base/DWAPlannerROS/angular_sim_granularity
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.1
+    - Minimal: /oscillation_reset_dist
+      Name: /move_base/DWAPlannerROS/oscillation_reset_dist
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.05
+    - Minimal: /transform_tolerance
+      Name: /move_base/local_costmap/transform_tolerance
+      Namespace: /move_base/local_costmap/
+      Value: 0.5
+    - Minimal: /scaling_speed
+      Name: /move_base/DWAPlannerROS/scaling_speed
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.25
+    - Minimal: /oscillation_reset_angle
+      Name: /move_base/DWAPlannerROS/oscillation_reset_angle
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.2
+    - Minimal: /acc_lim_x
+      Name: /move_base/DWAPlannerROS/acc_lim_x
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 2.5
+    - Minimal: /plugins
+      Name: /move_base/global_costmap/plugins
+      Namespace: /move_base/global_costmap/
+      Value:
+      - name: static_layer
+        type: costmap_2d::StaticLayer
+      - name: obstacle_layer
+        type: costmap_2d::ObstacleLayer
+      - name: inflation_layer
+        type: costmap_2d::InflationLayer
+    - Minimal: /laser_max_beams
+      Name: /amcl/laser_max_beams
+      Namespace: /amcl/
+      Value: 180
+    - Minimal: /transform_tolerance
+      Name: /move_base/global_costmap/transform_tolerance
+      Namespace: /move_base/global_costmap/
+      Value: 0.5
+    - Minimal: /gravity_z
+      Name: /gazebo/gravity_z
+      Namespace: /gazebo/
+      Value: -9.8
+    - Minimal: /cost_scaling_factor
+      Name: /move_base/global_costmap/inflation_layer/cost_scaling_factor
+      Namespace: /move_base/global_costmap/inflation_layer/
+      Value: 3.0
+    - Minimal: /update_min_d
+      Name: /amcl/update_min_d
+      Namespace: /amcl/
+      Value: 0.2
+    - Minimal: /laser_z_rand
+      Name: /amcl/laser_z_rand
+      Namespace: /amcl/
+      Value: 0.5
+    - Minimal: /inflate_unknown
+      Name: /move_base/global_costmap/inflation_layer/inflate_unknown
+      Namespace: /move_base/global_costmap/inflation_layer/
+      Value: false
+    - Minimal: /sor_pgs_rms_error_tol
+      Name: /gazebo/sor_pgs_rms_error_tol
+      Namespace: /gazebo/
+      Value: 0.0
+    - Minimal: /sim_granularity
+      Name: /move_base/DWAPlannerROS/sim_granularity
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.025
+    - Minimal: /acc_lim_trans
+      Name: /move_base/DWAPlannerROS/acc_lim_trans
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.1
+    - Minimal: /inflation_radius
+      Name: /move_base/global_costmap/inflation_layer/inflation_radius
+      Namespace: /move_base/global_costmap/inflation_layer/
+      Value: 1.0
+    - Minimal: /enabled
+      Name: /move_base/global_costmap/inflation_layer/enabled
+      Namespace: /move_base/global_costmap/inflation_layer/
+      Value: true
+    - Minimal: /xy_goal_tolerance
+      Name: /move_base/DWAPlannerROS/xy_goal_tolerance
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.05
+    - Minimal: /static_map
+      Name: /move_base/global_costmap/static_map
+      Namespace: /move_base/global_costmap/
+      Value: true
+    - Minimal: /trans_stopped_vel
+      Name: /move_base/DWAPlannerROS/trans_stopped_vel
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.1
+    - Minimal: /theta_stopped_vel
+      Name: /move_base/DWAPlannerROS/theta_stopped_vel
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.1
+    - Minimal: /origin_x
+      Name: /move_base/global_costmap/origin_x
+      Namespace: /move_base/global_costmap/
+      Value: 0.0
+    - Minimal: /origin_y
+      Name: /move_base/global_costmap/origin_y
+      Namespace: /move_base/global_costmap/
+      Value: 0.0
+    - Minimal: /restore_defaults
+      Name: /amcl/restore_defaults
+      Namespace: /amcl/
+      Value: false
+    - Minimal: /min_vel_x
+      Name: /move_base/DWAPlannerROS/min_vel_x
+      Namespace: /move_base/DWAPlannerROS/
+      Value: -0.22
+    - Minimal: /reset_distance
+      Name: /move_base/aggressive_reset/reset_distance
+      Namespace: /move_base/aggressive_reset/
+      Value: 1.84
+    - Minimal: /global_frame_id
+      Name: /amcl/global_frame_id
+      Namespace: /amcl/
+      Value: map
+    - Minimal: /footprint
+      Name: /move_base/global_costmap/footprint
+      Namespace: /move_base/global_costmap/
+      Value: '[[-0.105,-0.105],[-0.105,0.105],[0.041,0.105],[0.041,-0.105]]'
+    - Minimal: /save_pose_rate
+      Name: /amcl/save_pose_rate
+      Namespace: /amcl/
+      Value: 0.5
+    - Minimal: /update_min_a
+      Name: /amcl/update_min_a
+      Namespace: /amcl/
+      Value: 0.2
+    - Minimal: /map_type
+      Name: /move_base/global_costmap/map_type
+      Namespace: /move_base/global_costmap/
+      Value: costmap
+    - Minimal: /sor_pgs_precon_iters
+      Name: /gazebo/sor_pgs_precon_iters
+      Namespace: /gazebo/
+      Value: 0
+    - Minimal: /yaw_goal_tolerance
+      Name: /move_base/DWAPlannerROS/yaw_goal_tolerance
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.17
+    - Minimal: /obstacle_range
+      Name: /move_base/global_costmap/obstacle_layer/obstacle_range
+      Namespace: /move_base/global_costmap/obstacle_layer/
+      Value: 3.0
+    - Minimal: /robot_radius
+      Name: /move_base/global_costmap/robot_radius
+      Namespace: /move_base/global_costmap/
+      Value: 0.46
+    - Minimal: /use_dwa
+      Name: /move_base/DWAPlannerROS/use_dwa
+      Namespace: /move_base/DWAPlannerROS/
+      Value: true
+    - Minimal: /odom_alpha4
+      Name: /amcl/odom_alpha4
+      Namespace: /amcl/
+      Value: 0.1
+    - Minimal: /forward_point_distance
+      Name: /move_base/DWAPlannerROS/forward_point_distance
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.325
+    - Minimal: /sor_pgs_iters
+      Name: /gazebo/sor_pgs_iters
+      Namespace: /gazebo/
+      Value: 150
+    - Minimal: /height
+      Name: /move_base/local_costmap/height
+      Namespace: /move_base/local_costmap/
+      Value: 3
+    - Minimal: /oscillation_distance
+      Name: /move_base/oscillation_distance
+      Namespace: /move_base/
+      Value: 0.2
+    - Minimal: /initial_pose_x
+      Name: /amcl/initial_pose_x
+      Namespace: /amcl/
+      Value: -2.046266872354047
+    - Minimal: /prune_plan
+      Name: /move_base/DWAPlannerROS/prune_plan
+      Namespace: /move_base/DWAPlannerROS/
+      Value: false
+    - Minimal: /plugins
+      Name: /move_base/local_costmap/plugins
+      Namespace: /move_base/local_costmap/
+      Value:
+      - name: obstacle_layer
+        type: costmap_2d::ObstacleLayer
+      - name: inflation_layer
+        type: costmap_2d::InflationLayer
+    - Minimal: /enabled
+      Name: /move_base/global_costmap/static_layer/enabled
+      Namespace: /move_base/global_costmap/static_layer/
+      Value: true
+    - Minimal: /max_scaling_factor
+      Name: /move_base/DWAPlannerROS/max_scaling_factor
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.2
+    - Minimal: /max_vel_x
+      Name: /move_base/DWAPlannerROS/max_vel_x
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.22
+    - Minimal: /twirling_scale
+      Name: /move_base/DWAPlannerROS/twirling_scale
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.0
+    - Minimal: /initial_cov_xx
+      Name: /amcl/initial_cov_xx
+      Namespace: /amcl/
+      Value: 0.1614418203290402
+    - Minimal: /max_vel_y
+      Name: /move_base/DWAPlannerROS/max_vel_y
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 0.0
+    - Minimal: /enable_ros_network
+      Name: /gazebo/enable_ros_network
+      Namespace: /gazebo/
+      Value: true
+    - Minimal: /vth_samples
+      Name: /move_base/DWAPlannerROS/vth_samples
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 40
+    - Minimal: /robot_base_frame
+      Name: /move_base/global_costmap/robot_base_frame
+      Namespace: /move_base/global_costmap/
+      Value: base_footprint
+    - Minimal: /shutdown_costmaps
+      Name: /move_base/shutdown_costmaps
+      Namespace: /move_base/
+      Value: false
+    - Minimal: /update_frequency
+      Name: /move_base/local_costmap/update_frequency
+      Namespace: /move_base/local_costmap/
+      Value: 10.0
+    - Minimal: /max_update_rate
+      Name: /gazebo/max_update_rate
+      Namespace: /gazebo/
+      Value: 1000.0
+    - Minimal: /controller_frequency
+      Name: /move_base/DWAPlannerROS/controller_frequency
+      Namespace: /move_base/DWAPlannerROS/
+      Value: 10.0
+    - Minimal: /marking
+      Name: /move_base/global_costmap/obstacle_layer/scan/marking
+      Namespace: /move_base/global_costmap/obstacle_layer/scan/
+      Value: true
+    - Minimal: /reset_distance
+      Name: /move_base/conservative_reset/reset_distance
+      Namespace: /move_base/conservative_reset/
+      Value: 3.0
+    - Minimal: /tf_broadcast
+      Name: /amcl/tf_broadcast
+      Namespace: /amcl/
+      Value: true
+    - Minimal: /clearing
+      Name: /move_base/global_costmap/obstacle_layer/scan/clearing
+      Namespace: /move_base/global_costmap/obstacle_layer/scan/
+      Value: true
+    - Minimal: /topic
+      Name: /move_base/global_costmap/obstacle_layer/scan/topic
+      Namespace: /move_base/global_costmap/obstacle_layer/scan/
+      Value: scan
+    - Minimal: /width
+      Name: /move_base/global_costmap/width
+      Namespace: /move_base/global_costmap/
+      Value: 10
+    Publishers: []
+    Services: []
+    Subscribers: []
